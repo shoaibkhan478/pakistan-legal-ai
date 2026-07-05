@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: 255 255 255;
+  --bg-secondary: 248 250 252;
+  --text-primary: 15 23 42;
+  --text-secondary: 71 85 105;
+  --border-color: 226 232 240;
+}
+
+.dark {
+  --bg-primary: 10 25 41;
+  --bg-secondary: 16 33 51;
+  --text-primary: 241 245 249;
+  --text-secondary: 148 163 184;
+  --border-color: 36 59 83;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(var(--bg-secondary));
+  color: rgb(var(--text-primary));
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--border-color));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #16a34a;
+}
+
+.urdu-text {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 2.2;
+}
+
+.prose-legal {
+  line-height: 1.8;
+}
+.prose-legal h1, .prose-legal h2, .prose-legal h3 {
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.prose-legal p {
+  margin-bottom: 1em;
+}
+.prose-legal ul, .prose-legal ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+@media print {
+  .no-print { display: none !important; }
+}
