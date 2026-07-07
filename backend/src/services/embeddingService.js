@@ -8,11 +8,12 @@
 // model requires a separate, billed OpenAI account — this app otherwise
 // runs entirely on the free/already-configured Gemini API key. To avoid
 // needing a second paid provider just for the local law-library search,
-// this now calls Gemini's `text-embedding-004` model (768 dimensions)
-// directly via its REST endpoint, using the same GEMINI_API_KEY already
-// configured for every other AI feature in this app. Uses native fetch,
-// matching the rest of ai.service.js (see the comment there for why the
-// SDK is avoided).
+// this now calls Gemini's `gemini-embedding-001` model directly via its
+// REST endpoint (with output_dimensionality set to 768, so no separate
+// database migration is needed beyond the one already applied), using the
+// same GEMINI_API_KEY already configured for every other AI feature in
+// this app. Uses native fetch, matching the rest of ai.service.js (see
+// the comment there for why the SDK is avoided).
 //
 // If you ever want to switch back to OpenAI (or another provider), this
 // is the only file that needs to change — just make sure the new
@@ -23,7 +24,8 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
-const EMBEDDING_MODEL = 'text-embedding-004'; // 768 dimensions
+const EMBEDDING_MODEL = 'gemini-embedding-001';
+const OUTPUT_DIMENSIONALITY = 768; // matches the `embedding VECTOR(768)` column
 const API_VERSION = 'v1beta';
 
 /**
@@ -48,7 +50,9 @@ async function generateEmbedding(text) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      model: `models/${EMBEDDING_MODEL}`,
       content: { parts: [{ text: cleaned }] },
+      output_dimensionality: OUTPUT_DIMENSIONALITY,
     }),
   });
 
