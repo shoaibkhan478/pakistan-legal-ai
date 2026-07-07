@@ -1,4 +1,4 @@
- /**
+/**
  * AI Service - Google Gemini Integration (FREE TIER)
  * All AI-powered legal features, routed through Gemini's REST API via
  * native fetch (v1beta endpoint, which supports systemInstruction).
@@ -262,7 +262,22 @@ function parseJsonSafe(rawText) {
   try {
     return JSON.parse(cleanText);
   } catch (err) {
-    logger.error('Failed to parse JSON from AI response:', err);
+    // Fallback: the response may have been cut off mid-string because it
+    // hit the maxOutputTokens limit before finishing the JSON object. Try
+    // to salvage a valid object by trimming back to the last complete
+    // top-level "}" and re-attempting the parse, instead of failing outright.
+    const lastBrace = cleanText.lastIndexOf('}');
+    if (lastBrace > -1) {
+      const salvaged = cleanText.slice(0, lastBrace + 1);
+      try {
+        const parsed = JSON.parse(salvaged);
+        logger.error('AI response was truncated but salvaged after trimming trailing incomplete content.');
+        return parsed;
+      } catch (err2) {
+        // fall through to the error below
+      }
+    }
+    logger.error('Failed to parse JSON from AI response:', err.message, '\nRaw text (first 500 chars):', cleanText.slice(0, 500));
     throw new Error('AI response was not valid JSON.');
   }
 }
@@ -390,6 +405,7 @@ async function analyzeFIR(firText) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: firText,
+    maxTokens: 8192,
   });
 
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
