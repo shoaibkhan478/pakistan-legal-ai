@@ -9,6 +9,8 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const pdf = require('pdf-parse');
+const sharp = require('sharp');
+const { createWorker } = require('tesseract.js');
 const { authenticate } = require('../middleware/auth.middleware');
 const { query } = require('../config/database');
 const logger = require('../utils/logger');
@@ -40,6 +42,37 @@ const upload = multer({
 });
 
 /**
+ * Runs OCR on an image file using Tesseract, reading both Urdu and English
+ * (most Pakistani FIRs/notices mix both — station name/header in English,
+ * body text in Urdu, or vice versa). Preprocesses the image first (grayscale,
+ * normalize contrast, sharpen) since scanned/photographed legal documents are
+ * very often slightly blurry, low-contrast, or unevenly lit — this step
+ * measurably improves accuracy on exactly that kind of input without
+ * requiring the user to re-take/re-scan the photo.
+ */
+async function runOcr(filePath) {
+  const preprocessedPath = `${filePath}-preprocessed.png`;
+  try {
+    await sharp(filePath)
+      .grayscale()
+      .normalize() // stretches contrast — helps a lot with dim/washed-out photos
+      .sharpen()
+      .toFile(preprocessedPath);
+
+    // 'eng+urd' loads both language models — Tesseract tries both scripts.
+    const worker = await createWorker('eng+urd');
+    try {
+      const { data } = await worker.recognize(preprocessedPath);
+      return { text: data.text || '', confidence: Math.round(data.confidence || 0) };
+    } finally {
+      await worker.terminate();
+    }
+  } finally {
+    fs.unlink(preprocessedPath, () => {}); // best-effort cleanup, ignore errors
+  }
+}
+
+/**
  * Extract text from uploaded file
  */
 async function extractText(filePath, mimeType) {
@@ -47,10 +80,21 @@ async function extractText(filePath, mimeType) {
     if (mimeType === 'application/pdf') {
       const buffer = fs.readFileSync(filePath);
       const data = await pdf(buffer);
-      return { text: data.text, method: 'pdf-parse', confidence: 95 };
+      // A scanned PDF (photo saved as PDF, no real text layer) yields almost
+      // no text from pdf-parse — fall back to OCR on that case too, since
+      // otherwise the user gets a silent empty result for exactly the kind
+      // of document (a photographed FIR) they're most likely to upload.
+      if (data.text && data.text.trim().length > 20) {
+        return { text: data.text, method: 'pdf-parse', confidence: 95 };
+      }
+      logger.info('PDF had no extractable text layer (likely a scanned image) — falling back to OCR.');
+      const ocrResult = await runOcr(filePath);
+      return { text: ocrResult.text, method: 'ocr-fallback', confidence: ocrResult.confidence };
     }
-    // For images, return placeholder (Tesseract would be called in production)
-    return { text: '', method: 'ocr-pending', confidence: 0 };
+
+    // Scanned photo / image upload (JPEG, PNG, TIFF) — run real OCR.
+    const ocrResult = await runOcr(filePath);
+    return { text: ocrResult.text, method: 'ocr', confidence: ocrResult.confidence };
   } catch (err) {
     logger.error('Text extraction error:', err);
     return { text: '', method: 'failed', confidence: 0 };
