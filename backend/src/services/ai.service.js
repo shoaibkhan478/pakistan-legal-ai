@@ -313,6 +313,34 @@ async function legalChat(chatMessages, context = '') {
 }
 
 /**
+ * Legal research entry point used by research.routes.js.
+ * Runs a grounded (local law library + live Google Search) research pass
+ * on a free-form legal question and returns a full written answer with
+ * citations, the same way the chat feature does, but framed explicitly as
+ * a research task for a given jurisdiction.
+ *
+ * @param {string} researchQuery - the legal question / topic to research
+ * @param {string} [jurisdiction] - defaults to 'Pakistan'
+ * @returns {Promise<{content: string, tokens: object, model: string}>}
+ */
+async function legalResearch(researchQuery, jurisdiction = 'Pakistan') {
+  const systemInstruction = `You are conducting formal legal research for a practising advocate. Jurisdiction: ${jurisdiction}. Research the topic/question below thoroughly: identify the exact applicable statutory provisions, and any real, verifiable case law/precedent (with citation) that bears on it. Structure the answer as a proper legal research memo: (1) applicable law, (2) analysis/discussion, (3) relevant precedent (if any, with citation — never invent one), (4) practical conclusion.`;
+
+  const result = await generateContent({
+    contents: `Research the following and answer as instructed:\n\n${researchQuery}`,
+    systemInstruction,
+    groundingQuery: researchQuery,
+    maxTokens: 8192,
+  });
+
+  return {
+    content: result.text,
+    tokens: result.tokens,
+    model: MODEL,
+  };
+}
+
+/**
  * Performs a live, non-JSON Gemini call with Google Search grounding
  * (searches the open web, including Pakistani court and law-reporting
  * sites) to pull the exact current statutory citations and any REAL,
@@ -453,6 +481,7 @@ async function analyzeLegalNotice(noticeText) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: noticeText,
+    maxTokens: 8192,
   });
 
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
@@ -550,9 +579,76 @@ async function analyzePlaint(plaintText) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: plaintText,
+    maxTokens: 8192,
   });
 
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
+}
+
+// ============================================================
+// STUDENT MODE (used by student.routes.js)
+// ============================================================
+
+async function generateMCQs(topic, subject, count = 10, difficulty = 'intermediate') {
+  const systemInstruction = `Generate ${count} multiple-choice questions for a law student studying "${subject}" in the Pakistani legal system, specifically on the topic "${topic}". Difficulty level: ${difficulty}. Each question must be legally accurate, test real understanding (not trivia), and reference the correct statutory provision where relevant.\n\nRespond with ONLY a JSON object with exactly this shape:\n{\n  "mcqs": [\n    {\n      "question": string,\n      "options": [string, string, string, string],\n      "correct_index": number,\n      "explanation": string\n    }\n  ]\n}\n"correct_index" is the 0-based index into "options" of the correct answer. "explanation" briefly states why, citing the relevant law where applicable.`;
+
+  const result = await generateContent({
+    contents: `Generate the ${count} MCQs now, as instructed.`,
+    systemInstruction,
+    jsonMode: true,
+    groundingQuery: `${topic} ${subject}`,
+    maxTokens: 8192,
+  });
+
+  const parsed = parseJsonSafe(result.text);
+  return { mcqs: parsed.mcqs || parsed, tokens: result.tokens };
+}
+
+async function generateVivaQuestions(topic, subject, count = 15) {
+  const systemInstruction = `Generate ${count} viva (oral exam) questions a law professor might ask a student on the topic "${topic}" within "${subject}", in the context of Pakistani law. Include a short model answer or key points expected for each, so the student can self-check.\n\nRespond with ONLY a JSON object with exactly this shape:\n{\n  "questions": [\n    { "question": string, "key_points": string[] }\n  ]\n}`;
+
+  const result = await generateContent({
+    contents: `Generate the ${count} viva questions now, as instructed.`,
+    systemInstruction,
+    jsonMode: true,
+    groundingQuery: `${topic} ${subject}`,
+    maxTokens: 8192,
+  });
+
+  const parsed = parseJsonSafe(result.text);
+  return { questions: parsed.questions || parsed, tokens: result.tokens };
+}
+
+async function generateNotes(topic, subject, language = 'english') {
+  const languageInstruction = {
+    english: 'Write in clear academic English.',
+    urdu: 'Write in formal academic Urdu (اردو رسم الخط).',
+    roman_urdu: 'Write in Roman Urdu.',
+  }[language] || 'Write in clear academic English.';
+
+  const systemInstruction = `Write comprehensive study notes for a law student on the topic "${topic}" within "${subject}", covering Pakistani law where relevant. Structure with clear Markdown headings, definitions, the applicable statutory provisions (with exact section/article numbers), leading case law where genuinely confirmed, and a short summary at the end. ${languageInstruction}`;
+
+  const result = await generateContent({
+    contents: `Write the study notes now, in full, as instructed.`,
+    systemInstruction,
+    groundingQuery: `${topic} ${subject}`,
+    maxTokens: 8192,
+  });
+
+  return { content: result.text, tokens: result.tokens };
+}
+
+async function generateCaseBrief(caseName, facts = '') {
+  const systemInstruction = `Prepare a formal case brief, in the standard format used in Pakistani law schools/courts (Case Name & Citation, Facts, Issues, Arguments, Holding/Decision, Ratio Decidendi, Significance), for the case named below. Only state the citation, holding, or outcome if you are genuinely confident it is accurate (use search to confirm); if you cannot confirm real details for this case, say so plainly rather than inventing them.\n\nCASE: ${caseName}\n${facts ? `\nADDITIONAL FACTS PROVIDED BY STUDENT:\n${facts}` : ''}`;
+
+  const result = await generateContent({
+    contents: 'Prepare the case brief now, in full, as instructed.',
+    systemInstruction,
+    groundingQuery: `${caseName} ${facts}`.slice(0, 2000),
+    maxTokens: 8192,
+  });
+
+  return { content: result.text, tokens: result.tokens };
 }
 
 // ============================================================
@@ -583,6 +679,7 @@ async function generateDraft(draftType, details = {}, language = 'english') {
 
 module.exports = {
   legalChat,
+  legalResearch,
   generateContent,
   parseJsonSafe,
   DISCLAIMER,
@@ -595,4 +692,8 @@ module.exports = {
   analyzeJudgment,
   analyzePlaint,
   generateDraft,
+  generateMCQs,
+  generateVivaQuestions,
+  generateNotes,
+  generateCaseBrief,
 };
