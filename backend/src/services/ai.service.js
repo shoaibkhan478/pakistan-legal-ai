@@ -11,6 +11,60 @@
  * Get a FREE API key (no credit card needed) at:
  * https://aistudio.google.com/apikey
  */
+// ============================================
+// Smart Retry Wrapper for Gemini API calls
+// Reads Google's exact suggested wait time from error and retries accordingly
+// ============================================
+async function callGeminiWithRetry(fn, maxRetries = 2) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const status = err?.status || err?.response?.status;
+      const isRateLimited = status === 429;
+      const isOverloaded = status === 503;
+
+      if ((isRateLimited || isOverloaded) && attempt < maxRetries) {
+        // Try to extract Google's exact suggested wait time from error message
+        let waitMs = 3000; // fallback default (3 sec)
+        const rawMsg = err?.message || JSON.stringify(err?.details || {});
+
+        const match =
+          rawMsg.match(/retry in ([\d.]+)s/i) ||
+          rawMsg.match(/"retryDelay":"(\d+)s"/i);
+
+        if (match) {
+          waitMs = Math.ceil(parseFloat(match[1]) * 1000) + 500; // +500ms buffer
+        }
+
+        logger.warn(
+          `[Gemini] Status ${status} received. Waiting ${waitMs}ms before retry #${attempt + 1}/${maxRetries}...`
+        );
+
+        await new Promise((res) => setTimeout(res, waitMs));
+        continue; // retry the loop
+      }
+
+      // Not retryable (some other error), or retries exhausted — throw a clean error
+      if (isRateLimited) {
+        const rateLimitError = new Error(
+          "AI service is currently rate-limited. Please wait a minute and try again."
+        );
+        rateLimitError.status = 429;
+        throw rateLimitError;
+      }
+      if (isOverloaded) {
+        const overloadError = new Error(
+          "AI service is temporarily overloaded. Please try again in a moment."
+        );
+        overloadError.status = 503;
+        throw overloadError;
+      }
+      throw err; // some other unrelated error — pass through as-is
+    }
+  }
+}
+
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const logger = require('../utils/logger');
@@ -186,34 +240,43 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
 
     const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        contents: geminiContents,
-        systemInstruction: { parts: [{ text: system }] },
-        // Grounds answers in live Google Search results instead of relying
-        // solely on the model's training data — important for legal
-        // accuracy (current sections, amendments, real case citations).
-        // Skipped in jsonMode since grounding + forced JSON output don't
-        // combine well in the API.
-        ...(jsonMode ? {} : { tools: [{ google_search: {} }] }),
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
-        },
-      }),
+    const requestBody = JSON.stringify({
+      contents: geminiContents,
+      systemInstruction: { parts: [{ text: system }] },
+      // Grounds answers in live Google Search results instead of relying
+      // solely on the model's training data — important for legal
+      // accuracy (current sections, amendments, real case citations).
+      // Skipped in jsonMode since grounding + forced JSON output don't
+      // combine well in the API.
+      ...(jsonMode ? {} : { tools: [{ google_search: {} }] }),
+      generationConfig: {
+        maxOutputTokens: maxTokens,
+        ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
+      },
     });
 
-    const data = await res.json();
+    // Wrapped in callGeminiWithRetry: if Gemini returns 429 (rate-limited)
+    // or 503 (overloaded), this automatically waits the time Google
+    // suggests and retries, instead of failing immediately.
+    const data = await callGeminiWithRetry(async () => {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: requestBody,
+      });
 
-    if (!res.ok) {
-      const message = data?.error?.message || `Gemini API returned HTTP ${res.status}`;
-      const err = new Error(message);
-      err.status = res.status;
-      err.details = data;
-      throw err;
-    }
+      const json = await res.json();
+
+      if (!res.ok) {
+        const message = json?.error?.message || `Gemini API returned HTTP ${res.status}`;
+        const err = new Error(message);
+        err.status = res.status;
+        err.details = json;
+        throw err;
+      }
+
+      return json;
+    });
 
     const candidate = data.candidates?.[0];
 
