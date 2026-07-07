@@ -1,0 +1,11 @@
+Code of Criminal Procedure, 1898 — Section 498: Bail Before Arrest (Pre-Arrest / Anticipatory Bail)
+
+Section 498 CrPC empowers the High Court or the Court of Session to direct that, in the event of arrest, a person shall be released on bail — this is the statutory basis for pre-arrest (anticipatory) bail in Pakistan, a jurisdiction developed extensively through case law (the statute itself is brief; the detailed conditions come from settled precedent).
+
+Key points (as developed through consistent superior court practice):
+- Pre-arrest bail is an extraordinary remedy, not a substitute for regular post-arrest bail; the applicant must generally show mala fide on the part of the complainant/police (implication for ulterior motives such as personal or political vendetta, property/business rivalry, or an attempt to humiliate/pressure the accused) and that immediate arrest would cause irreparable harm to reputation/liberty.
+- Traditional twin conditions frequently applied: (i) mala fide/false implication, and (ii) the applicant coming to court with clean hands (not having concealed material facts, and being a permanent resident with roots in society reducing flight risk).
+- Interim pre-arrest bail is typically granted first (often with a direction to join investigation), and confirmed or declined after hearing the complainant/State and considering the investigation record.
+- Pre-arrest bail is ordinarily NOT available once a case is fully investigated and challan (report under Section 173 CrPC) has been submitted to the court, or where the accused has been a proclaimed offender/absconder — courts vary on the exact cut-off, so this should be checked against the latest facts of the case.
+
+Practical relevance: The key provision when the client has not yet been arrested but an FIR has been registered against them and they fear imminent arrest; commonly paired with an FIR analysis to assess whether the "mala fide/false implication" ground is arguable on the facts.

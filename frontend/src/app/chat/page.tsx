@@ -6,7 +6,7 @@ import { Card } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import api from '@/lib/api';
-import { Send, Bot, User, Loader2, Languages, Plus, History, Search, X } from 'lucide-react';
+import { Send, Bot, User, Loader2, Languages, Plus, History, Search, X, Paperclip } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -87,7 +87,9 @@ export default function ChatPage() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [historyQuery, setHistoryQuery] = useState('');
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // On first load: restore saved sessions, and start a fresh session id
   useEffect(() => {
@@ -142,6 +144,41 @@ export default function ChatPage() {
       setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAttachFile = async (file: File | null | undefined) => {
+    if (!file) return;
+    setIsUploadingFile(true);
+    const formData = new FormData();
+    formData.append('document', file);
+    formData.append('documentType', 'other');
+
+    try {
+      const { data } = await api.post('/documents/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const doc = data.data.document;
+      const { data: textRes } = await api.get(`/documents/${doc.id}/text`);
+      const fullText: string = textRes.data.text || '';
+
+      if (!fullText.trim()) {
+        toast.error('No readable text found in this file. Try a clearer scan or paste the text manually.');
+        return;
+      }
+
+      // Prefill the composer with the extracted text wrapped in a clear
+      // instruction, so the user just has to add their question (or send
+      // as-is) and the AI analyzes the actual uploaded document.
+      setInput(
+        `Yeh document (${file.name}) attach kiya hai, isay analyze karke bataen:\n\n${fullText}`
+      );
+      toast.success('Document read successfully — add your question and send.');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Upload failed. Please try again.');
+    } finally {
+      setIsUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -326,6 +363,24 @@ export default function ChatPage() {
               onSubmit={(e) => { e.preventDefault(); sendMessage(); }}
               className="flex items-end gap-2"
             >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg,.tiff,.doc,.docx"
+                className="hidden"
+                onChange={(e) => handleAttachFile(e.target.files?.[0])}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-[46px] px-3"
+                isLoading={isUploadingFile}
+                onClick={() => fileInputRef.current?.click()}
+                title="Attach FIR, notice, judgment, or any document (PDF, photo, or Word file)"
+              >
+                {!isUploadingFile && <Paperclip className="w-4 h-4" />}
+              </Button>
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}

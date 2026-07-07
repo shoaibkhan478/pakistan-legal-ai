@@ -297,6 +297,61 @@ async function legalChat(chatMessages, context = '') {
   };
 }
 
+/**
+ * Performs a live, non-JSON Gemini call with Google Search grounding
+ * (searches the open web, including Pakistani court and law-reporting
+ * sites) to pull the exact current statutory citations and any REAL,
+ * verifiable Supreme Court / High Court judgments relevant to the given
+ * case facts.
+ *
+ * Why this exists: the structured analysis functions below (analyzeFIR,
+ * analyzeNotice, analyzeJudgment, analyzePlaint) run in jsonMode, and
+ * jsonMode disables the Google Search tool on that same call (Gemini
+ * doesn't support forced-JSON output + live search together). So we run
+ * this as a separate, ungrounded-JSON research pass first, then fold its
+ * (cited, verifiable) findings into the system instruction of the JSON
+ * call that follows — giving the structured analysis real, current legal
+ * authority instead of relying only on the model's memorized training data
+ * or the (possibly still-empty) local law library.
+ *
+ * Fail-soft: never throws — if the search pass fails for any reason, the
+ * calling function simply proceeds without this extra context.
+ *
+ * @param {string} caseFactsQuery - the FIR/notice/judgment/plaint text (or a summary of it)
+ * @param {string} focusInstruction - one sentence telling the model what angle to research
+ * @returns {Promise<string>} formatted bullet-point research findings with citations + source links, or '' on failure
+ */
+async function fetchLiveCaseLawContext(caseFactsQuery, focusInstruction) {
+  if (!caseFactsQuery || !caseFactsQuery.trim()) return '';
+
+  try {
+    const systemInstruction = `You are a Pakistani legal researcher doing preparatory research before a senior advocate writes a formal legal analysis. ${focusInstruction}
+
+Use Google Search to find:
+1. The EXACT, currently-in-force statutory provisions (Constitution of Pakistan / PPC / CrPC / CPC / relevant special law) that apply to these facts, with precise section/article numbers.
+2. Any REAL, verifiable Supreme Court of Pakistan or High Court judgments directly relevant, with a proper citation (e.g. PLD, SCMR, CLC, YLR, MLD series) and a one-line statement of what each held.
+
+STRICT RULE: only include a judgment if you are genuinely confident it is real and you can give its citation. If you cannot confirm a specific precedent, write "No specific confirmed precedent found for this point" instead of guessing or inventing a case name/citation — a fabricated citation is unacceptable.
+
+Be concise: short bullet points only, no long essay.
+
+CASE FACTS:
+${caseFactsQuery.slice(0, 3000)}`;
+
+    const result = await generateContent({
+      contents: 'Research and list the applicable law and any confirmed precedents, exactly as instructed.',
+      systemInstruction,
+      jsonMode: false,
+      maxTokens: 2048,
+    });
+
+    return result.text || '';
+  } catch (error) {
+    logger.error('fetchLiveCaseLawContext: live search pass failed (continuing without it):', error.message || error);
+    return '';
+  }
+}
+
 // ============================================================
 // FIR ANALYSIS
 // ============================================================
@@ -314,11 +369,21 @@ const FIR_ANALYSIS_SCHEMA_HINT = `Respond with ONLY a JSON object with exactly t
   "defence_suggestions": string[],
   "weak_points": string[],
   "strong_points": string[],
+  "legal_references": string[],
   "summary": string
-}`;
+}
+Where "legal_references" is a list of the specific statutory provisions and/or confirmed case citations you relied on (e.g. "Section 497 CrPC — bail in non-bailable offences", "PLD 2019 SC 1 — <one-line holding>"). Leave it as an empty array if none can be confidently cited.`;
 
 async function analyzeFIR(firText) {
-  const systemInstruction = `You are analyzing a First Information Report (FIR) registered under Pakistani criminal procedure. Read it like a defence advocate preparing for a bail hearing: identify every section invoked, whether the offence(s) are bailable or non-bailable under CrPC/relevant special law, and concrete weaknesses in the prosecution's case (delay in FIR, contradictions, absence of independent witnesses, mala fide, etc.) that a bail application could rely on.\n\n${FIR_ANALYSIS_SCHEMA_HINT}\n\nFIR TEXT:\n${firText}`;
+  const liveCaseLaw = await fetchLiveCaseLawContext(
+    firText,
+    'You are reviewing an FIR to determine bailability and to find precedents useful for a bail application.'
+  );
+  const liveCaseLawBlock = liveCaseLaw
+    ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
+    : '';
+
+  const systemInstruction = `You are analyzing a First Information Report (FIR) registered under Pakistani criminal procedure. Read it like a defence advocate preparing for a bail hearing: identify every section invoked, whether the offence(s) are bailable or non-bailable under CrPC/relevant special law, and concrete weaknesses in the prosecution's case (delay in FIR, contradictions, absence of independent witnesses, mala fide, etc.) that a bail application could rely on.${liveCaseLawBlock}\n\n${FIR_ANALYSIS_SCHEMA_HINT}\n\nFIR TEXT:\n${firText}`;
 
   const result = await generateContent({
     contents: 'Analyze this FIR as instructed and return the JSON.',
@@ -357,7 +422,15 @@ async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', add
 // ============================================================
 
 async function analyzeLegalNotice(noticeText) {
-  const systemInstruction = `You are analyzing a legal notice sent under Pakistani law. Identify what is being demanded, the legal basis claimed, and how the recipient could defend against or respond to it.\n\nRespond with ONLY a JSON object with exactly these keys:\n{\n  "notice_type": string,\n  "sender_name": string|null,\n  "recipient_name": string|null,\n  "demands": string[],\n  "legal_issues": string[],\n  "summary": string,\n  "defence_strategy": string\n}\n\nNOTICE TEXT:\n${noticeText}`;
+  const liveCaseLaw = await fetchLiveCaseLawContext(
+    noticeText,
+    'You are reviewing a legal notice to identify the exact legal basis for its demands and how the recipient could lawfully respond or defend against it.'
+  );
+  const liveCaseLawBlock = liveCaseLaw
+    ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
+    : '';
+
+  const systemInstruction = `You are analyzing a legal notice sent under Pakistani law. Identify what is being demanded, the legal basis claimed, and how the recipient could defend against or respond to it.${liveCaseLawBlock}\n\nRespond with ONLY a JSON object with exactly these keys:\n{\n  "notice_type": string,\n  "sender_name": string|null,\n  "recipient_name": string|null,\n  "demands": string[],\n  "legal_issues": string[],\n  "legal_references": string[],\n  "summary": string,\n  "defence_strategy": string\n}\nWhere "legal_references" lists the specific statutory provisions and/or confirmed case citations relied on. Leave it empty if none can be confidently cited.\n\nNOTICE TEXT:\n${noticeText}`;
 
   const result = await generateContent({
     contents: 'Analyze this legal notice as instructed and return the JSON.',
@@ -394,10 +467,18 @@ async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
 // ============================================================
 
 async function analyzeJudgment(judgmentText) {
+  const liveCaseLaw = await fetchLiveCaseLawContext(
+    judgmentText,
+    'You are reviewing a court judgment/decree to check whether its reasoning is consistent with the applicable statute(s) and with binding/persuasive Supreme Court or High Court precedent, and to find grounds for appeal if any.'
+  );
+  const liveCaseLawBlock = liveCaseLaw
+    ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
+    : '';
+
   const systemInstruction = `You are analyzing a Pakistani court judgment/decree the way a senior advocate would before deciding whether to appeal — and critically, you must ALSO assess whether the decree itself is legally sound, i.e. whether its reasoning and outcome are consistent with the applicable statute(s) and with binding/persuasive precedent (Supreme Court and High Court judgments), using the local-library and live-search material available to you.
 
 Ground this consistency check in specific authority — name the statute provision or the case (with citation) that the decree agrees with or departs from. Do NOT declare a decree "wrong" based on general impression; only flag a conflict or legal error where you can point to a specific provision or a specific precedent it appears to contradict, and say so with appropriate hedging (e.g. "appears inconsistent with X unless the facts are distinguishable on Y") rather than false certainty. If you don't have enough retrieved authority to judge consistency on a particular point, say that plainly instead of guessing.
-
+${liveCaseLawBlock}
 Respond with ONLY a JSON object with exactly these keys:
 {
   "court_name": string|null,
@@ -414,8 +495,10 @@ Respond with ONLY a JSON object with exactly these keys:
     "reasoning": string
   },
   "appeal_grounds": string,
+  "legal_references": string[],
   "summary": string
 }
+Where "legal_references" lists the specific statutory provisions and/or confirmed case citations used in the consistency assessment. Leave it empty if none can be confidently cited.
 
 JUDGMENT TEXT:
 ${judgmentText}`;
@@ -436,7 +519,15 @@ ${judgmentText}`;
 // ============================================================
 
 async function analyzePlaint(plaintText) {
-  const systemInstruction = `You are analyzing a civil plaint filed in a Pakistani court, from the perspective of an advocate assessing it either to advise the plaintiff or to prepare a defence/written statement for the opposing side.\n\nRespond with ONLY a JSON object with exactly these keys:\n{\n  "plaint_type": string|null,\n  "plaintiff": string|null,\n  "defendant": string|null,\n  "cause_of_action": string,\n  "relief_sought": string,\n  "legal_issues": string[],\n  "weak_points": string[],\n  "strong_points": string[],\n  "summary": string\n}\n\nPLAINT TEXT:\n${plaintText}`;
+  const liveCaseLaw = await fetchLiveCaseLawContext(
+    plaintText,
+    'You are reviewing a civil plaint/petition/contract to identify the applicable law and any confirmed precedent useful for advising the plaintiff or preparing a defence.'
+  );
+  const liveCaseLawBlock = liveCaseLaw
+    ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
+    : '';
+
+  const systemInstruction = `You are analyzing a civil plaint, petition, or contract filed in/relevant to a Pakistani court, from the perspective of an advocate assessing it either to advise the plaintiff or to prepare a defence/written statement for the opposing side.${liveCaseLawBlock}\n\nRespond with ONLY a JSON object with exactly these keys:\n{\n  "case_type": string|null,\n  "court_name": string|null,\n  "plaintiff": string|null,\n  "defendant": string|null,\n  "cause_of_action": string,\n  "claims": string[],\n  "relief_sought": string[],\n  "evidence_required": string[],\n  "preliminary_objections": string[],\n  "recommended_response": string,\n  "legal_references": string[],\n  "summary": string\n}\nWhere: "claims" are the factual/legal assertions made by the plaintiff; "preliminary_objections" are procedural/legal objections (limitation, jurisdiction, maintainability, misjoinder, cause of action defects, etc.) that could be raised against the plaint before going into merits; "recommended_response" is a short strategic recommendation for how to proceed (whether advising the plaintiff or defending); "legal_references" lists the specific statutory provisions and/or confirmed case citations relied on (leave empty if none can be confidently cited).\n\nDOCUMENT TEXT:\n${plaintText}`;
 
   const result = await generateContent({
     contents: 'Analyze this plaint as instructed and return the JSON.',

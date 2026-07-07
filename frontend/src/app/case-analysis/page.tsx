@@ -6,6 +6,7 @@ import DashboardShell from '@/components/layout/DashboardShell';
 import { Card, CardContent, CardHeader, Badge, Textarea } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
+import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import api from '@/lib/api';
 import { FileSearch, Loader2, Scale } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -58,7 +59,12 @@ function CaseAnalysisContent() {
           <Card>
             <CardHeader><h2 className="font-semibold text-navy-900 dark:text-white">Document Text</h2></CardHeader>
             <CardContent>
-              <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the plaint, written statement, or objection text here..." rows={18} className="font-mono text-xs" />
+              <InlineDocumentUpload
+                documentType="plaint"
+                label="Upload the plaint, petition, contract, or any case document (PDF, scanned photo, or Word file)"
+                onExtracted={(t) => setText(t)}
+              />
+              <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the plaint, written statement, or objection text here, or upload a document above..." rows={18} className="font-mono text-xs" />
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze Document
               </Button>
@@ -119,6 +125,26 @@ function CaseAnalysisContent() {
                   <CardHeader><h3 className="font-semibold text-navy-900 dark:text-white">Recommended Response</h3></CardHeader>
                   <CardContent><p className="text-sm text-slate-600 dark:text-slate-400">{analysis.recommended_response}</p></CardContent>
                 </Card>
+
+                {analysis.legal_references?.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
+                        <Scale className="w-4 h-4" /> Legal References
+                      </h3>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-1.5">
+                        {analysis.legal_references.map((ref: string, i: number) => (
+                          <li key={i} className="text-sm text-slate-600 dark:text-slate-400 flex gap-2">
+                            <span className="text-primary-500">§</span> {ref}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-slate-400 mt-3">Always verify citations with a qualified advocate before relying on them in court.</p>
+                    </CardContent>
+                  </Card>
+                )}
               </>
             )}
 

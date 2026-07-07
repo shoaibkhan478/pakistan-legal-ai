@@ -6,6 +6,7 @@ import DashboardShell from '@/components/layout/DashboardShell';
 import { Card, CardContent, CardHeader, Badge, Textarea } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
+import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import api from '@/lib/api';
 import { Gavel, Loader2, Scale } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -56,7 +57,12 @@ function JudgmentAnalysisContent() {
           <Card>
             <CardHeader><h2 className="font-semibold text-navy-900 dark:text-white">Judgment Text</h2></CardHeader>
             <CardContent>
-              <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the court judgment text here..." rows={18} className="font-mono text-xs" />
+              <InlineDocumentUpload
+                documentType="judgment"
+                label="Upload the court judgment/order (PDF, scanned photo, or Word file)"
+                onExtracted={(t) => setText(t)}
+              />
+              <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the court judgment text here, or upload a document above..." rows={18} className="font-mono text-xs" />
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze Judgment
               </Button>
@@ -113,6 +119,51 @@ function JudgmentAnalysisContent() {
                     ))}</ul>
                   </CardContent>
                 </Card>
+
+                {analysis.consistency_assessment && (
+                  <Card className="border-amber-300 dark:border-amber-800">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <h3 className="font-semibold text-navy-900 dark:text-white">Consistency With Settled Law</h3>
+                      <Badge variant={
+                        analysis.consistency_assessment.is_consistent_with_settled_law === 'consistent' ? 'success'
+                        : analysis.consistency_assessment.is_consistent_with_settled_law === 'inconsistent' ? 'danger'
+                        : 'warning'
+                      }>
+                        {analysis.consistency_assessment.is_consistent_with_settled_law?.replace(/_/g, ' ')}
+                      </Badge>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{analysis.consistency_assessment.reasoning}</p>
+                      {analysis.consistency_assessment.conflicts_or_errors?.length > 0 && (
+                        <ul className="space-y-1 mt-2">
+                          {analysis.consistency_assessment.conflicts_or_errors.map((c: string, i: number) => (
+                            <li key={i} className="text-sm text-amber-700 dark:text-amber-400 flex gap-2"><span>⚠</span> {c}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {analysis.legal_references?.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
+                        <Scale className="w-4 h-4" /> Legal References
+                      </h3>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-1.5">
+                        {analysis.legal_references.map((ref: string, i: number) => (
+                          <li key={i} className="text-sm text-slate-600 dark:text-slate-400 flex gap-2">
+                            <span className="text-primary-500">§</span> {ref}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-slate-400 mt-3">Always verify citations with a qualified advocate before relying on them in court.</p>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {analysis.precedents_cited?.length > 0 && (
                   <Card>

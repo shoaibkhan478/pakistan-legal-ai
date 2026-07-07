@@ -1,0 +1,11 @@
+Constitution of the Islamic Republic of Pakistan, 1973 — Article 9: Security of Person
+
+Article 9 guarantees that no person shall be deprived of life or liberty except in accordance with law. This is one of the foundational fundamental rights under Chapter 1 (Fundamental Rights) of Part II of the Constitution.
+
+Summary of legal effect:
+- Any deprivation of life or personal liberty by the State (arrest, detention, imprisonment) must be authorized by a validly enacted law, and must follow the procedure laid down in that law.
+- Executive or police action that deprives a person of liberty without lawful authority, or in violation of the prescribed procedure, is unconstitutional and can be challenged through a writ petition under Article 199 before the High Court, or under Article 184(3) before the Supreme Court in matters of public importance involving enforcement of fundamental rights.
+- Article 9 is frequently invoked together with Article 10 (safeguards as to arrest and detention) and Article 10-A (right to fair trial) in bail matters, habeas corpus petitions, and challenges to preventive detention.
+- Courts have consistently held that "law" for purposes of Article 9 must be a valid law that is not itself arbitrary, unreasonable, or excessive — arbitrary executive action cannot be dressed up as compliance with Article 9.
+
+Practical relevance: Article 9 is commonly cited in bail applications, habeas corpus petitions challenging illegal detention, and constitutional petitions against arbitrary arrest or continued detention without trial.

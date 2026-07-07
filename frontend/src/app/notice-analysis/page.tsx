@@ -6,6 +6,7 @@ import DashboardShell from '@/components/layout/DashboardShell';
 import { Card, CardContent, CardHeader, Badge, Textarea } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
+import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import api from '@/lib/api';
 import { FileText, Loader2, Scale, FileSignature, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -76,10 +77,15 @@ function NoticeAnalysisContent() {
           <Card>
             <CardHeader><h2 className="font-semibold text-navy-900 dark:text-white">Notice Text</h2></CardHeader>
             <CardContent>
+              <InlineDocumentUpload
+                documentType="notice"
+                label="Upload the legal notice (PDF, scanned photo, or Word file)"
+                onExtracted={(text) => setNoticeText(text)}
+              />
               <Textarea
                 value={noticeText}
                 onChange={(e) => setNoticeText(e.target.value)}
-                placeholder="Paste the legal notice text here..."
+                placeholder="Paste the legal notice text here, or upload a document above..."
                 rows={16}
                 className="font-mono text-xs"
               />
@@ -132,6 +138,26 @@ function NoticeAnalysisContent() {
                   <CardHeader><h3 className="font-semibold text-navy-900 dark:text-white">Defence Strategy</h3></CardHeader>
                   <CardContent><p className="text-sm text-slate-600 dark:text-slate-400">{analysis.defence_strategy}</p></CardContent>
                 </Card>
+
+                {analysis.legal_references?.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
+                        <Scale className="w-4 h-4" /> Legal References
+                      </h3>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-1.5">
+                        {analysis.legal_references.map((ref: string, i: number) => (
+                          <li key={i} className="text-sm text-slate-600 dark:text-slate-400 flex gap-2">
+                            <span className="text-primary-500">§</span> {ref}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-slate-400 mt-3">Always verify citations with a qualified advocate before relying on them in court.</p>
+                    </CardContent>
+                  </Card>
+                )}
 
                 <Button onClick={handleGenerateReply} isLoading={isGeneratingReply} className="w-full">
                   <FileSignature className="w-4 h-4" /> Generate Reply Notice

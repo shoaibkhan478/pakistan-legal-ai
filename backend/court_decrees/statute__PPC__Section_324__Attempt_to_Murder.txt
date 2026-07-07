@@ -1,0 +1,10 @@
+Pakistan Penal Code, 1860 — Section 324: Attempt to Commit Qatl-e-Amd (Attempt to Murder)
+
+Section 324 PPC criminalizes an act done with the intention or knowledge, and under such circumstances, that if death were caused, the offender would be guilty of qatl-e-amd (Section 302). Punishment prescribed is imprisonment for life, or imprisonment of either description for a term which may extend to ten years, and shall also be liable to a fine; and if hurt is caused to any person by such act, the offender shall also be liable to the punishment provided for the hurt caused.
+
+Key points:
+- The prosecution must establish intention or knowledge equivalent to that required for qatl-e-amd — mere assault or grievous hurt without the requisite intent/knowledge does not attract Section 324; lesser hurt provisions (Sections 332–338 PPC) may apply instead.
+- Circumstantial factors commonly examined by courts: nature of the weapon used, part of the body targeted, number and severity of injuries, prior enmity/motive, and medico-legal evidence.
+- Section 324 PPC is non-bailable, cognizable, and triable by the Court of Sessions.
+
+Practical relevance: A frequently invoked section in FIRs involving firearm injuries or serious assault where the complainant alleges intent to kill; defence strategy often focuses on challenging the requisite intention/knowledge and the medico-legal evidence (nature/location of injury) to argue for a lesser offence.

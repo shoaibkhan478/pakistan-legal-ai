@@ -1,0 +1,11 @@
+Code of Criminal Procedure, 1898 — Section 154: Information in Cognizable Cases (Registration of FIR)
+
+Section 154 CrPC requires that every information relating to the commission of a cognizable offence, if given orally to an officer in charge of a police station, shall be reduced to writing by him or under his direction, read over to the informant, and signed by the person giving it; a copy must be given free of cost to the informant. The substance of the information is entered in a book (the "FIR register") in the form prescribed.
+
+Key points frequently litigated:
+- Registration of FIR on receipt of information disclosing a cognizable offence is mandatory — the police officer has no discretion to refuse registration or to conduct a "preliminary inquiry" before registering, once the information discloses commission of a cognizable offence (subject to narrow exceptions recognized by superior courts for certain categories, e.g. matrimonial/financial disputes with a civil colour, where a preliminary inquiry may be permissible before registration).
+- Refusal to register an FIR can be challenged before the relevant Sessions Court/Justice of Peace under Section 22-A/22-B CrPC, or through a constitutional petition.
+- Delay in lodging the FIR (the gap between the alleged occurrence and the recording of the FIR) is a classic point of scrutiny in criminal trials and bail applications — an unexplained or inordinate delay can suggest deliberation, false implication, or embellishment, and is frequently raised as a "weak point" for the defence.
+- The FIR is not substantive evidence of the facts stated in it; it can, however, be used to corroborate or contradict the maker of the FIR under the Qanun-e-Shahadat Order, 1984.
+
+Practical relevance: The starting point of every criminal case; central to FIR analysis for identifying registration delay, compliance with mandatory registration, and consistency between the FIR version and later statements/evidence.

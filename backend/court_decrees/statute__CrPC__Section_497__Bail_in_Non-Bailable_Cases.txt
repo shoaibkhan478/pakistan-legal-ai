@@ -1,0 +1,11 @@
+Code of Criminal Procedure, 1898 — Section 497: Bail in Non-Bailable Cases (Post-Arrest Bail)
+
+Section 497 CrPC governs the grant of bail to a person accused of, or suspected of the commission of, a non-bailable offence, when such person is arrested or detained without warrant, or appears/is brought before a court.
+
+Key points:
+- As a general rule, bail may be granted in non-bailable offences EXCEPT where there appear reasonable grounds for believing that the accused has been guilty of an offence punishable with death, imprisonment for life, or imprisonment for ten years (the so-called "prohibitory clause") — in such cases bail is the exception, not the rule, and is granted only where the case involves further inquiry into the accused's guilt (i.e., the evidence is not clear-cut, there are material contradictions, inordinate delay in FIR, false implication, or similar mitigating circumstances requiring "further inquiry" under the proviso to Section 497(1)).
+- Special considerations for granting bail even in prohibitory-clause cases include: the age, sex, or infirmity of the accused (courts have historically extended more liberal treatment to women and minors under the proviso), inordinate delay in trial (the accused's statutory/constitutional right to a speedy trial), and glaring inconsistencies or mala fide apparent on the face of the record.
+- Section 497(5) allows the same court to cancel bail already granted, and Section 497(3)/(4)/(5) deal with conditions and cancellation.
+- Section 497 applications are heard by the Court of Sessions (and, where that court has refused, before the High Court) — the accused must generally first approach the trial court/Sessions Court before invoking the High Court's bail jurisdiction, except in exceptional circumstances.
+
+Practical relevance: The core provision for post-arrest bail applications; central to every FIR analysis assessing "bail possibility" — non-bailable/prohibitory-clause offences (like Section 302, 324, 365 PPC) require identifying a specific ground for "further inquiry" to succeed in bail.

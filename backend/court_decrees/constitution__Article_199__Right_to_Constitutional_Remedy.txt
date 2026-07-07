@@ -1,0 +1,13 @@
+Constitution of the Islamic Republic of Pakistan, 1973 — Article 199: Jurisdiction of High Court (Constitutional/Writ Petitions)
+
+Article 199 empowers a High Court, on the application of an aggrieved party (or in some categories on the application of any person), to issue directions, orders, or writs — including writs in the nature of mandamus, prohibition, certiorari, quo warranto, and habeas corpus — against any person, including the Government, exercising powers in relation to the affairs of the Federation, a Province, or a local authority.
+
+Summary of legal effect:
+- Mandamus: directs a public functionary to perform a legal duty it has failed to perform.
+- Prohibition: restrains a subordinate court, tribunal, or authority from acting without or in excess of jurisdiction.
+- Certiorari: quashes an order/decision of a subordinate court, tribunal, or authority made without jurisdiction or in violation of law.
+- Quo warranto: questions the authority of a person to hold a public office.
+- Habeas corpus: directs a person to be brought before the court to determine whether their detention is lawful — central to challenging illegal arrest/detention.
+- A writ petition under Article 199 generally requires that the petitioner be an "aggrieved person" (except for quo warranto and, to an extent, habeas corpus) and that no adequate alternate remedy exists — although courts have entertained petitions despite an alternate remedy where there is a violation of fundamental rights, absence of jurisdiction, or gross illegality on the face of the record.
+
+Practical relevance: Article 199 is the primary vehicle for challenging government/administrative action, illegal detention, and orders of tribunals/authorities before a Provincial High Court, and is routinely invoked in bail-related habeas corpus matters, service matters, and challenges to executive action.

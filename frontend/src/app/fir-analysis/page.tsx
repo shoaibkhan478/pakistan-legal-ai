@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, Badge } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import { Textarea } from '@/components/ui';
 import Disclaimer from '@/components/legal/Disclaimer';
+import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import api from '@/lib/api';
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
@@ -94,10 +95,15 @@ function FIRAnalysisContent() {
               <h2 className="font-semibold text-navy-900 dark:text-white">FIR Text</h2>
             </CardHeader>
             <CardContent>
+              <InlineDocumentUpload
+                documentType="fir"
+                label="Upload the FIR (PDF, scanned photo, or Word file)"
+                onExtracted={(text) => setFirText(text)}
+              />
               <Textarea
                 value={firText}
                 onChange={(e) => setFirText(e.target.value)}
-                placeholder="Paste the FIR text here, or upload a document first..."
+                placeholder="Paste the FIR text here, or upload a document above..."
                 rows={16}
                 className="font-mono text-xs"
               />
@@ -208,6 +214,27 @@ function FIRAnalysisContent() {
                     </ul>
                   </CardContent>
                 </Card>
+
+                {/* Legal References */}
+                {analysis.legal_references?.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
+                        <Scale className="w-4 h-4" /> Legal References
+                      </h3>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-1.5">
+                        {analysis.legal_references.map((ref: string, i: number) => (
+                          <li key={i} className="text-sm text-slate-600 dark:text-slate-400 flex gap-2">
+                            <span className="text-primary-500">§</span> {ref}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-slate-400 mt-3">Always verify citations with a qualified advocate before relying on them in court.</p>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Generate bail buttons */}
                 <Card>

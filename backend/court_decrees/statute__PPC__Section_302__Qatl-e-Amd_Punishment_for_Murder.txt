@@ -1,0 +1,15 @@
+Pakistan Penal Code, 1860 — Section 302: Punishment of Qatl-e-Amd (Intentional Murder)
+
+Section 302 PPC prescribes the punishment for qatl-e-amd (intentional killing). Under the Qisas and Diyat framework (introduced via the Criminal Law (Amendment) Ordinance and later Acts incorporating Islamic penal provisions into the PPC), a person convicted of qatl-e-amd shall be punished with:
+(a) death as qisas (retribution), if the offence falls within the definition of qatl-e-amd and qisas is applicable and not waived/compounded by the legal heirs of the victim (wali); or
+(b) death or imprisonment for life as ta'zir, having regard to the facts and circumstances of the case, if qisas is not applicable — for example where qisas cannot be enforced due to lack of proof to the standard required for qisas, or the offence does not fall within the definition of qatl-e-amd liable to qisas, or the right of qisas has been waived or compounded.
+
+Key related provisions frequently read together with Section 302:
+- Section 300 PPC: defines qatl-e-amd.
+- Section 304 PPC: qatl-e-amd not liable to qisas (ta'zir only) in specified circumstances.
+- Section 305–309 PPC: waiver (afw) and compounding (sulh) of qisas by the wali (legal heirs), and the effect on sentencing.
+- Section 311 PPC: allows the court to impose ta'zir punishment (up to death or life imprisonment, or a term extending to 25 years) even where qisas has been waived or compounded, having regard to the facts and circumstances, if the court considers it expedient in the interest of public policy — commonly invoked as "fasad-fil-arz" (mischief on earth).
+
+Bailability: An offence under Section 302 PPC is non-bailable, cognizable, and triable by the Court of Sessions.
+
+Practical relevance: Central provision in murder trials; heavily relevant to FIR analysis for bail assessment (non-bailable), and to compromise/compounding applications between the accused and the legal heirs of the deceased.
