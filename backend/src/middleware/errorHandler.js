@@ -51,6 +51,19 @@ function errorHandler(err, req, res, next) {
     return res.status(401).json({ success: false, message: 'Token expired.' });
   }
 
+  // Gemini API rate-limit / free-tier quota errors — surface a clear,
+  // actionable message instead of Google's raw technical error text.
+  // (err.status is set on errors thrown from ai.service.js's generateContent.)
+  if (err.status === 429 || /quota|RESOURCE_EXHAUSTED|rate limit/i.test(err.message || '')) {
+    const retryMatch = (err.message || '').match(/retry in ([\d.]+)s/i);
+    const retrySeconds = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) : 60;
+    return res.status(429).json({
+      success: false,
+      message: `The AI service has reached its free-tier request limit for the moment. Please wait about ${retrySeconds} seconds and try again.`,
+      retryAfterSeconds: retrySeconds,
+    });
+  }
+
   const statusCode = err.statusCode || err.status || 500;
   res.status(statusCode).json({
     success: false,
