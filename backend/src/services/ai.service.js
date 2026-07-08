@@ -1,4 +1,4 @@
-/**
+ /**
  * AI Service - Google Gemini Integration (FREE TIER)
  * All AI-powered legal features, routed through Gemini's REST API via
  * native fetch (v1beta endpoint, which supports systemInstruction).
@@ -11,60 +11,6 @@
  * Get a FREE API key (no credit card needed) at:
  * https://aistudio.google.com/apikey
  */
-// ============================================
-// Smart Retry Wrapper for Gemini API calls
-// Reads Google's exact suggested wait time from error and retries accordingly
-// ============================================
-async function callGeminiWithRetry(fn, maxRetries = 2) {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (err) {
-      const status = err?.status || err?.response?.status;
-      const isRateLimited = status === 429;
-      const isOverloaded = status === 503;
-
-      if ((isRateLimited || isOverloaded) && attempt < maxRetries) {
-        // Try to extract Google's exact suggested wait time from error message
-        let waitMs = 3000; // fallback default (3 sec)
-        const rawMsg = err?.message || JSON.stringify(err?.details || {});
-
-        const match =
-          rawMsg.match(/retry in ([\d.]+)s/i) ||
-          rawMsg.match(/"retryDelay":"(\d+)s"/i);
-
-        if (match) {
-          waitMs = Math.ceil(parseFloat(match[1]) * 1000) + 500; // +500ms buffer
-        }
-
-        logger.warn(
-          `[Gemini] Status ${status} received. Waiting ${waitMs}ms before retry #${attempt + 1}/${maxRetries}...`
-        );
-
-        await new Promise((res) => setTimeout(res, waitMs));
-        continue; // retry the loop
-      }
-
-      // Not retryable (some other error), or retries exhausted — throw a clean error
-      if (isRateLimited) {
-        const rateLimitError = new Error(
-          "AI service is currently rate-limited. Please wait a minute and try again."
-        );
-        rateLimitError.status = 429;
-        throw rateLimitError;
-      }
-      if (isOverloaded) {
-        const overloadError = new Error(
-          "AI service is temporarily overloaded. Please try again in a moment."
-        );
-        overloadError.status = 503;
-        throw overloadError;
-      }
-      throw err; // some other unrelated error — pass through as-is
-    }
-  }
-}
-
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const logger = require('../utils/logger');
@@ -240,43 +186,34 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
 
     const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
 
-    const requestBody = JSON.stringify({
-      contents: geminiContents,
-      systemInstruction: { parts: [{ text: system }] },
-      // Grounds answers in live Google Search results instead of relying
-      // solely on the model's training data — important for legal
-      // accuracy (current sections, amendments, real case citations).
-      // Skipped in jsonMode since grounding + forced JSON output don't
-      // combine well in the API.
-      ...(jsonMode ? {} : { tools: [{ google_search: {} }] }),
-      generationConfig: {
-        maxOutputTokens: maxTokens,
-        ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
-      },
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        contents: geminiContents,
+        systemInstruction: { parts: [{ text: system }] },
+        // Grounds answers in live Google Search results instead of relying
+        // solely on the model's training data — important for legal
+        // accuracy (current sections, amendments, real case citations).
+        // Skipped in jsonMode since grounding + forced JSON output don't
+        // combine well in the API.
+        ...(jsonMode ? {} : { tools: [{ google_search: {} }] }),
+        generationConfig: {
+          maxOutputTokens: maxTokens,
+          ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
+        },
+      }),
     });
 
-    // Wrapped in callGeminiWithRetry: if Gemini returns 429 (rate-limited)
-    // or 503 (overloaded), this automatically waits the time Google
-    // suggests and retries, instead of failing immediately.
-    const data = await callGeminiWithRetry(async () => {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: requestBody,
-      });
+    const data = await res.json();
 
-      const json = await res.json();
-
-      if (!res.ok) {
-        const message = json?.error?.message || `Gemini API returned HTTP ${res.status}`;
-        const err = new Error(message);
-        err.status = res.status;
-        err.details = json;
-        throw err;
-      }
-
-      return json;
-    });
+    if (!res.ok) {
+      const message = data?.error?.message || `Gemini API returned HTTP ${res.status}`;
+      const err = new Error(message);
+      err.status = res.status;
+      err.details = data;
+      throw err;
+    }
 
     const candidate = data.candidates?.[0];
 
@@ -325,22 +262,7 @@ function parseJsonSafe(rawText) {
   try {
     return JSON.parse(cleanText);
   } catch (err) {
-    // Fallback: the response may have been cut off mid-string because it
-    // hit the maxOutputTokens limit before finishing the JSON object. Try
-    // to salvage a valid object by trimming back to the last complete
-    // top-level "}" and re-attempting the parse, instead of failing outright.
-    const lastBrace = cleanText.lastIndexOf('}');
-    if (lastBrace > -1) {
-      const salvaged = cleanText.slice(0, lastBrace + 1);
-      try {
-        const parsed = JSON.parse(salvaged);
-        logger.error('AI response was truncated but salvaged after trimming trailing incomplete content.');
-        return parsed;
-      } catch (err2) {
-        // fall through to the error below
-      }
-    }
-    logger.error('Failed to parse JSON from AI response:', err.message, '\nRaw text (first 500 chars):', cleanText.slice(0, 500));
+    logger.error('Failed to parse JSON from AI response:', err);
     throw new Error('AI response was not valid JSON.');
   }
 }
@@ -376,31 +298,41 @@ async function legalChat(chatMessages, context = '') {
 }
 
 /**
- * Legal research entry point used by research.routes.js.
- * Runs a grounded (local law library + live Google Search) research pass
- * on a free-form legal question and returns a full written answer with
- * citations, the same way the chat feature does, but framed explicitly as
- * a research task for a given jurisdiction.
- *
- * @param {string} researchQuery - the legal question / topic to research
- * @param {string} [jurisdiction] - defaults to 'Pakistan'
- * @returns {Promise<{content: string, tokens: object, model: string}>}
+ * Races a promise against a timeout, returning a fallback value instead of
+ * hanging/rejecting if the promise takes too long. Used to put a hard
+ * ceiling on the live-search pass below — Google Search grounding calls
+ * can occasionally take much longer than usual for no predictable reason,
+ * and without a cap that alone was enough to blow past Railway's request
+ * timeout and produce "Failed to get response" even with the toggle on.
  */
-async function legalResearch(researchQuery, jurisdiction = 'Pakistan') {
-  const systemInstruction = `You are conducting formal legal research for a practising advocate. Jurisdiction: ${jurisdiction}. Research the topic/question below thoroughly: identify the exact applicable statutory provisions, and any real, verifiable case law/precedent (with citation) that bears on it. Structure the answer as a proper legal research memo: (1) applicable law, (2) analysis/discussion, (3) relevant precedent (if any, with citation — never invent one), (4) practical conclusion.`;
+function withTimeout(promise, ms, fallbackValue) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        logger.warn(`withTimeout: operation exceeded ${ms}ms, using fallback.`);
+        resolve(fallbackValue);
+      }
+    }, ms);
 
-  const result = await generateContent({
-    contents: `Research the following and answer as instructed:\n\n${researchQuery}`,
-    systemInstruction,
-    groundingQuery: researchQuery,
-    maxTokens: 8192,
+    promise
+      .then((value) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          resolve(value);
+        }
+      })
+      .catch((error) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          logger.error('withTimeout: operation failed:', error.message || error);
+          resolve(fallbackValue);
+        }
+      });
   });
-
-  return {
-    content: result.text,
-    tokens: result.tokens,
-    model: MODEL,
-  };
 }
 
 /**
@@ -420,18 +352,21 @@ async function legalResearch(researchQuery, jurisdiction = 'Pakistan') {
  * authority instead of relying only on the model's memorized training data
  * or the (possibly still-empty) local law library.
  *
- * Fail-soft: never throws — if the search pass fails for any reason, the
- * calling function simply proceeds without this extra context.
+ * Fail-soft AND time-capped: never throws, and never runs longer than
+ * LIVE_SEARCH_TIMEOUT_MS — if the search pass fails OR is simply too slow,
+ * the calling function proceeds without this extra context rather than
+ * risking the whole request timing out.
  *
  * @param {string} caseFactsQuery - the FIR/notice/judgment/plaint text (or a summary of it)
  * @param {string} focusInstruction - one sentence telling the model what angle to research
- * @returns {Promise<string>} formatted bullet-point research findings with citations + source links, or '' on failure
+ * @returns {Promise<string>} formatted bullet-point research findings with citations + source links, or '' on failure/timeout
  */
+const LIVE_SEARCH_TIMEOUT_MS = 20000; // hard cap so this step can never run away
+
 async function fetchLiveCaseLawContext(caseFactsQuery, focusInstruction) {
   if (!caseFactsQuery || !caseFactsQuery.trim()) return '';
 
-  try {
-    const systemInstruction = `You are a Pakistani legal researcher doing preparatory research before a senior advocate writes a formal legal analysis. ${focusInstruction}
+  const systemInstruction = `You are a Pakistani legal researcher doing preparatory research before a senior advocate writes a formal legal analysis. ${focusInstruction}
 
 Use Google Search to find:
 1. The EXACT, currently-in-force statutory provisions (Constitution of Pakistan / PPC / CrPC / CPC / relevant special law) that apply to these facts, with precise section/article numbers.
@@ -444,18 +379,19 @@ Be concise: short bullet points only, no long essay.
 CASE FACTS:
 ${caseFactsQuery.slice(0, 3000)}`;
 
-    const result = await generateContent({
-      contents: 'Research and list the applicable law and any confirmed precedents, exactly as instructed.',
-      systemInstruction,
-      jsonMode: false,
-      maxTokens: 2048,
+  const searchPromise = generateContent({
+    contents: 'Research and list the applicable law and any confirmed precedents, exactly as instructed.',
+    systemInstruction,
+    jsonMode: false,
+    maxTokens: 1024, // kept small deliberately — this is meant to be a quick pass, not a full essay
+  })
+    .then((result) => result.text || '')
+    .catch((error) => {
+      logger.error('fetchLiveCaseLawContext: live search pass failed (continuing without it):', error.message || error);
+      return '';
     });
 
-    return result.text || '';
-  } catch (error) {
-    logger.error('fetchLiveCaseLawContext: live search pass failed (continuing without it):', error.message || error);
-    return '';
-  }
+  return withTimeout(searchPromise, LIVE_SEARCH_TIMEOUT_MS, '');
 }
 
 // ============================================================
@@ -480,11 +416,22 @@ const FIR_ANALYSIS_SCHEMA_HINT = `Respond with ONLY a JSON object with exactly t
 }
 Where "legal_references" is a list of the specific statutory provisions and/or confirmed case citations you relied on (e.g. "Section 497 CrPC — bail in non-bailable offences", "PLD 2019 SC 1 — <one-line holding>"). Leave it as an empty array if none can be confidently cited.`;
 
-async function analyzeFIR(firText) {
-  const liveCaseLaw = await fetchLiveCaseLawContext(
-    firText,
-    'You are reviewing an FIR to determine bailability and to find precedents useful for a bail application.'
-  );
+async function analyzeFIR(firText, includeLiveSearch = false) {
+  // NOTE: an earlier version of this function always made a blocking, extra
+  // Gemini call here to search the live web for case law before running
+  // the JSON analysis. That doubled the response time and started causing
+  // "Failed to get response" timeouts in production, so it's now opt-in
+  // (includeLiveSearch=true) rather than always-on. The local law library
+  // (Constitution/PPC/CrPC, seeded via ingestLegalDocs.js) is always
+  // consulted below via `groundingQuery` regardless — that's what usually
+  // populates "legal_references" in the response, at a fraction of the
+  // latency of a live web search.
+  const liveCaseLaw = includeLiveSearch
+    ? await fetchLiveCaseLawContext(
+        firText,
+        'You are reviewing an FIR to determine bailability and to find precedents useful for a bail application.'
+      )
+    : '';
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -496,7 +443,6 @@ async function analyzeFIR(firText) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: firText,
-    maxTokens: 8192,
   });
 
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
@@ -528,11 +474,13 @@ async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', add
 // LEGAL NOTICE ANALYSIS
 // ============================================================
 
-async function analyzeLegalNotice(noticeText) {
-  const liveCaseLaw = await fetchLiveCaseLawContext(
-    noticeText,
-    'You are reviewing a legal notice to identify the exact legal basis for its demands and how the recipient could lawfully respond or defend against it.'
-  );
+async function analyzeLegalNotice(noticeText, includeLiveSearch = false) {
+  const liveCaseLaw = includeLiveSearch
+    ? await fetchLiveCaseLawContext(
+        noticeText,
+        'You are reviewing a legal notice to identify the exact legal basis for its demands and how the recipient could lawfully respond or defend against it.'
+      )
+    : '';
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -544,7 +492,6 @@ async function analyzeLegalNotice(noticeText) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: noticeText,
-    maxTokens: 8192,
   });
 
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
@@ -574,11 +521,13 @@ async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
 // JUDGMENT ANALYSIS
 // ============================================================
 
-async function analyzeJudgment(judgmentText) {
-  const liveCaseLaw = await fetchLiveCaseLawContext(
-    judgmentText,
-    'You are reviewing a court judgment/decree to check whether its reasoning is consistent with the applicable statute(s) and with binding/persuasive Supreme Court or High Court precedent, and to find grounds for appeal if any.'
-  );
+async function analyzeJudgment(judgmentText, includeLiveSearch = false) {
+  const liveCaseLaw = includeLiveSearch
+    ? await fetchLiveCaseLawContext(
+        judgmentText,
+        'You are reviewing a court judgment/decree to check whether its reasoning is consistent with the applicable statute(s) and with binding/persuasive Supreme Court or High Court precedent, and to find grounds for appeal if any.'
+      )
+    : '';
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -626,11 +575,13 @@ ${judgmentText}`;
 // PLAINT ANALYSIS
 // ============================================================
 
-async function analyzePlaint(plaintText) {
-  const liveCaseLaw = await fetchLiveCaseLawContext(
-    plaintText,
-    'You are reviewing a civil plaint/petition/contract to identify the applicable law and any confirmed precedent useful for advising the plaintiff or preparing a defence.'
-  );
+async function analyzePlaint(plaintText, includeLiveSearch = false) {
+  const liveCaseLaw = includeLiveSearch
+    ? await fetchLiveCaseLawContext(
+        plaintText,
+        'You are reviewing a civil plaint/petition/contract to identify the applicable law and any confirmed precedent useful for advising the plaintiff or preparing a defence.'
+      )
+    : '';
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -642,76 +593,9 @@ async function analyzePlaint(plaintText) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: plaintText,
-    maxTokens: 8192,
   });
 
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
-}
-
-// ============================================================
-// STUDENT MODE (used by student.routes.js)
-// ============================================================
-
-async function generateMCQs(topic, subject, count = 10, difficulty = 'intermediate') {
-  const systemInstruction = `Generate ${count} multiple-choice questions for a law student studying "${subject}" in the Pakistani legal system, specifically on the topic "${topic}". Difficulty level: ${difficulty}. Each question must be legally accurate, test real understanding (not trivia), and reference the correct statutory provision where relevant.\n\nRespond with ONLY a JSON object with exactly this shape:\n{\n  "mcqs": [\n    {\n      "question": string,\n      "options": [string, string, string, string],\n      "correct_index": number,\n      "explanation": string\n    }\n  ]\n}\n"correct_index" is the 0-based index into "options" of the correct answer. "explanation" briefly states why, citing the relevant law where applicable.`;
-
-  const result = await generateContent({
-    contents: `Generate the ${count} MCQs now, as instructed.`,
-    systemInstruction,
-    jsonMode: true,
-    groundingQuery: `${topic} ${subject}`,
-    maxTokens: 8192,
-  });
-
-  const parsed = parseJsonSafe(result.text);
-  return { mcqs: parsed.mcqs || parsed, tokens: result.tokens };
-}
-
-async function generateVivaQuestions(topic, subject, count = 15) {
-  const systemInstruction = `Generate ${count} viva (oral exam) questions a law professor might ask a student on the topic "${topic}" within "${subject}", in the context of Pakistani law. Include a short model answer or key points expected for each, so the student can self-check.\n\nRespond with ONLY a JSON object with exactly this shape:\n{\n  "questions": [\n    { "question": string, "key_points": string[] }\n  ]\n}`;
-
-  const result = await generateContent({
-    contents: `Generate the ${count} viva questions now, as instructed.`,
-    systemInstruction,
-    jsonMode: true,
-    groundingQuery: `${topic} ${subject}`,
-    maxTokens: 8192,
-  });
-
-  const parsed = parseJsonSafe(result.text);
-  return { questions: parsed.questions || parsed, tokens: result.tokens };
-}
-
-async function generateNotes(topic, subject, language = 'english') {
-  const languageInstruction = {
-    english: 'Write in clear academic English.',
-    urdu: 'Write in formal academic Urdu (اردو رسم الخط).',
-    roman_urdu: 'Write in Roman Urdu.',
-  }[language] || 'Write in clear academic English.';
-
-  const systemInstruction = `Write comprehensive study notes for a law student on the topic "${topic}" within "${subject}", covering Pakistani law where relevant. Structure with clear Markdown headings, definitions, the applicable statutory provisions (with exact section/article numbers), leading case law where genuinely confirmed, and a short summary at the end. ${languageInstruction}`;
-
-  const result = await generateContent({
-    contents: `Write the study notes now, in full, as instructed.`,
-    systemInstruction,
-    groundingQuery: `${topic} ${subject}`,
-    maxTokens: 8192,
-  });
-
-  return { content: result.text, tokens: result.tokens };
-}
-
-async function generateCaseBrief(caseName, facts = '') {
-  const systemInstruction = `Prepare a formal case brief, in the standard format used in Pakistani law schools/courts (Case Name & Citation, Facts, Issues, Arguments, Holding/Decision, Ratio Decidendi, Significance), for the case named below. Only state the citation, holding, or outcome if you are genuinely confident it is accurate (use search to confirm); if you cannot confirm real details for this case, say so plainly rather than inventing them.\n\nCASE: ${caseName}\n${facts ? `\nADDITIONAL FACTS PROVIDED BY STUDENT:\n${facts}` : ''}`;
-
-  const result = await generateContent({
-    contents: 'Prepare the case brief now, in full, as instructed.',
-    systemInstruction,
-    groundingQuery: `${caseName} ${facts}`.slice(0, 2000),
-    maxTokens: 8192,
-  });
-
-  return { content: result.text, tokens: result.tokens };
 }
 
 // ============================================================
@@ -742,7 +626,6 @@ async function generateDraft(draftType, details = {}, language = 'english') {
 
 module.exports = {
   legalChat,
-  legalResearch,
   generateContent,
   parseJsonSafe,
   DISCLAIMER,
@@ -755,8 +638,4 @@ module.exports = {
   analyzeJudgment,
   analyzePlaint,
   generateDraft,
-  generateMCQs,
-  generateVivaQuestions,
-  generateNotes,
-  generateCaseBrief,
 };

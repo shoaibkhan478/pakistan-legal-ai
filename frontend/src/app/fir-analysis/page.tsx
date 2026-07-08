@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import { Textarea } from '@/components/ui';
 import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
+import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import api from '@/lib/api';
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
@@ -26,6 +27,7 @@ function FIRAnalysisContent() {
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [bailDraft, setBailDraft] = useState<string | null>(null);
   const [isGeneratingBail, setIsGeneratingBail] = useState<string | null>(null);
+  const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
 
   useEffect(() => {
     if (documentId) {
@@ -44,7 +46,7 @@ function FIRAnalysisContent() {
     setAnalysis(null);
     setBailDraft(null);
     try {
-      const { data } = await api.post('/analysis/fir', { text: firText, documentId });
+      const { data } = await api.post('/analysis/fir', { text: firText, documentId, includeLiveSearch });
       setAnalysis(data.data.raw);
       setAnalysisId(data.data.analysis.id);
       toast.success('FIR analysis complete!');
@@ -107,6 +109,9 @@ function FIRAnalysisContent() {
                 rows={16}
                 className="font-mono text-xs"
               />
+              <div className="mt-4">
+                <LiveSearchToggle checked={includeLiveSearch} onChange={setIncludeLiveSearch} />
+              </div>
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze FIR
               </Button>

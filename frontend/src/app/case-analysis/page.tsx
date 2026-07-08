@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, Badge, Textarea } from '@/components/ui'
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
+import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import api from '@/lib/api';
 import { FileSearch, Loader2, Scale } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -17,6 +18,7 @@ function CaseAnalysisContent() {
 
   const [text, setText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ function CaseAnalysisContent() {
     setIsAnalyzing(true);
     setAnalysis(null);
     try {
-      const { data } = await api.post('/analysis/plaint', { text, documentId });
+      const { data } = await api.post('/analysis/plaint', { text, documentId, includeLiveSearch });
       setAnalysis(data.data.analysis);
       toast.success('Analysis complete!');
     } catch (err: any) {
@@ -65,6 +67,9 @@ function CaseAnalysisContent() {
                 onExtracted={(t) => setText(t)}
               />
               <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the plaint, written statement, or objection text here, or upload a document above..." rows={18} className="font-mono text-xs" />
+              <div className="mt-4">
+                <LiveSearchToggle checked={includeLiveSearch} onChange={setIncludeLiveSearch} />
+              </div>
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze Document
               </Button>

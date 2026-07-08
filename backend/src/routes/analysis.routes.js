@@ -21,7 +21,7 @@ const {
 // POST /api/v1/analysis/fir
 router.post('/fir', authenticate, aiLimiter, async (req, res, next) => {
   try {
-    const { documentId, text, caseId } = req.body;
+    const { documentId, text, caseId, includeLiveSearch } = req.body;
     let firText = text;
 
     if (documentId) {
@@ -37,7 +37,7 @@ router.post('/fir', authenticate, aiLimiter, async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'FIR text is required.' });
     }
 
-    const { analysis, tokens } = await analyzeFIR(firText);
+    const { analysis, tokens } = await analyzeFIR(firText, !!includeLiveSearch);
 
     // Save analysis
     const { rows: [saved] } = await query(
@@ -113,7 +113,7 @@ router.get('/fir', authenticate, async (req, res, next) => {
 // POST /api/v1/analysis/notice
 router.post('/notice', authenticate, aiLimiter, async (req, res, next) => {
   try {
-    const { documentId, text, caseId } = req.body;
+    const { documentId, text, caseId, includeLiveSearch } = req.body;
     let noticeText = text;
 
     if (documentId) {
@@ -128,7 +128,7 @@ router.post('/notice', authenticate, aiLimiter, async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Notice text is required.' });
     }
 
-    const { analysis, tokens } = await analyzeLegalNotice(noticeText);
+    const { analysis, tokens } = await analyzeLegalNotice(noticeText, !!includeLiveSearch);
 
     const { rows: [saved] } = await query(
       `INSERT INTO notice_analyses 
@@ -178,7 +178,7 @@ router.post('/notice/:analysisId/reply', authenticate, aiLimiter, async (req, re
 // POST /api/v1/analysis/judgment
 router.post('/judgment', authenticate, aiLimiter, async (req, res, next) => {
   try {
-    const { documentId, text, caseId } = req.body;
+    const { documentId, text, caseId, includeLiveSearch } = req.body;
     let judgmentText = text;
 
     if (documentId) {
@@ -193,7 +193,7 @@ router.post('/judgment', authenticate, aiLimiter, async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Judgment text is required.' });
     }
 
-    const { analysis, tokens } = await analyzeJudgment(judgmentText);
+    const { analysis, tokens } = await analyzeJudgment(judgmentText, !!includeLiveSearch);
 
     const { rows: [saved] } = await query(
       `INSERT INTO judgment_analyses 
@@ -217,7 +217,7 @@ router.post('/judgment', authenticate, aiLimiter, async (req, res, next) => {
 // POST /api/v1/analysis/plaint
 router.post('/plaint', authenticate, aiLimiter, async (req, res, next) => {
   try {
-    const { documentId, text, caseId } = req.body;
+    const { documentId, text, caseId, includeLiveSearch } = req.body;
     let plaintText = text;
 
     if (documentId) {
@@ -232,7 +232,7 @@ router.post('/plaint', authenticate, aiLimiter, async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Plaint text is required.' });
     }
 
-    const { analysis, tokens } = await analyzePlaint(plaintText);
+    const { analysis, tokens } = await analyzePlaint(plaintText, !!includeLiveSearch);
     res.json({ success: true, data: { analysis } });
   } catch (error) {
     next(error);

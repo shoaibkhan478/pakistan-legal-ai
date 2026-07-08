@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, Badge, Textarea } from '@/components/ui'
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
+import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import api from '@/lib/api';
 import { FileText, Loader2, Scale, FileSignature, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -18,6 +19,7 @@ function NoticeAnalysisContent() {
 
   const [noticeText, setNoticeText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [reply, setReply] = useState<string | null>(null);
@@ -35,7 +37,7 @@ function NoticeAnalysisContent() {
     setAnalysis(null);
     setReply(null);
     try {
-      const { data } = await api.post('/analysis/notice', { text: noticeText, documentId });
+      const { data } = await api.post('/analysis/notice', { text: noticeText, documentId, includeLiveSearch });
       setAnalysis(data.data.raw);
       setAnalysisId(data.data.analysis.id);
       toast.success('Notice analysis complete!');
@@ -89,6 +91,9 @@ function NoticeAnalysisContent() {
                 rows={16}
                 className="font-mono text-xs"
               />
+              <div className="mt-4">
+                <LiveSearchToggle checked={includeLiveSearch} onChange={setIncludeLiveSearch} />
+              </div>
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze Notice
               </Button>
