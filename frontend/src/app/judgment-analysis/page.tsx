@@ -104,7 +104,7 @@ function JudgmentAnalysisContent() {
                 <Card>
                   <CardHeader><h3 className="font-semibold text-navy-900 dark:text-white">Issues</h3></CardHeader>
                   <CardContent>
-                    <ul className="space-y-1">{analysis.issues?.map((i: string, idx: number) => <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">• {i}</li>)}</ul>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{analysis.issues}</p>
                   </CardContent>
                 </Card>
 
@@ -119,9 +119,7 @@ function JudgmentAnalysisContent() {
                 <Card className="border-primary-300 dark:border-primary-800">
                   <CardHeader><h3 className="font-semibold text-primary-700 dark:text-primary-400">Suggested Appeal Grounds</h3></CardHeader>
                   <CardContent>
-                    <ul className="space-y-2">{analysis.appeal_grounds?.map((g: string, idx: number) => (
-                      <li key={idx} className="text-sm text-slate-600 dark:text-slate-400 flex gap-2"><span className="text-primary-500 font-bold">{idx + 1}.</span> {g}</li>
-                    ))}</ul>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{analysis.appeal_grounds}</p>
                   </CardContent>
                 </Card>
 
