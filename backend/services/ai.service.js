@@ -363,8 +363,18 @@ function withTimeout(promise, ms, fallbackValue) {
  */
 const LIVE_SEARCH_TIMEOUT_MS = 20000; // hard cap so this step can never run away
 
+async function runLiveSearchOnce(systemInstruction) {
+  const result = await generateContent({
+    contents: 'Research and list the applicable law and any confirmed precedents, exactly as instructed.',
+    systemInstruction,
+    jsonMode: false,
+    maxTokens: 1024, // kept small deliberately — this is meant to be a quick pass, not a full essay
+  });
+  return result.text || '';
+}
+
 async function fetchLiveCaseLawContext(caseFactsQuery, focusInstruction) {
-  if (!caseFactsQuery || !caseFactsQuery.trim()) return '';
+  if (!caseFactsQuery || !caseFactsQuery.trim()) return { text: '', status: 'skipped' };
 
   const systemInstruction = `You are a Pakistani legal researcher doing preparatory research before a senior advocate writes a formal legal analysis. ${focusInstruction}
 
@@ -379,28 +389,85 @@ Be concise: short bullet points only, no long essay.
 CASE FACTS:
 ${caseFactsQuery.slice(0, 3000)}`;
 
-  const searchPromise = generateContent({
-    contents: 'Research and list the applicable law and any confirmed precedents, exactly as instructed.',
-    systemInstruction,
-    jsonMode: false,
-    maxTokens: 1024, // kept small deliberately — this is meant to be a quick pass, not a full essay
-  })
-    .then((result) => result.text || '')
-    .catch((error) => {
-      logger.error('fetchLiveCaseLawContext: live search pass failed (continuing without it):', error.message || error);
-      return '';
-    });
+  // Wrap the (possibly retried) search attempt(s) in the timeout race.
+  const attemptWithRetry = async () => {
+    try {
+      const text = await runLiveSearchOnce(systemInstruction);
+      return { text, status: 'success' };
+    } catch (error) {
+      const msg = String(error.message || error);
+      const isQuotaError = /429|quota|rate limit/i.test(msg);
+      if (isQuotaError) {
+        logger.warn('fetchLiveCaseLawContext: quota/rate-limit hit, not retrying:', msg);
+        return { text: '', status: 'quota_exceeded' };
+      }
+      // Transient (network/5xx) error — worth one quick retry before giving up.
+      logger.warn('fetchLiveCaseLawContext: first attempt failed, retrying once:', msg);
+      try {
+        const text = await runLiveSearchOnce(systemInstruction);
+        return { text, status: 'success' };
+      } catch (retryError) {
+        logger.error('fetchLiveCaseLawContext: retry also failed:', retryError.message || retryError);
+        return { text: '', status: 'error' };
+      }
+    }
+  };
 
-  return withTimeout(searchPromise, LIVE_SEARCH_TIMEOUT_MS, '');
+  const timeoutFallback = { text: '', status: 'timeout' };
+  return withTimeout(attemptWithRetry(), LIVE_SEARCH_TIMEOUT_MS, timeoutFallback);
+}
+
+// ============================================================
+// SENIOR REVIEW PASS — a second AI call that critiques and refines the
+// first draft, the way a senior advocate would check a junior's work
+// before it goes out. Adds: (1) corrections to anything unsupported by
+// the source text, (2) a confidence_assessment, (3) a short list of what
+// it changed/flagged — so the user can see the review actually happened
+// rather than just trusting a black box.
+// ============================================================
+async function seniorReviewPass(draftAnalysisJson, sourceText, schemaHint) {
+  const draftJson = typeof draftAnalysisJson === 'string' ? draftAnalysisJson : JSON.stringify(draftAnalysisJson, null, 2);
+
+  const systemInstruction = `You are a SENIOR supervising advocate in Pakistan reviewing a junior associate's draft legal analysis before it is shown to a client. Be skeptical and precise — your job is quality control, not to just rubber-stamp the draft.
+
+Check the draft against the ORIGINAL SOURCE TEXT below and:
+1. Remove or soften any claim, citation, or section number in the draft that is NOT actually supported by the source text or well-established law — if the junior invented or guessed something, fix it.
+2. Add any obviously important point the junior missed, if — and only if — it is clearly supported by the source text.
+3. Tone down any language that overstates certainty ("will definitely get bail" → "has a reasonable prospect of bail, subject to court's discretion").
+4. Do NOT invent new facts, sections, or case citations that aren't already grounded in the draft or source text — your job is to correct/tighten, not to add speculation.
+
+Return a JSON object with EXACTLY these keys:
+{
+  ${schemaHint}
+  "confidence_assessment": {
+    "overall": "high" | "medium" | "low",
+    "caveats": string[]
+  },
+  "review_notes": string[]
+}
+Where "confidence_assessment.overall" reflects how well-grounded this analysis is in confirmed law/facts (not how favourable it is to any party), "caveats" are specific things the reader should independently verify, and "review_notes" is a short list of what you corrected or flagged while reviewing (empty array if the draft needed no changes — say so honestly, do not invent changes just to seem thorough).
+
+ORIGINAL SOURCE TEXT:
+${sourceText.slice(0, 6000)}
+
+JUNIOR ASSOCIATE'S DRAFT ANALYSIS (JSON):
+${draftJson}`;
+
+  const result = await generateContent({
+    contents: 'Review the draft as instructed and return the corrected JSON.',
+    systemInstruction,
+    jsonMode: true,
+    maxTokens: 8192,
+  });
+
+  return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
 }
 
 // ============================================================
 // FIR ANALYSIS
 // ============================================================
 
-const FIR_ANALYSIS_SCHEMA_HINT = `Respond with ONLY a JSON object with exactly these keys:
-{
-  "fir_number": string|null,
+const FIR_SCHEMA_KEYS = `"fir_number": string|null,
   "police_station": string|null,
   "complainant_name": string|null,
   "accused_names": string[],
@@ -412,11 +479,15 @@ const FIR_ANALYSIS_SCHEMA_HINT = `Respond with ONLY a JSON object with exactly t
   "weak_points": string[],
   "strong_points": string[],
   "legal_references": string[],
-  "summary": string
+  "summary": string`;
+
+const FIR_ANALYSIS_SCHEMA_HINT = `Respond with ONLY a JSON object with exactly these keys:
+{
+  ${FIR_SCHEMA_KEYS}
 }
 Where "legal_references" is a list of the specific statutory provisions and/or confirmed case citations you relied on (e.g. "Section 497 CrPC — bail in non-bailable offences", "PLD 2019 SC 1 — <one-line holding>"). Leave it as an empty array if none can be confidently cited.`;
 
-async function analyzeFIR(firText, includeLiveSearch = false) {
+async function analyzeFIR(firText, includeLiveSearch = false, includeSeniorReview = true) {
   // NOTE: an earlier version of this function always made a blocking, extra
   // Gemini call here to search the live web for case law before running
   // the JSON analysis. That doubled the response time and started causing
@@ -426,27 +497,46 @@ async function analyzeFIR(firText, includeLiveSearch = false) {
   // consulted below via `groundingQuery` regardless — that's what usually
   // populates "legal_references" in the response, at a fraction of the
   // latency of a live web search.
-  const liveCaseLaw = includeLiveSearch
+  const liveSearchResult = includeLiveSearch
     ? await fetchLiveCaseLawContext(
         firText,
         'You are reviewing an FIR to determine bailability and to find precedents useful for a bail application.'
       )
-    : '';
+    : { text: '', status: 'disabled' };
+  const liveCaseLaw = liveSearchResult.text;
+  const liveSearchStatus = liveSearchResult.status;
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
 
   const systemInstruction = `You are analyzing a First Information Report (FIR) registered under Pakistani criminal procedure. Read it like a defence advocate preparing for a bail hearing: identify every section invoked, whether the offence(s) are bailable or non-bailable under CrPC/relevant special law, and concrete weaknesses in the prosecution's case (delay in FIR, contradictions, absence of independent witnesses, mala fide, etc.) that a bail application could rely on.${liveCaseLawBlock}\n\n${FIR_ANALYSIS_SCHEMA_HINT}\n\nFIR TEXT:\n${firText}`;
 
-  const result = await generateContent({
+  const draftResult = await generateContent({
     contents: 'Analyze this FIR as instructed and return the JSON.',
     systemInstruction,
     jsonMode: true,
     groundingQuery: firText,
-    maxTokens: 8192, // raised from the 4096 default — Urdu/long FIRs need more room so the JSON doesn't get cut off mid-response
+    maxTokens: 8192,
   });
 
-  return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
+  const draftAnalysis = parseJsonSafe(draftResult.text);
+  let totalTokens = draftResult.tokens;
+
+  if (!includeSeniorReview) {
+    return { analysis: draftAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
+  }
+
+  try {
+    const reviewResult = await seniorReviewPass(draftAnalysis, firText, FIR_SCHEMA_KEYS);
+    totalTokens += reviewResult.tokens || 0;
+    return { analysis: reviewResult.analysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: true };
+  } catch (error) {
+    // If the review pass itself fails (quota, timeout, bad JSON), fall back
+    // to the unreviewed draft rather than failing the whole request — a
+    // slightly less polished result beats no result.
+    logger.warn('analyzeFIR: senior review pass failed, returning unreviewed draft:', error.message || error);
+    return { analysis: draftAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
+  }
 }
 
 async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', additionalInfo = '') {
@@ -476,12 +566,14 @@ async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', add
 // ============================================================
 
 async function analyzeLegalNotice(noticeText, includeLiveSearch = false) {
-  const liveCaseLaw = includeLiveSearch
+  const liveSearchResult = includeLiveSearch
     ? await fetchLiveCaseLawContext(
         noticeText,
         'You are reviewing a legal notice to identify the exact legal basis for its demands and how the recipient could lawfully respond or defend against it.'
       )
-    : '';
+    : { text: '', status: 'disabled' };
+  const liveCaseLaw = liveSearchResult.text;
+  const liveSearchStatus = liveSearchResult.status;
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -493,10 +585,10 @@ async function analyzeLegalNotice(noticeText, includeLiveSearch = false) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: noticeText,
-    maxTokens: 8192, // raised from the 4096 default — long/Urdu notices need more room so the JSON doesn't get cut off mid-response
+    maxTokens: 8192,
   });
 
-  return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
+  return { analysis: parseJsonSafe(result.text), tokens: result.tokens, liveSearchStatus };
 }
 
 async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
@@ -524,12 +616,14 @@ async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
 // ============================================================
 
 async function analyzeJudgment(judgmentText, includeLiveSearch = false) {
-  const liveCaseLaw = includeLiveSearch
+  const liveSearchResult = includeLiveSearch
     ? await fetchLiveCaseLawContext(
         judgmentText,
         'You are reviewing a court judgment/decree to check whether its reasoning is consistent with the applicable statute(s) and with binding/persuasive Supreme Court or High Court precedent, and to find grounds for appeal if any.'
       )
-    : '';
+    : { text: '', status: 'disabled' };
+  const liveCaseLaw = liveSearchResult.text;
+  const liveSearchStatus = liveSearchResult.status;
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -570,7 +664,7 @@ ${judgmentText}`;
     maxTokens: 6144,
   });
 
-  return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
+  return { analysis: parseJsonSafe(result.text), tokens: result.tokens, liveSearchStatus };
 }
 
 // ============================================================
@@ -578,12 +672,14 @@ ${judgmentText}`;
 // ============================================================
 
 async function analyzePlaint(plaintText, includeLiveSearch = false) {
-  const liveCaseLaw = includeLiveSearch
+  const liveSearchResult = includeLiveSearch
     ? await fetchLiveCaseLawContext(
         plaintText,
         'You are reviewing a civil plaint/petition/contract to identify the applicable law and any confirmed precedent useful for advising the plaintiff or preparing a defence.'
       )
-    : '';
+    : { text: '', status: 'disabled' };
+  const liveCaseLaw = liveSearchResult.text;
+  const liveSearchStatus = liveSearchResult.status;
   const liveCaseLawBlock = liveCaseLaw
     ? `\n\nLIVE LEGAL RESEARCH (just retrieved via Google Search — cite these citations where relevant, but note to the reader that they should still be verified):\n${liveCaseLaw}\n`
     : '';
@@ -595,10 +691,10 @@ async function analyzePlaint(plaintText, includeLiveSearch = false) {
     systemInstruction,
     jsonMode: true,
     groundingQuery: plaintText,
-    maxTokens: 8192, // raised from the 4096 default — long/Urdu documents need more room so the JSON doesn't get cut off mid-response
+    maxTokens: 8192,
   });
 
-  return { analysis: parseJsonSafe(result.text), tokens: result.tokens };
+  return { analysis: parseJsonSafe(result.text), tokens: result.tokens, liveSearchStatus };
 }
 
 // ============================================================
