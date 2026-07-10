@@ -28,6 +28,8 @@ function FIRAnalysisContent() {
   const [bailDraft, setBailDraft] = useState<string | null>(null);
   const [isGeneratingBail, setIsGeneratingBail] = useState<string | null>(null);
   const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
+  const [liveSearchStatus, setLiveSearchStatus] = useState<string | null>(null);
+  const [seniorReviewed, setSeniorReviewed] = useState(false);
 
   useEffect(() => {
     if (documentId) {
@@ -45,10 +47,14 @@ function FIRAnalysisContent() {
     setIsAnalyzing(true);
     setAnalysis(null);
     setBailDraft(null);
+    setLiveSearchStatus(null);
+    setSeniorReviewed(false);
     try {
       const { data } = await api.post('/analysis/fir', { text: firText, documentId, includeLiveSearch });
       setAnalysis(data.data.raw);
       setAnalysisId(data.data.analysis.id);
+      setLiveSearchStatus(data.data.liveSearchStatus || null);
+      setSeniorReviewed(!!data.data.seniorReviewed);
       toast.success('FIR analysis complete!');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Analysis failed.');
@@ -131,6 +137,66 @@ function FIRAnalysisContent() {
 
             {analysis && !isAnalyzing && (
               <>
+                {liveSearchStatus && liveSearchStatus !== 'disabled' && (
+                  <div className={`text-xs px-3 py-2 rounded-lg border flex items-center gap-2 ${
+                    liveSearchStatus === 'success'
+                      ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
+                      : 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400'
+                  }`}>
+                    {liveSearchStatus === 'success' ? (
+                      <>✅ Live case-law search completed — recent/confirmed precedents (if any) are woven into the analysis below.</>
+                    ) : liveSearchStatus === 'timeout' ? (
+                      <>⚠️ Live search took too long and was skipped — this analysis uses the document text and AI's own knowledge only.</>
+                    ) : liveSearchStatus === 'quota_exceeded' ? (
+                      <>⚠️ Live search skipped (AI service request limit reached) — this analysis uses the document text and AI's own knowledge only.</>
+                    ) : (
+                      <>⚠️ Live search failed and was skipped — this analysis uses the document text and AI's own knowledge only.</>
+                    )}
+                  </div>
+                )}
+
+                {seniorReviewed && analysis.confidence_assessment && (
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <h3 className="font-semibold text-navy-900 dark:text-white">👨‍⚖️ Senior Review</h3>
+                      <Badge variant={
+                        analysis.confidence_assessment.overall === 'high' ? 'success'
+                        : analysis.confidence_assessment.overall === 'medium' ? 'warning'
+                        : 'danger'
+                      as any}>
+                        {analysis.confidence_assessment.overall === 'high' ? 'High Confidence'
+                          : analysis.confidence_assessment.overall === 'medium' ? 'Medium Confidence'
+                          : 'Low Confidence — Verify Carefully'}
+                      </Badge>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        This analysis was drafted, then independently re-checked by a second AI pass acting as a senior reviewer — it corrected unsupported claims and softened overstated language before you saw it.
+                      </p>
+                      {analysis.confidence_assessment.caveats?.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Please verify independently:</p>
+                          <ul className="space-y-1">
+                            {analysis.confidence_assessment.caveats.map((c: string, i: number) => (
+                              <li key={i} className="text-sm text-slate-600 dark:text-slate-400">• {c}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {analysis.review_notes?.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Corrections made during review:</p>
+                          <ul className="space-y-1">
+                            {analysis.review_notes.map((n: string, i: number) => (
+                              <li key={i} className="text-sm text-slate-600 dark:text-slate-400">• {n}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Overview */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between">
