@@ -12,7 +12,7 @@ import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import api from '@/lib/api';
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
-  ShieldAlert, ListChecks, Download, FileSignature
+  ShieldAlert, ListChecks, Copy, FileSignature, FileDown
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -26,6 +26,7 @@ function FIRAnalysisContent() {
   const [analysis, setAnalysis] = useState<any>(null);
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [bailDraft, setBailDraft] = useState<string | null>(null);
+  const [isDownloadingWord, setIsDownloadingWord] = useState(false);
   const [isGeneratingBail, setIsGeneratingBail] = useState<string | null>(null);
   const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
   const [liveSearchStatus, setLiveSearchStatus] = useState<string | null>(null);
@@ -354,12 +355,36 @@ function FIRAnalysisContent() {
               <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
                 <FileSignature className="w-4 h-4" /> Generated Bail Application
               </h3>
-              <Button variant="outline" size="sm" onClick={() => {
-                navigator.clipboard.writeText(bailDraft);
-                toast.success('Copied to clipboard');
-              }}>
-                <Download className="w-4 h-4" /> Copy
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => {
+                  navigator.clipboard.writeText(bailDraft);
+                  toast.success('Copied to clipboard');
+                }}>
+                  <Copy className="w-4 h-4" /> Copy
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  isLoading={isDownloadingWord}
+                  onClick={async () => {
+                    setIsDownloadingWord(true);
+                    try {
+                      const { downloadDraftAsWord } = await import('@/lib/docxExport');
+                      await downloadDraftAsWord(
+                        bailDraft,
+                        `Bail_Application_${analysis?.fir_number || 'draft'}`
+                      );
+                      toast.success('Word document downloaded');
+                    } catch (err) {
+                      toast.error('Could not generate Word document.');
+                    } finally {
+                      setIsDownloadingWord(false);
+                    }
+                  }}
+                >
+                  <FileDown className="w-4 h-4" /> Download Word
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="prose-legal prose-sm max-w-none text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-navy-950 rounded-lg p-5 whitespace-pre-wrap">
