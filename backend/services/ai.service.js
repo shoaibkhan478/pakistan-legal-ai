@@ -15,6 +15,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const logger = require('../utils/logger');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
+const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const API_VERSION = 'v1beta';
@@ -22,6 +23,52 @@ const API_VERSION = 'v1beta';
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
   logger.error('GEMINI_API_KEY is not set. AI features will not work until it is configured in backend/.env.');
+}
+
+// ------------------------------------------------------------------
+// GLOBAL RATE LIMITER — free tier only allows ~20 requests/minute for
+// generate_content on gemini-2.5-flash, SHARED across every feature in
+// this app (chat, FIR/notice/judgment/plaint analysis, deep analysis,
+// drafting — anything that calls generateContent). Without this, a burst
+// of calls from any one feature (or several users at once) silently
+// exhausts the whole app's quota for the next ~60s, and every feature
+// starts failing/falling back at the same time.
+//
+// This queues every outgoing Gemini call through a sliding 60-second
+// window and holds new calls back once 18 requests are already
+// in-flight/recent (2 below the actual 20 limit, as a safety margin) —
+// instead of firing bursts and hoping, then reacting to 429s after the
+// fact. Calls simply queue and wait their turn; nothing is rejected.
+//
+// This is a stopgap for the free tier specifically — once billing is
+// enabled (see https://ai.google.dev/gemini-api/docs/billing), the paid
+// tier's much higher limit makes this a non-issue, and RATE_LIMIT_MAX
+// can be raised or this whole block removed.
+// ------------------------------------------------------------------
+const RATE_LIMIT_MAX_PER_MINUTE = 18;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+let requestTimestamps = [];
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForRateLimitSlot() {
+  // Loop instead of a single check-and-wait: while we were sleeping,
+  // other queued calls may have also gone through, so we re-check the
+  // window fresh each time until there's actually room.
+  while (true) {
+    const now = Date.now();
+    requestTimestamps = requestTimestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+    if (requestTimestamps.length < RATE_LIMIT_MAX_PER_MINUTE) {
+      requestTimestamps.push(now);
+      return;
+    }
+    const oldest = requestTimestamps[0];
+    const waitMs = RATE_LIMIT_WINDOW_MS - (now - oldest) + 200; // small buffer past the window edge
+    logger.warn(`ai.service: at free-tier rate limit (${RATE_LIMIT_MAX_PER_MINUTE}/min), queueing next request for ${waitMs}ms`);
+    await sleep(Math.max(waitMs, 250));
+  }
 }
 
 const DISCLAIMER = `
@@ -152,6 +199,25 @@ async function retrieveLawContext(query) {
 }
 
 /**
+ * Defensive safeguard: occasionally the model (especially with search
+ * grounding + long documents) restates the entire draft a second time
+ * back-to-back. If the document's opening line reappears well past the
+ * start of the text, treat everything from that point on as a duplicate
+ * and drop it.
+ */
+function dedupeRepeatedDraft(text) {
+  const trimmed = (text || '').trim();
+  if (trimmed.length < 200) return text;
+  const marker = trimmed.slice(0, 80);
+  const secondIdx = trimmed.indexOf(marker, 80);
+  if (secondIdx !== -1 && secondIdx > trimmed.length * 0.25) {
+    logger.warn('dedupeRepeatedDraft: detected duplicated draft output, truncating repeat.');
+    return trimmed.slice(0, secondIdx).trim();
+  }
+  return text;
+}
+
+/**
  * Core wrapper that communicates with the Gemini API.
  *
  * @param {Object} params
@@ -162,8 +228,22 @@ async function retrieveLawContext(query) {
  * @param {string} [params.groundingQuery] - text to search our local law
  *   library against; if provided, matching chunks are injected into the
  *   system instruction before the model answers.
+ * @param {boolean} [params.appendSources] - whether to append a
+ *   "Sources consulted" block of live Google Search grounding links to the
+ *   output. Google's grounding URIs are redirect-proxy links, not the real
+ *   source URL, so this should stay OFF for anything meant to be filed as
+ *   a final document (bail applications, notice replies, drafts) and can
+ *   stay ON for conversational chat answers.
+ * @param {boolean} [params.disableSearch] - fully disable Google Search
+ *   grounding for this call (also removes any risk of grounding-related
+ *   duplicate output). Use for final court-document drafting, where the
+ *   model should rely on the FIR/analysis text and its own legal knowledge
+ *   rather than live web results.
  */
-async function generateContent({ contents, systemInstruction, jsonMode = false, maxTokens = 4096, groundingQuery }) {
+async function generateContent({
+  contents, systemInstruction, jsonMode = false, maxTokens = 4096, groundingQuery,
+  appendSources = true, disableSearch = false,
+}) {
   try {
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY is not configured.');
@@ -186,6 +266,10 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
 
     const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
 
+    const useSearch = !jsonMode && !disableSearch;
+
+    await waitForRateLimitSlot();
+
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -195,9 +279,9 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
         // Grounds answers in live Google Search results instead of relying
         // solely on the model's training data — important for legal
         // accuracy (current sections, amendments, real case citations).
-        // Skipped in jsonMode since grounding + forced JSON output don't
-        // combine well in the API.
-        ...(jsonMode ? {} : { tools: [{ google_search: {} }] }),
+        // Skipped in jsonMode (doesn't combine well with forced JSON output)
+        // and skipped when disableSearch is set (final document drafting).
+        ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
         generationConfig: {
           maxOutputTokens: maxTokens,
           ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
@@ -217,17 +301,23 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
 
     const candidate = data.candidates?.[0];
 
-    const text = (candidate?.content?.parts || [])
+    let text = (candidate?.content?.parts || [])
       .map((p) => p.text || '')
       .join('\n');
 
+    if (!jsonMode) {
+      text = dedupeRepeatedDraft(text);
+    }
+
     // If the model actually used search grounding, surface the source URLs
-    // so the user (and their advocate) can verify the research.
+    // so the user (and their advocate) can verify the research — but only
+    // when the caller wants them (Gemini's grounding URIs are redirect-proxy
+    // links, not real source URLs, so they don't belong in a final document).
     const groundingChunks = candidate?.groundingMetadata?.groundingChunks || [];
     const sources = groundingChunks
       .map((c) => c.web?.uri && c.web?.title ? `- [${c.web.title}](${c.web.uri})` : null)
       .filter(Boolean);
-    const sourcesBlock = sources.length
+    const sourcesBlock = appendSources && sources.length
       ? `\n\n**Sources consulted (verify before relying on these):**\n${sources.join('\n')}`
       : '';
 
@@ -243,6 +333,7 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
     throw error;
   }
 }
+
 
 /**
  * Safe utility to extract and parse structured JSON response blocks.
@@ -522,20 +613,85 @@ async function analyzeFIR(firText, includeLiveSearch = false, includeSeniorRevie
   const draftAnalysis = parseJsonSafe(draftResult.text);
   let totalTokens = draftResult.tokens;
 
+  // Independent, deterministic (no extra LLM call beyond a retrieval lookup)
+  // grounding check: does each citation the model claims actually appear in
+  // material we can verify — the local vetted law library, or the separate
+  // web-grounded live-search pass? Runs regardless of includeSeniorReview,
+  // since it's cheap and catches a failure mode the review pass can't (the
+  // review pass is the same model, so a confidently-hallucinated citation
+  // can survive its own self-check).
+  async function attachCitationVerification(analysis) {
+    try {
+      const references = Array.isArray(analysis.legal_references) ? analysis.legal_references : [];
+      if (references.length === 0) return analysis;
+
+      const retrievedRows = await retrieveRelevantLaw(firText.slice(0, 2000));
+      const legal_references_verified = verifyCitations(references, retrievedRows, liveCaseLaw);
+      const verificationSummary = summarizeVerification(legal_references_verified);
+
+      // If the majority of claimed citations couldn't be grounded against
+      // anything we can check, that's a real signal the reader should see —
+      // downgrade an "high" confidence rating rather than silently ignoring it.
+      let confidence_assessment = analysis.confidence_assessment;
+      if (
+        confidence_assessment?.overall === 'high' &&
+        verificationSummary.total > 0 &&
+        verificationSummary.unverified / verificationSummary.total > 0.5
+      ) {
+        confidence_assessment = {
+          ...confidence_assessment,
+          overall: 'medium',
+          caveats: [
+            ...(confidence_assessment.caveats || []),
+            `${verificationSummary.unverified} of ${verificationSummary.total} cited legal references could not be independently matched against the local law library or live research — verify these manually.`,
+          ],
+        };
+      }
+
+      return { ...analysis, legal_references_verified, verificationSummary, confidence_assessment };
+    } catch (error) {
+      // Fail-soft: verification is a bonus signal, never block the actual
+      // analysis on it.
+      logger.warn('analyzeFIR: citation verification failed (continuing without it):', error.message || error);
+      return analysis;
+    }
+  }
+
   if (!includeSeniorReview) {
-    return { analysis: draftAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
+    const verifiedDraft = await attachCitationVerification(draftAnalysis);
+    return { analysis: verifiedDraft, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
   }
 
   try {
     const reviewResult = await seniorReviewPass(draftAnalysis, firText, FIR_SCHEMA_KEYS);
     totalTokens += reviewResult.tokens || 0;
-    return { analysis: reviewResult.analysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: true };
+
+    const reviewed = reviewResult.analysis || {};
+
+    // The AI is instructed to include confidence_assessment/review_notes, but
+    // instructions aren't guarantees — if it dropped either field, log that
+    // clearly (so it's visible in Railway logs) and fill in a safe default
+    // rather than silently returning something the frontend can't render.
+    if (!reviewed.confidence_assessment || !reviewed.review_notes) {
+      logger.warn(`analyzeFIR: senior review pass returned JSON but was missing expected fields. Keys received: ${Object.keys(reviewed).join(', ')}`);
+    }
+
+    const finalAnalysis = {
+      ...draftAnalysis,       // baseline, in case the review pass dropped any original field
+      ...reviewed,            // review pass's corrected/refined version wins where present
+      confidence_assessment: reviewed.confidence_assessment || { overall: 'medium', caveats: ['Automated confidence rating unavailable for this analysis — please review normally.'] },
+      review_notes: Array.isArray(reviewed.review_notes) ? reviewed.review_notes : [],
+    };
+
+    const verifiedFinal = await attachCitationVerification(finalAnalysis);
+    return { analysis: verifiedFinal, tokens: totalTokens, liveSearchStatus, seniorReviewed: true };
   } catch (error) {
     // If the review pass itself fails (quota, timeout, bad JSON), fall back
     // to the unreviewed draft rather than failing the whole request — a
     // slightly less polished result beats no result.
     logger.warn('analyzeFIR: senior review pass failed, returning unreviewed draft:', error.message || error);
-    return { analysis: draftAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
+    const verifiedDraft = await attachCitationVerification(draftAnalysis);
+    return { analysis: verifiedDraft, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
   }
 }
 
@@ -556,6 +712,8 @@ async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', add
     systemInstruction,
     groundingQuery,
     maxTokens: 8192,
+    disableSearch: true,
+    appendSources: false,
   });
 
   return { content: result.text, tokens: result.tokens };
@@ -606,6 +764,8 @@ async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
     systemInstruction,
     groundingQuery,
     maxTokens: 8192,
+    disableSearch: true,
+    appendSources: false,
   });
 
   return { content: result.text, tokens: result.tokens };
@@ -718,6 +878,8 @@ async function generateDraft(draftType, details = {}, language = 'english') {
     systemInstruction,
     groundingQuery: `${draftType} ${detailsText}`.slice(0, 2000),
     maxTokens: 8192,
+    disableSearch: true,
+    appendSources: false,
   });
 
   return { content: result.text, tokens: result.tokens };
