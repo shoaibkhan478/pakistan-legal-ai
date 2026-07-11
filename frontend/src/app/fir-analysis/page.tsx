@@ -159,11 +159,11 @@ function FIRAnalysisContent() {
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                       <h3 className="font-semibold text-navy-900 dark:text-white">👨‍⚖️ Senior Review</h3>
-                      <Badge variant={
+                      <Badge variant={(
                         analysis.confidence_assessment.overall === 'high' ? 'success'
                         : analysis.confidence_assessment.overall === 'medium' ? 'warning'
                         : 'danger'
-                      as any}>
+                      ) as any}>
                         {analysis.confidence_assessment.overall === 'high' ? 'High Confidence'
                           : analysis.confidence_assessment.overall === 'medium' ? 'Medium Confidence'
                           : 'Low Confidence — Verify Carefully'}
