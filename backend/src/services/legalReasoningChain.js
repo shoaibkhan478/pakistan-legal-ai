@@ -35,28 +35,71 @@ const { verifyCitations, summarizeVerification } = require('./citationVerifier')
 const MAX_ISSUES = 4; // hard cap — keeps latency/cost bounded and forces the
                        // model to prioritize, rather than splitting into 10 trivial issues
 
+const MAX_RETRIES = 3;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Gemini's free tier is rate-limited (20 requests/minute at time of writing)
+ * and a 5-step chain can easily burst past that in a few seconds. On a 429
+ * quota error, Gemini's own error response tells us exactly how long to
+ * wait (a RetryInfo.retryDelay field, e.g. "1.2s") — this parses that out
+ * so we retry at the right moment instead of guessing.
+ */
+function parseRetryDelayMs(error) {
+  try {
+    const details = error?.details?.error?.details || [];
+    const retryInfo = details.find((d) => d['@type']?.includes('RetryInfo'));
+    const raw = retryInfo?.retryDelay; // e.g. "1.205373912s"
+    if (raw) {
+      const seconds = parseFloat(raw.replace('s', ''));
+      if (!Number.isNaN(seconds)) return Math.ceil(seconds * 1000) + 250; // small buffer
+    }
+  } catch (_) { /* fall through to default backoff below */ }
+  return null;
+}
+
+function isRateLimitError(error) {
+  return error?.status === 429 || /quota|rate.?limit/i.test(error?.message || '');
+}
+
 /**
  * Runs one step of the chain: a focused JSON call with a given instruction.
- * Fails soft — if a single step errors out, we log it and return a fallback
- * rather than aborting the whole chain over one weak link.
+ * Retries on rate-limit (429) errors — the dominant real-world failure mode
+ * for a multi-call chain on Gemini's free tier — before finally falling
+ * back, so a temporary quota blip doesn't silently degrade a whole analysis
+ * to placeholder text.
  */
 async function runStep(systemInstruction, userContent, fallback, maxTokens = 1024) {
-  try {
-    const result = await generateContent({
-      contents: userContent,
-      systemInstruction,
-      jsonMode: true,
-      maxTokens,
-    });
-    // generateContent returns tokens as { input_tokens, output_tokens }, not
-    // a plain number — sum them here so every caller in this file can just
-    // treat `tokens` as a number and add it up without re-deriving this.
-    const tokenCount = (result.tokens?.input_tokens || 0) + (result.tokens?.output_tokens || 0);
-    return { data: parseJsonSafe(result.text), tokens: tokenCount };
-  } catch (error) {
-    logger.warn(`legalReasoningChain: step failed, using fallback: ${error.message || error}`);
-    return { data: fallback, tokens: 0 };
+  let lastError;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const result = await generateContent({
+        contents: userContent,
+        systemInstruction,
+        jsonMode: true,
+        maxTokens,
+      });
+      // generateContent returns tokens as { input_tokens, output_tokens },
+      // not a plain number — sum them here so every caller in this file can
+      // just treat `tokens` as a number and add it up without re-deriving this.
+      const tokenCount = (result.tokens?.input_tokens || 0) + (result.tokens?.output_tokens || 0);
+      return { data: parseJsonSafe(result.text), tokens: tokenCount };
+    } catch (error) {
+      lastError = error;
+      if (isRateLimitError(error) && attempt < MAX_RETRIES) {
+        const delay = parseRetryDelayMs(error) || 1500 * (attempt + 1); // exponential-ish backoff if Gemini didn't tell us
+        logger.warn(`legalReasoningChain: rate-limited, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
+        await sleep(delay);
+        continue;
+      }
+      break; // non-rate-limit error, or retries exhausted — stop trying
+    }
   }
+  logger.warn(`legalReasoningChain: step failed after retries, using fallback: ${lastError?.message || lastError}`);
+  return { data: fallback, tokens: 0 };
 }
 
 // ------------------------------------------------------------------
@@ -245,7 +288,17 @@ async function runLegalReasoningChain(caseText, caseTypeLabel = 'criminal case')
   totalTokens += issueTokens;
 
   // Steps 2-4, per issue, in parallel across issues
-  const issueChains = await Promise.all(issues.map((issue) => runIssueChain(issue, caseText)));
+  // Issues run SEQUENTIALLY, not in parallel — each issue is already 3
+  // chained calls, so running multiple issues in parallel bursts many
+  // requests at once and is what was tripping Gemini's free-tier
+  // rate limit (20 requests/minute) in practice. Sequential is slower
+  // wall-clock time but far more reliable — and runStep already retries
+  // through any transient rate-limit hit on top of this.
+  const issueChains = [];
+  for (const issue of issues) {
+    const chain = await runIssueChain(issue, caseText);
+    issueChains.push(chain);
+  }
   totalTokens += issueChains.reduce((sum, ic) => sum + ic.tokens, 0);
 
   // Step 5
