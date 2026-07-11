@@ -32,9 +32,12 @@ const { generateContent, parseJsonSafe } = require('./ai.service');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
-const MAX_ISSUES = 3; // lowered from 4 — each issue is still 2-3 sequential
-                       // AI calls, and total wall-clock time (not just call
-                       // count) is what caused a gateway timeout in practice
+const MAX_ISSUES = 2; // lowered further for free-tier Gemini quota — with the
+                       // global rate limiter in ai.service.js now also in
+                       // place, this keeps a single deep analysis to ~6 total
+                       // calls (1 spot + 2 issues x 2 calls + 1 synthesis),
+                       // leaving quota headroom for the rest of the app.
+                       // Raise this back to 3-4 once on a paid Gemini tier.
 
 const MAX_RETRIES = 3;
 
