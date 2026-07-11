@@ -1,4 +1,4 @@
- /**
+/**
  * AI Service - Google Gemini Integration (FREE TIER)
  * All AI-powered legal features, routed through Gemini's REST API via
  * native fetch (v1beta endpoint, which supports systemInstruction).
@@ -23,6 +23,52 @@ const API_VERSION = 'v1beta';
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
   logger.error('GEMINI_API_KEY is not set. AI features will not work until it is configured in backend/.env.');
+}
+
+// ------------------------------------------------------------------
+// GLOBAL RATE LIMITER — free tier only allows ~20 requests/minute for
+// generate_content on gemini-2.5-flash, SHARED across every feature in
+// this app (chat, FIR/notice/judgment/plaint analysis, deep analysis,
+// drafting — anything that calls generateContent). Without this, a burst
+// of calls from any one feature (or several users at once) silently
+// exhausts the whole app's quota for the next ~60s, and every feature
+// starts failing/falling back at the same time.
+//
+// This queues every outgoing Gemini call through a sliding 60-second
+// window and holds new calls back once 18 requests are already
+// in-flight/recent (2 below the actual 20 limit, as a safety margin) —
+// instead of firing bursts and hoping, then reacting to 429s after the
+// fact. Calls simply queue and wait their turn; nothing is rejected.
+//
+// This is a stopgap for the free tier specifically — once billing is
+// enabled (see https://ai.google.dev/gemini-api/docs/billing), the paid
+// tier's much higher limit makes this a non-issue, and RATE_LIMIT_MAX
+// can be raised or this whole block removed.
+// ------------------------------------------------------------------
+const RATE_LIMIT_MAX_PER_MINUTE = 18;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+let requestTimestamps = [];
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForRateLimitSlot() {
+  // Loop instead of a single check-and-wait: while we were sleeping,
+  // other queued calls may have also gone through, so we re-check the
+  // window fresh each time until there's actually room.
+  while (true) {
+    const now = Date.now();
+    requestTimestamps = requestTimestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+    if (requestTimestamps.length < RATE_LIMIT_MAX_PER_MINUTE) {
+      requestTimestamps.push(now);
+      return;
+    }
+    const oldest = requestTimestamps[0];
+    const waitMs = RATE_LIMIT_WINDOW_MS - (now - oldest) + 200; // small buffer past the window edge
+    logger.warn(`ai.service: at free-tier rate limit (${RATE_LIMIT_MAX_PER_MINUTE}/min), queueing next request for ${waitMs}ms`);
+    await sleep(Math.max(waitMs, 250));
+  }
 }
 
 const DISCLAIMER = `
@@ -221,6 +267,8 @@ async function generateContent({
     const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
 
     const useSearch = !jsonMode && !disableSearch;
+
+    await waitForRateLimitSlot();
 
     const res = await fetch(url, {
       method: 'POST',
