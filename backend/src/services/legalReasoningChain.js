@@ -32,14 +32,18 @@ const { generateContent, parseJsonSafe } = require('./ai.service');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
-const MAX_ISSUES = 2; // lowered further for free-tier Gemini quota — with the
-                       // global rate limiter in ai.service.js now also in
-                       // place, this keeps a single deep analysis to ~6 total
-                       // calls (1 spot + 2 issues x 2 calls + 1 synthesis),
-                       // leaving quota headroom for the rest of the app.
-                       // Raise this back to 3-4 once on a paid Gemini tier.
+const MAX_ISSUES = 1; // reduced to the single most significant issue — on a
+                       // 20/min free-tier quota, even 2 issues with retries
+                       // can burn the ENTIRE minute's budget in one deep-
+                       // analysis run by itself. This trades breadth (only
+                       // the most important issue gets the full chain) for
+                       // reliability. Raise once on a paid Gemini tier.
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 1; // lowered from 3 — each retry is another request
+                        // against an already-scarce free-tier quota; better
+                        // to fail one step fast to its fallback than burn
+                        // 3x the requests and starve later steps in the
+                        // same run. Raise once on a paid Gemini tier.
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
