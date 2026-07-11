@@ -13,6 +13,7 @@ const {
   analyzeLegalNotice, generateNoticeReply,
   analyzeJudgment, analyzePlaint
 } = require('../services/ai.service');
+const { runLegalReasoningChain } = require('../services/legalReasoningChain');
 
 // ============================================================
 // FIR ANALYSIS
@@ -66,9 +67,49 @@ router.post('/fir', authenticate, aiLimiter, async (req, res, next) => {
   }
 });
 
-// POST /api/v1/analysis/fir/:analysisId/bail
-router.post('/fir/:analysisId/bail', authenticate, aiLimiter, async (req, res, next) => {
+// POST /api/v1/analysis/fir/deep
+// "Deep analysis" mode: runs the full multi-step reasoning chain
+// (issue-spotting -> per-issue research -> dual-sided arguments ->
+// rebuttal simulation -> strategy synthesis) instead of the single-shot
+// analyzeFIR(). Slower and more expensive (~3N+2 model calls for N
+// issues), so it's a separate opt-in endpoint rather than replacing /fir.
+router.post('/fir/deep', authenticate, aiLimiter, async (req, res, next) => {
   try {
+    const { documentId, text, caseId } = req.body;
+    let firText = text;
+
+    if (documentId) {
+      const { rows } = await query(
+        'SELECT ocr_text FROM documents WHERE id = $1 AND user_id = $2',
+        [documentId, req.user.id]
+      );
+      if (!rows[0]) return res.status(404).json({ success: false, message: 'Document not found.' });
+      firText = rows[0].ocr_text || text;
+    }
+
+    if (!firText?.trim()) {
+      return res.status(400).json({ success: false, message: 'FIR text is required.' });
+    }
+
+    const result = await runLegalReasoningChain(firText, 'FIR bail assessment');
+
+    await query(
+      'INSERT INTO api_usage (user_id, feature, tokens_input, tokens_output, model_used) VALUES ($1, $2, $3, $4, $5)',
+      [req.user.id, 'fir_deep_analysis', 0, result.tokens || 0, 'gemini-reasoning-chain']
+    );
+
+    // Not persisted to fir_analyses (its schema is shaped for the
+    // single-shot analysis) — returned directly. Persist separately if
+    // deep analyses need to be retrievable later; a JSONB column keyed by
+    // documentId/caseId would be the simplest addition.
+    res.json({ success: true, data: { ...result, documentId: documentId || null, caseId: caseId || null } });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/v1/analysis/fir/:analysisId/bail
+router.post('/fir/:analysisId/bail', authenticate, aiLimiter, async (req, res, next) => {  try {
     const { bailType = 'pre_arrest', additionalInfo } = req.body;
     const { rows } = await query(
       'SELECT * FROM fir_analyses WHERE id = $1 AND user_id = $2',
