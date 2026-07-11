@@ -23,17 +23,18 @@
 // to do well, and easier for a human to audit (you can see exactly which
 // step produced which claim, instead of one black-box paragraph).
 //
-// This is deliberately slower and more expensive (roughly 3N+2 model calls
-// for N issues, vs. 1-2 calls today) — it's meant as an opt-in "deep
-// analysis" mode, not a replacement for the fast path.
+// This is deliberately slower and more expensive (roughly 2N+2 model calls
+// for N issues, run with limited parallelism, vs. 1-2 calls today) — it's
+// meant as an opt-in "deep analysis" mode, not a replacement for the fast path.
 
 const logger = require('../utils/logger');
 const { generateContent, parseJsonSafe } = require('./ai.service');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
-const MAX_ISSUES = 4; // hard cap — keeps latency/cost bounded and forces the
-                       // model to prioritize, rather than splitting into 10 trivial issues
+const MAX_ISSUES = 3; // lowered from 4 — each issue is still 2-3 sequential
+                       // AI calls, and total wall-clock time (not just call
+                       // count) is what caused a gateway timeout in practice
 
 const MAX_RETRIES = 3;
 
@@ -124,50 +125,40 @@ Respond with ONLY JSON:
 }
 
 // ------------------------------------------------------------------
-// STEP 2 — Per-issue research (grounded in the local RAG law library)
+// STEP 2+3 (merged) — Research AND dual-sided argument construction in
+// ONE call instead of two. Originally these were separate steps (cleaner
+// separation of "what's the law" from "how does it apply"), but on
+// Gemini's free tier, running 4 issues × 3 sequential calls each (14
+// total round trips) pushed total wall-clock time past several minutes
+// and tripped Railway's gateway timeout (502). Merging cuts per-issue
+// round trips from 3 to 2 — still two genuinely separate reasoning
+// steps (research feeds arguments), just in a single request instead
+// of two, since the model can do both in one focused JSON call without
+// meaningfully losing quality.
 // ------------------------------------------------------------------
-async function researchIssue(issue, caseText) {
-  const systemInstruction = `You are researching ONE specific legal issue for a Pakistani case, using only the material provided to you (your local law library, injected below) plus well-established law you're genuinely confident about. Do not analyze the facts yet — just establish what law applies.
+async function researchAndArgue(issue, caseText) {
+  const systemInstruction = `You are researching and then arguing ONE specific legal issue for a Pakistani case, the way a senior advocate stress-tests a case before committing to a strategy.
 
-ISSUE TO RESEARCH: "${issue.issue}" (area of law: ${issue.area_of_law})
+ISSUE: "${issue.issue}" (area of law: ${issue.area_of_law})
 
-STRICT RULE: never invent a section number or case citation. If you're not confident of the exact provision/citation, describe the legal principle without a specific number rather than guessing one.
+Do this in order, in your head, then return only the final JSON:
+1. Research: what law/precedent actually applies? Never invent a section number or case citation — if you're not confident of the exact provision/citation, describe the principle without a specific number rather than guessing one.
+2. Argue BOTH sides using that research: the strongest case FOR the client's position, and the strongest case the OTHER side could genuinely make (don't straw-man the opposing side — make it as strong as it would honestly be in court).
 
 Respond with ONLY JSON:
-{ "key_authorities": string[], "key_points": string[] }
-Where "key_authorities" are specific statutory provisions or case citations you are confident about (empty array if none), and "key_points" are the applicable legal principles in plain language.`;
+{
+  "key_authorities": string[],
+  "key_points": string[],
+  "supporting_arguments": string[],
+  "opposing_arguments": string[]
+}`;
 
-  const fallback = { key_authorities: [], key_points: [] };
-  const { data, tokens } = await runStep(
-    systemInstruction,
-    `CASE FACTS (for context only):\n${caseText.slice(0, 2000)}`,
-    fallback,
-    1024
-  );
-  return { data, tokens };
-}
-
-// ------------------------------------------------------------------
-// STEP 3 — Dual-sided argument construction
-// ------------------------------------------------------------------
-async function buildArguments(issue, research, caseText) {
-  const systemInstruction = `You are building BOTH sides of the argument on one legal issue, the way a senior advocate stress-tests a case before committing to a strategy — arguing against your own client first is how you find the weaknesses before the other side does.
-
-ISSUE: "${issue.issue}"
-RESEARCH ALREADY DONE:
-- Key authorities: ${(research.key_authorities || []).join('; ') || 'none confirmed'}
-- Key points: ${(research.key_points || []).join('; ') || 'none'}
-
-Respond with ONLY JSON:
-{ "supporting_arguments": string[], "opposing_arguments": string[] }
-Where "supporting_arguments" favour the client/petitioner's position on this issue, and "opposing_arguments" are the strongest arguments the OTHER side could genuinely make — do not straw-man the opposing side, make it as strong as it would honestly be in court.`;
-
-  const fallback = { supporting_arguments: [], opposing_arguments: [] };
+  const fallback = { key_authorities: [], key_points: [], supporting_arguments: [], opposing_arguments: [] };
   const { data, tokens } = await runStep(
     systemInstruction,
     `CASE FACTS:\n${caseText.slice(0, 3000)}`,
     fallback,
-    1200
+    1600
   );
   return { data, tokens };
 }
@@ -199,23 +190,20 @@ Respond with ONLY JSON:
 async function runIssueChain(issue, caseText) {
   let tokens = 0;
 
-  const researchResult = await researchIssue(issue, caseText);
-  tokens += researchResult.tokens;
+  const researchArgsResult = await researchAndArgue(issue, caseText);
+  tokens += researchArgsResult.tokens;
 
-  const argumentsResult = await buildArguments(issue, researchResult.data, caseText);
-  tokens += argumentsResult.tokens;
-
-  const rebuttalResult = await simulateRebuttal(issue, argumentsResult.data);
+  const rebuttalResult = await simulateRebuttal(issue, researchArgsResult.data);
   tokens += rebuttalResult.tokens;
 
   return {
     id: issue.id,
     issue: issue.issue,
     area_of_law: issue.area_of_law,
-    key_authorities: researchResult.data.key_authorities || [],
-    key_points: researchResult.data.key_points || [],
-    supporting_arguments: argumentsResult.data.supporting_arguments || [],
-    opposing_arguments: argumentsResult.data.opposing_arguments || [],
+    key_authorities: researchArgsResult.data.key_authorities || [],
+    key_points: researchArgsResult.data.key_points || [],
+    supporting_arguments: researchArgsResult.data.supporting_arguments || [],
+    opposing_arguments: researchArgsResult.data.opposing_arguments || [],
     rebuttal_points: rebuttalResult.data.rebuttal_points || [],
     tokens,
   };
@@ -288,17 +276,15 @@ async function runLegalReasoningChain(caseText, caseTypeLabel = 'criminal case')
   totalTokens += issueTokens;
 
   // Steps 2-4, per issue, in parallel across issues
-  // Issues run SEQUENTIALLY, not in parallel — each issue is already 3
-  // chained calls, so running multiple issues in parallel bursts many
-  // requests at once and is what was tripping Gemini's free-tier
-  // rate limit (20 requests/minute) in practice. Sequential is slower
-  // wall-clock time but far more reliable — and runStep already retries
-  // through any transient rate-limit hit on top of this.
-  const issueChains = [];
-  for (const issue of issues) {
-    const chain = await runIssueChain(issue, caseText);
-    issueChains.push(chain);
-  }
+  // Issues run in parallel again — now that research+arguments are merged
+  // into one call per issue (2 calls/issue instead of 3), a burst of
+  // MAX_ISSUES(3) parallel calls stays comfortably under Gemini's
+  // free-tier rate limit, and runStep's retry-with-backoff (above) is
+  // still there as a safety net for any occasional 429. Running sequentially
+  // was safer against bursts but pushed total wall-clock time past several
+  // minutes for a 4-issue case, tripping Railway's gateway timeout — this
+  // balances both concerns.
+  const issueChains = await Promise.all(issues.map((issue) => runIssueChain(issue, caseText)));
   totalTokens += issueChains.reduce((sum, ic) => sum + ic.tokens, 0);
 
   // Step 5
