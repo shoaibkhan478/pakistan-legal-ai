@@ -152,6 +152,25 @@ async function retrieveLawContext(query) {
 }
 
 /**
+ * Defensive safeguard: occasionally the model (especially with search
+ * grounding + long documents) restates the entire draft a second time
+ * back-to-back. If the document's opening line reappears well past the
+ * start of the text, treat everything from that point on as a duplicate
+ * and drop it.
+ */
+function dedupeRepeatedDraft(text) {
+  const trimmed = (text || '').trim();
+  if (trimmed.length < 200) return text;
+  const marker = trimmed.slice(0, 80);
+  const secondIdx = trimmed.indexOf(marker, 80);
+  if (secondIdx !== -1 && secondIdx > trimmed.length * 0.25) {
+    logger.warn('dedupeRepeatedDraft: detected duplicated draft output, truncating repeat.');
+    return trimmed.slice(0, secondIdx).trim();
+  }
+  return text;
+}
+
+/**
  * Core wrapper that communicates with the Gemini API.
  *
  * @param {Object} params
@@ -162,8 +181,22 @@ async function retrieveLawContext(query) {
  * @param {string} [params.groundingQuery] - text to search our local law
  *   library against; if provided, matching chunks are injected into the
  *   system instruction before the model answers.
+ * @param {boolean} [params.appendSources] - whether to append a
+ *   "Sources consulted" block of live Google Search grounding links to the
+ *   output. Google's grounding URIs are redirect-proxy links, not the real
+ *   source URL, so this should stay OFF for anything meant to be filed as
+ *   a final document (bail applications, notice replies, drafts) and can
+ *   stay ON for conversational chat answers.
+ * @param {boolean} [params.disableSearch] - fully disable Google Search
+ *   grounding for this call (also removes any risk of grounding-related
+ *   duplicate output). Use for final court-document drafting, where the
+ *   model should rely on the FIR/analysis text and its own legal knowledge
+ *   rather than live web results.
  */
-async function generateContent({ contents, systemInstruction, jsonMode = false, maxTokens = 4096, groundingQuery }) {
+async function generateContent({
+  contents, systemInstruction, jsonMode = false, maxTokens = 4096, groundingQuery,
+  appendSources = true, disableSearch = false,
+}) {
   try {
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY is not configured.');
@@ -186,6 +219,8 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
 
     const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
 
+    const useSearch = !jsonMode && !disableSearch;
+
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -195,9 +230,9 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
         // Grounds answers in live Google Search results instead of relying
         // solely on the model's training data — important for legal
         // accuracy (current sections, amendments, real case citations).
-        // Skipped in jsonMode since grounding + forced JSON output don't
-        // combine well in the API.
-        ...(jsonMode ? {} : { tools: [{ google_search: {} }] }),
+        // Skipped in jsonMode (doesn't combine well with forced JSON output)
+        // and skipped when disableSearch is set (final document drafting).
+        ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
         generationConfig: {
           maxOutputTokens: maxTokens,
           ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
@@ -217,17 +252,23 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
 
     const candidate = data.candidates?.[0];
 
-    const text = (candidate?.content?.parts || [])
+    let text = (candidate?.content?.parts || [])
       .map((p) => p.text || '')
       .join('\n');
 
+    if (!jsonMode) {
+      text = dedupeRepeatedDraft(text);
+    }
+
     // If the model actually used search grounding, surface the source URLs
-    // so the user (and their advocate) can verify the research.
+    // so the user (and their advocate) can verify the research — but only
+    // when the caller wants them (Gemini's grounding URIs are redirect-proxy
+    // links, not real source URLs, so they don't belong in a final document).
     const groundingChunks = candidate?.groundingMetadata?.groundingChunks || [];
     const sources = groundingChunks
       .map((c) => c.web?.uri && c.web?.title ? `- [${c.web.title}](${c.web.uri})` : null)
       .filter(Boolean);
-    const sourcesBlock = sources.length
+    const sourcesBlock = appendSources && sources.length
       ? `\n\n**Sources consulted (verify before relying on these):**\n${sources.join('\n')}`
       : '';
 
@@ -243,6 +284,7 @@ async function generateContent({ contents, systemInstruction, jsonMode = false, 
     throw error;
   }
 }
+
 
 /**
  * Safe utility to extract and parse structured JSON response blocks.
@@ -574,6 +616,8 @@ async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', add
     systemInstruction,
     groundingQuery,
     maxTokens: 8192,
+    disableSearch: true,
+    appendSources: false,
   });
 
   return { content: result.text, tokens: result.tokens };
@@ -624,6 +668,8 @@ async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
     systemInstruction,
     groundingQuery,
     maxTokens: 8192,
+    disableSearch: true,
+    appendSources: false,
   });
 
   return { content: result.text, tokens: result.tokens };
@@ -736,6 +782,8 @@ async function generateDraft(draftType, details = {}, language = 'english') {
     systemInstruction,
     groundingQuery: `${draftType} ${detailsText}`.slice(0, 2000),
     maxTokens: 8192,
+    disableSearch: true,
+    appendSources: false,
   });
 
   return { content: result.text, tokens: result.tokens };
