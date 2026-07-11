@@ -48,7 +48,11 @@ async function runStep(systemInstruction, userContent, fallback, maxTokens = 102
       jsonMode: true,
       maxTokens,
     });
-    return { data: parseJsonSafe(result.text), tokens: result.tokens };
+    // generateContent returns tokens as { input_tokens, output_tokens }, not
+    // a plain number — sum them here so every caller in this file can just
+    // treat `tokens` as a number and add it up without re-deriving this.
+    const tokenCount = (result.tokens?.input_tokens || 0) + (result.tokens?.output_tokens || 0);
+    return { data: parseJsonSafe(result.text), tokens: tokenCount };
   } catch (error) {
     logger.warn(`legalReasoningChain: step failed, using fallback: ${error.message || error}`);
     return { data: fallback, tokens: 0 };
