@@ -15,6 +15,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const logger = require('../utils/logger');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
+const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const API_VERSION = 'v1beta';
@@ -564,8 +565,53 @@ async function analyzeFIR(firText, includeLiveSearch = false, includeSeniorRevie
   const draftAnalysis = parseJsonSafe(draftResult.text);
   let totalTokens = draftResult.tokens;
 
+  // Independent, deterministic (no extra LLM call beyond a retrieval lookup)
+  // grounding check: does each citation the model claims actually appear in
+  // material we can verify — the local vetted law library, or the separate
+  // web-grounded live-search pass? Runs regardless of includeSeniorReview,
+  // since it's cheap and catches a failure mode the review pass can't (the
+  // review pass is the same model, so a confidently-hallucinated citation
+  // can survive its own self-check).
+  async function attachCitationVerification(analysis) {
+    try {
+      const references = Array.isArray(analysis.legal_references) ? analysis.legal_references : [];
+      if (references.length === 0) return analysis;
+
+      const retrievedRows = await retrieveRelevantLaw(firText.slice(0, 2000));
+      const legal_references_verified = verifyCitations(references, retrievedRows, liveCaseLaw);
+      const verificationSummary = summarizeVerification(legal_references_verified);
+
+      // If the majority of claimed citations couldn't be grounded against
+      // anything we can check, that's a real signal the reader should see —
+      // downgrade an "high" confidence rating rather than silently ignoring it.
+      let confidence_assessment = analysis.confidence_assessment;
+      if (
+        confidence_assessment?.overall === 'high' &&
+        verificationSummary.total > 0 &&
+        verificationSummary.unverified / verificationSummary.total > 0.5
+      ) {
+        confidence_assessment = {
+          ...confidence_assessment,
+          overall: 'medium',
+          caveats: [
+            ...(confidence_assessment.caveats || []),
+            `${verificationSummary.unverified} of ${verificationSummary.total} cited legal references could not be independently matched against the local law library or live research — verify these manually.`,
+          ],
+        };
+      }
+
+      return { ...analysis, legal_references_verified, verificationSummary, confidence_assessment };
+    } catch (error) {
+      // Fail-soft: verification is a bonus signal, never block the actual
+      // analysis on it.
+      logger.warn('analyzeFIR: citation verification failed (continuing without it):', error.message || error);
+      return analysis;
+    }
+  }
+
   if (!includeSeniorReview) {
-    return { analysis: draftAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
+    const verifiedDraft = await attachCitationVerification(draftAnalysis);
+    return { analysis: verifiedDraft, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
   }
 
   try {
@@ -589,13 +635,15 @@ async function analyzeFIR(firText, includeLiveSearch = false, includeSeniorRevie
       review_notes: Array.isArray(reviewed.review_notes) ? reviewed.review_notes : [],
     };
 
-    return { analysis: finalAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: true };
+    const verifiedFinal = await attachCitationVerification(finalAnalysis);
+    return { analysis: verifiedFinal, tokens: totalTokens, liveSearchStatus, seniorReviewed: true };
   } catch (error) {
     // If the review pass itself fails (quota, timeout, bad JSON), fall back
     // to the unreviewed draft rather than failing the whole request — a
     // slightly less polished result beats no result.
     logger.warn('analyzeFIR: senior review pass failed, returning unreviewed draft:', error.message || error);
-    return { analysis: draftAnalysis, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
+    const verifiedDraft = await attachCitationVerification(draftAnalysis);
+    return { analysis: verifiedDraft, tokens: totalTokens, liveSearchStatus, seniorReviewed: false };
   }
 }
 
