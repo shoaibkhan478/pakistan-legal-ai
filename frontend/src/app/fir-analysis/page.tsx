@@ -9,10 +9,11 @@ import { Textarea } from '@/components/ui';
 import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
+import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
 import api from '@/lib/api';
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
-  ShieldAlert, ListChecks, Copy, FileSignature, FileDown
+  ShieldAlert, ListChecks, Copy, FileSignature, FileDown, Brain
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -31,6 +32,9 @@ function FIRAnalysisContent() {
   const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
   const [liveSearchStatus, setLiveSearchStatus] = useState<string | null>(null);
   const [seniorReviewed, setSeniorReviewed] = useState(false);
+  const [isDeepAnalyzing, setIsDeepAnalyzing] = useState(false);
+  const [deepResult, setDeepResult] = useState<DeepAnalysisData | null>(null);
+  const [deepStepMessage, setDeepStepMessage] = useState('');
 
   useEffect(() => {
     if (documentId) {
@@ -78,6 +82,44 @@ function FIRAnalysisContent() {
     }
   };
 
+  const handleDeepAnalyze = async () => {
+    if (!firText.trim()) {
+      toast.error('Please provide FIR text to analyze.');
+      return;
+    }
+    setIsDeepAnalyzing(true);
+    setDeepResult(null);
+
+    // The chain takes 10-20+ seconds (5-8 chained AI calls) with no
+    // intermediate progress from the backend — this is a single request/
+    // response, not a stream. Rotating status text sets the right
+    // expectation instead of a plain frozen spinner.
+    const steps = [
+      'Spotting the legal issues in the facts...',
+      'Researching applicable law for each issue...',
+      'Building the strongest argument on each side...',
+      'Simulating the opposing counsel\'s response...',
+      'Weighing everything into one final strategy...',
+    ];
+    let stepIndex = 0;
+    setDeepStepMessage(steps[0]);
+    const stepInterval = setInterval(() => {
+      stepIndex = Math.min(stepIndex + 1, steps.length - 1);
+      setDeepStepMessage(steps[stepIndex]);
+    }, 4000);
+
+    try {
+      const { data } = await api.post('/analysis/fir/deep', { text: firText, documentId });
+      setDeepResult(data.data);
+      toast.success('Deep analysis complete!');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Deep analysis failed.');
+    } finally {
+      clearInterval(stepInterval);
+      setIsDeepAnalyzing(false);
+    }
+  };
+
   const bailColor = analysis?.bail_possibility?.toLowerCase().includes('non')
     ? 'danger' : analysis?.bail_possibility?.toLowerCase().includes('condition')
     ? 'warning' : 'success';
@@ -122,6 +164,18 @@ function FIRAnalysisContent() {
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze FIR
               </Button>
+              <Button
+                onClick={handleDeepAnalyze}
+                isLoading={isDeepAnalyzing}
+                variant="outline"
+                className="w-full mt-2"
+              >
+                <Brain className="w-4 h-4" /> Deep Analysis — Senior Advocate Mode
+              </Button>
+              <p className="text-xs text-slate-400 mt-1.5 text-center">
+                Slower (~20-40s) but reasons through each issue separately, arguing both sides before
+                concluding — closer to how an advocate actually works a case.
+              </p>
             </CardContent>
           </Card>
 
@@ -134,6 +188,20 @@ function FIRAnalysisContent() {
                   <p className="text-sm text-slate-500">Analyzing FIR with AI...</p>
                 </CardContent>
               </Card>
+            )}
+
+            {isDeepAnalyzing && (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <Brain className="w-8 h-8 animate-pulse text-primary-700 mb-3" />
+                  <p className="text-sm text-slate-500 text-center max-w-xs">{deepStepMessage}</p>
+                  <p className="text-xs text-slate-400 mt-2">This takes longer than a normal analysis — worth the wait.</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {deepResult && !isDeepAnalyzing && (
+              <DeepAnalysisResult data={deepResult} />
             )}
 
             {analysis && !isAnalyzing && (
@@ -337,7 +405,7 @@ function FIRAnalysisContent() {
               </>
             )}
 
-            {!analysis && !isAnalyzing && (
+            {!analysis && !isAnalyzing && !deepResult && !isDeepAnalyzing && (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16 text-center">
                   <FileWarning className="w-10 h-10 text-slate-300 dark:text-navy-700 mb-3" />
