@@ -282,6 +282,22 @@ async function generateContent({
         // Skipped in jsonMode (doesn't combine well with forced JSON output)
         // and skipped when disableSearch is set (final document drafting).
         ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
+        // This is a legal-analysis app: the source text (FIRs, notices,
+        // judgments) routinely describes real violence, weapons, threats,
+        // and injuries — that's the FACTS being analyzed, not content the
+        // app is generating to promote harm. Gemini's default safety
+        // thresholds can otherwise silently block generation on exactly
+        // this kind of case (e.g. an FIR describing firing a pistol/assault),
+        // which surfaces to the user as an empty/failed synthesis step with
+        // no visible explanation. Relax the categories that legitimately
+        // come up in criminal-law text; leave sexual content at the
+        // stricter default since it's never legitimately needed here.
+        safetySettings: [
+          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+        ],
         generationConfig: {
           maxOutputTokens: maxTokens,
           ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
@@ -301,9 +317,30 @@ async function generateContent({
 
     const candidate = data.candidates?.[0];
 
-    let text = (candidate?.content?.parts || [])
+    // The model can come back with zero candidates entirely — most commonly
+    // because the prompt or the would-be response tripped a safety filter
+    // (data.promptFeedback.blockReason) or hit MAX_TOKENS before producing
+    // any content. Previously this silently fell through to an empty
+    // string, which then failed JSON.parse with a generic, misleading
+    // "not valid JSON" error — surface the real reason instead so it shows
+    // up correctly in logs (and can be told apart from an actual outage).
+    if (!candidate) {
+      const blockReason = data?.promptFeedback?.blockReason;
+      if (blockReason) {
+        const err = new Error(`Gemini declined to respond (reason: ${blockReason}).`);
+        err.blockReason = blockReason;
+        throw err;
+      }
+      throw new Error('Gemini returned no response candidates.');
+    }
+
+    let text = (candidate.content?.parts || [])
       .map((p) => p.text || '')
       .join('\n');
+
+    if (!text && candidate.finishReason === 'MAX_TOKENS') {
+      throw new Error('Gemini response was cut off before producing any content (output token limit reached).');
+    }
 
     if (!jsonMode) {
       text = dedupeRepeatedDraft(text);
@@ -353,7 +390,22 @@ function parseJsonSafe(rawText) {
   try {
     return JSON.parse(cleanText);
   } catch (err) {
-    logger.error('Failed to parse JSON from AI response:', err);
+    // The response may have been cut off mid-string because it hit the
+    // maxOutputTokens limit before finishing the JSON object. Try to
+    // salvage a valid object by trimming back to the last complete
+    // top-level "}" and re-parsing, instead of failing the whole step over
+    // what's often just a truncated tail.
+    const lastBrace = cleanText.lastIndexOf('}');
+    if (lastBrace > -1) {
+      try {
+        const parsed = JSON.parse(cleanText.slice(0, lastBrace + 1));
+        logger.error('AI response was truncated but salvaged after trimming trailing incomplete content.');
+        return parsed;
+      } catch (_err2) {
+        // fall through to the error below
+      }
+    }
+    logger.error('Failed to parse JSON from AI response:', err.message, '\nRaw text (first 500 chars):', cleanText.slice(0, 500));
     throw new Error('AI response was not valid JSON.');
   }
 }

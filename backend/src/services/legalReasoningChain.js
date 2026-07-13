@@ -97,13 +97,17 @@ async function runStep(systemInstruction, userContent, fallback, maxTokens = 102
       return { data: parseJsonSafe(result.text), tokens: tokenCount };
     } catch (error) {
       lastError = error;
-      if (isRateLimitError(error) && attempt < MAX_RETRIES) {
-        const delay = parseRetryDelayMs(error) || 1500 * (attempt + 1); // exponential-ish backoff if Gemini didn't tell us
-        logger.warn(`legalReasoningChain: rate-limited, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
+      if (attempt < MAX_RETRIES) {
+        // Rate-limit errors get Gemini's own suggested delay; anything else
+        // (a blocked/safety response, truncated/malformed JSON, a transient
+        // 5xx) still gets one retry with a short fixed backoff — these are
+        // often transient too, and previously only 429s got a second try.
+        const delay = isRateLimitError(error) ? (parseRetryDelayMs(error) || 1500 * (attempt + 1)) : 1000;
+        logger.warn(`legalReasoningChain: step failed (${error?.message || error}), retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
         await sleep(delay);
         continue;
       }
-      break; // non-rate-limit error, or retries exhausted — stop trying
+      break; // retries exhausted — stop trying
     }
   }
   logger.warn(`legalReasoningChain: step failed after retries, using fallback: ${lastError?.message || lastError}`);
