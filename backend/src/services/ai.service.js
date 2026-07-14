@@ -390,24 +390,125 @@ function parseJsonSafe(rawText) {
   try {
     return JSON.parse(cleanText);
   } catch (err) {
-    // The response may have been cut off mid-string because it hit the
-    // maxOutputTokens limit before finishing the JSON object. Try to
-    // salvage a valid object by trimming back to the last complete
-    // top-level "}" and re-parsing, instead of failing the whole step over
-    // what's often just a truncated tail.
-    const lastBrace = cleanText.lastIndexOf('}');
-    if (lastBrace > -1) {
-      try {
-        const parsed = JSON.parse(cleanText.slice(0, lastBrace + 1));
-        logger.error('AI response was truncated but salvaged after trimming trailing incomplete content.');
-        return parsed;
-      } catch (_err2) {
-        // fall through to the error below
-      }
+    // The response may have been cut off mid-string/mid-array because it
+    // hit the maxOutputTokens limit before finishing the JSON object.
+    // The old recovery here just trimmed back to the last top-level "}"
+    // and re-parsed — that only works if every bracket/quote up to that
+    // point already happened to balance out, which is rare: a truncated
+    // response usually ends mid-string (`"some te) or mid-array
+    // (`"risk_factors": ["a", "b`), and slicing to the last "}" leaves
+    // those unclosed, so JSON.parse fails again and the whole step falls
+    // back to the placeholder text.
+    //
+    // Instead, walk the text character-by-character (respecting string
+    // and escape state) and track how many `{`/`[` are still open. Close
+    // an in-progress string first, then close every open bracket in the
+    // right order, then re-parse. This recovers a valid (partial) object
+    // for genuinely truncated output instead of only for lucky ones.
+    const salvaged = salvageTruncatedJson(cleanText);
+    if (salvaged !== null) {
+      logger.error('AI response was truncated but salvaged after balancing open brackets/strings.');
+      return salvaged;
     }
     logger.error('Failed to parse JSON from AI response:', err.message, '\nRaw text (first 500 chars):', cleanText.slice(0, 500));
     throw new Error('AI response was not valid JSON.');
   }
+}
+
+/**
+ * Attempts to recover a valid JSON object/array from text that was cut off
+ * mid-stream (typically because maxOutputTokens was reached). Scans the raw
+ * text tracking bracket depth and whether we're inside a string, then:
+ *   1. Closes an unterminated string (dropping any dangling escape char).
+ *   2. Trims a trailing dangling comma/colon/whitespace.
+ *   3. Appends the closing brackets needed to balance every open `{`/`[`.
+ * Returns the parsed value, or null if nothing salvageable was found.
+ */
+function salvageTruncatedJson(text) {
+  // Phase 1: don't cut anything — just close whatever's still open (an
+  // unterminated string, then every open `{`/`[`) and see if that alone
+  // parses. This preserves the most data and handles the common case of
+  // a value's string (or the last array) being cut mid-way.
+  const closed = closeOpenStructures(text);
+  if (closed !== null) {
+    try {
+      return JSON.parse(closed);
+    } catch (_err) { /* fall through to phase 2 */ }
+  }
+
+  // Phase 2: closing in place wasn't enough (e.g. a dangling key with no
+  // value yet, like `..., "some_field":` with nothing after it, or a
+  // trailing comma before the cut). Walk backwards to the last position
+  // that was a safe structural boundary *outside* a string (a comma,
+  // or an opening bracket) and retry from there, discarding the
+  // incomplete trailing fragment entirely.
+  let inString = false;
+  let escapeNext = false;
+  const safeCutPoints = [];
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escapeNext) escapeNext = false;
+      else if (ch === '\\') escapeNext = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === ',' || ch === '{' || ch === '[') safeCutPoints.push(i);
+  }
+
+  for (let idx = safeCutPoints.length - 1; idx >= 0; idx--) {
+    const cutAt = safeCutPoints[idx];
+    // Cut *before* a comma (drop the incomplete field after it), or
+    // *after* an opening bracket (start an empty object/array).
+    const isOpener = text[cutAt] === '{' || text[cutAt] === '[';
+    const candidateText = isOpener ? text.slice(0, cutAt + 1) : text.slice(0, cutAt);
+    const closedCandidate = closeOpenStructures(candidateText);
+    if (closedCandidate === null) continue;
+    try {
+      return JSON.parse(closedCandidate);
+    } catch (_err) {
+      continue; // try the next earlier cut point
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Closes an unterminated trailing string and every still-open `{`/`[` in
+ * `text`, without altering anything else. Returns the closed string, or
+ * null if `text` had no unclosed string/bracket to begin with (i.e. it
+ * either already parses or isn't truncated in a way this helps with).
+ */
+function closeOpenStructures(text) {
+  const stack = [];
+  let inString = false;
+  let escapeNext = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escapeNext) escapeNext = false;
+      else if (ch === '\\') escapeNext = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === '{' || ch === '[') stack.push(ch === '{' ? '}' : ']');
+    else if (ch === '}' || ch === ']') stack.pop();
+  }
+
+  if (!inString && stack.length === 0) return null; // nothing to close
+
+  let result = text;
+  if (inString) result += '"';
+  // A dangling trailing comma/colon right before the close would still be
+  // invalid JSON (e.g. `{"a":1,` or `{"a":`) — strip it before closing.
+  result = result.replace(/[,:]\s*$/, '');
+  result += stack.reverse().join('');
+  return result;
 }
 
 /**
@@ -747,11 +848,60 @@ async function analyzeFIR(firText, includeLiveSearch = false, includeSeniorRevie
   }
 }
 
-async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', additionalInfo = '') {
+// ============================================================
+// DEEP-ANALYSIS GROUNDING (shared by every draft generator below)
+// ============================================================
+//
+// runLegalReasoningChain() (legalReasoningChain.js) produces a much richer
+// result than the single-shot analyze*() functions: per-issue research,
+// both sides' arguments, rebuttals, and a final synthesized strategy —
+// effectively what a senior advocate would actually think through before
+// drafting anything, rather than a draft written straight off a first-pass
+// summary. When a caller has that result (or asks for one), every draft
+// function below should draft AS that senior advocate — using the
+// synthesis's case theory, strategy recommendation, risk factors, and the
+// per-issue arguments/rebuttals as the grounds for the document — instead
+// of drafting off the thinner single-shot analysis alone.
+//
+// This is intentionally optional/additive: callers that don't pass a
+// deepAnalysis keep working exactly as before (the thinner, faster path).
+function buildDeepAnalysisBlock(deepAnalysis) {
+  if (!deepAnalysis || !deepAnalysis.synthesis) return '';
+
+  const { synthesis, issue_chains: issueChains = [] } = deepAnalysis;
+
+  const issuesText = issueChains.map((ic) => {
+    const conclusion = (synthesis.issue_by_issue || []).find((x) => x.issue === ic.issue)?.conclusion;
+    return `- Issue: ${ic.issue}` +
+      (conclusion ? `\n  Conclusion: ${conclusion}` : '') +
+      (ic.supporting_arguments?.length ? `\n  Arguments for the client: ${ic.supporting_arguments.join('; ')}` : '') +
+      (ic.opposing_arguments?.length ? `\n  Arguments the other side will raise: ${ic.opposing_arguments.join('; ')}` : '') +
+      (ic.rebuttal_points?.length ? `\n  Our rebuttal to those: ${ic.rebuttal_points.join('; ')}` : '') +
+      (ic.key_authorities?.length ? `\n  Authorities: ${ic.key_authorities.join('; ')}` : '');
+  }).join('\n\n');
+
+  return `
+
+===== SENIOR ADVOCATE'S DEEP ANALYSIS (already completed — draft AS this advocate, using this reasoning as your grounds; do not contradict it) =====
+CASE THEORY: ${synthesis.case_theory || 'n/a'}
+OVERALL ASSESSMENT: ${synthesis.overall_assessment || 'n/a'}
+RECOMMENDED STRATEGY: ${synthesis.strategy_recommendation || 'n/a'}
+RISK FACTORS TO ANTICIPATE (address or work around these in the drafting): ${(synthesis.risk_factors || []).join('; ') || 'none noted'}
+CONFIDENCE: ${synthesis.confidence_assessment?.overall || 'unknown'}${synthesis.confidence_assessment?.caveats?.length ? ` (caveats: ${synthesis.confidence_assessment.caveats.join('; ')})` : ''}
+
+PER-ISSUE REASONING:
+${issuesText || 'none'}
+
+CONSOLIDATED LEGAL REFERENCES RELIED ON: ${(synthesis.legal_references || []).join('; ') || 'none confirmed'}
+===== END DEEP ANALYSIS =====
+`;
+}
+async function generateBailApplication(firAnalysis, bailType = 'pre_arrest', additionalInfo = '', deepAnalysis = null) {
   const isPreArrest = bailType === 'pre_arrest';
   const analysisJson = typeof firAnalysis === 'string' ? firAnalysis : JSON.stringify(firAnalysis, null, 2);
+  const deepBlock = buildDeepAnalysisBlock(deepAnalysis);
 
-  const systemInstruction = `Draft a complete, court-ready ${isPreArrest ? 'PRE-ARREST' : 'POST-ARREST'} bail application for a Pakistani ${isPreArrest ? 'Sessions Court / High Court (under Section 498, CrPC)' : 'court (under Section 497, CrPC)'}, based on the FIR analysis below. Follow standard Pakistani bail petition drafting format: title/heading with court name placeholder, parties, "Respectfully Submitted" facts paragraphs (numbered), grounds for bail (numbered, each grounded in a specific weak point from the analysis and, where applicable, a real cited precedent), and prayer clause. Use placeholders like [COURT NAME], [PETITIONER NAME], [DATE] where case-specific details aren't given. Weave in the weak points and defence suggestions from the analysis as the grounds for bail.\n\nFIR ANALYSIS:\n${analysisJson}\n\nADDITIONAL INFO FROM CLIENT:\n${additionalInfo || 'None provided.'}`;
+  const systemInstruction = `Draft a complete, court-ready ${isPreArrest ? 'PRE-ARREST' : 'POST-ARREST'} bail application for a Pakistani ${isPreArrest ? 'Sessions Court / High Court (under Section 498, CrPC)' : 'court (under Section 497, CrPC)'}, based on the FIR analysis below.${deepBlock ? ' A senior advocate has already done the full issue-by-issue research and strategy work below — draft as that advocate, building your grounds for bail directly from the case theory, strategy recommendation, and per-issue arguments/rebuttals, not just the raw FIR summary.' : ''} Follow standard Pakistani bail petition drafting format: title/heading with court name placeholder, parties, "Respectfully Submitted" facts paragraphs (numbered), grounds for bail (numbered, each grounded in a specific weak point from the analysis and, where applicable, a real cited precedent), and prayer clause. Use placeholders like [COURT NAME], [PETITIONER NAME], [DATE] where case-specific details aren't given. Weave in the weak points and defence suggestions from the analysis as the grounds for bail.\n\nFIR ANALYSIS:\n${analysisJson}${deepBlock}\n\nADDITIONAL INFO FROM CLIENT:\n${additionalInfo || 'None provided.'}`;
 
   const groundingQuery = [
     Array.isArray(firAnalysis?.sections_applied) ? firAnalysis.sections_applied.join(' ') : '',
@@ -801,10 +951,11 @@ async function analyzeLegalNotice(noticeText, includeLiveSearch = false) {
   return { analysis: parseJsonSafe(result.text), tokens: result.tokens, liveSearchStatus };
 }
 
-async function generateNoticeReply(noticeAnalysis, recipientDetails = '') {
+async function generateNoticeReply(noticeAnalysis, recipientDetails = '', deepAnalysis = null) {
   const analysisJson = typeof noticeAnalysis === 'string' ? noticeAnalysis : JSON.stringify(noticeAnalysis, null, 2);
+  const deepBlock = buildDeepAnalysisBlock(deepAnalysis);
 
-  const systemInstruction = `Draft a formal, court-admissible reply to the legal notice described below, in standard Pakistani legal-notice-reply format (advocate letterhead placeholder, reference to the original notice, paragraph-by-paragraph rebuttal of each demand, legal basis for the rebuttal, and closing paragraph). Use placeholders like [ADVOCATE NAME], [DATE] where specific details aren't given.\n\nNOTICE ANALYSIS:\n${analysisJson}\n\nRECIPIENT DETAILS:\n${recipientDetails || 'None provided.'}`;
+  const systemInstruction = `Draft a formal, court-admissible reply to the legal notice described below, in standard Pakistani legal-notice-reply format (advocate letterhead placeholder, reference to the original notice, paragraph-by-paragraph rebuttal of each demand, legal basis for the rebuttal, and closing paragraph).${deepBlock ? ' A senior advocate has already done the full issue-by-issue research and strategy work below — draft as that advocate, basing each rebuttal directly on the case theory, per-issue arguments, and the rebuttal points already worked out below, not just the raw notice summary.' : ''} Use placeholders like [ADVOCATE NAME], [DATE] where specific details aren't given.\n\nNOTICE ANALYSIS:\n${analysisJson}${deepBlock}\n\nRECIPIENT DETAILS:\n${recipientDetails || 'None provided.'}`;
 
   const groundingQuery = [
     Array.isArray(noticeAnalysis?.legal_issues) ? noticeAnalysis.legal_issues.join(' ') : '',
@@ -910,11 +1061,69 @@ async function analyzePlaint(plaintText, includeLiveSearch = false) {
 }
 
 // ============================================================
+// SMART DRAFT TYPE CLASSIFICATION
+// (used by /api/v1/drafts/generate when the user describes a problem
+// instead of picking a draft type themselves — an advocate's first job
+// when someone walks in describing a problem is deciding what document
+// the situation actually calls for, before drafting it.)
+// ============================================================
+
+const DRAFT_TYPE_ENUM = [
+  'bail_application', 'civil_suit', 'legal_notice', 'reply_notice',
+  'written_statement', 'petition', 'affidavit', 'contract', 'appeal',
+];
+
+const DRAFT_TYPE_DESCRIPTIONS = {
+  bail_application: 'accused wants bail (pre-arrest or post-arrest) in a criminal case',
+  civil_suit: 'plaintiff wants to file a fresh civil suit/plaint to claim something (money, possession, damages, declaration, etc.)',
+  legal_notice: 'sending a formal legal notice/demand to someone before litigation (e.g. demanding payment, possession, performance)',
+  reply_notice: 'responding to a legal notice someone else already sent',
+  written_statement: 'responding to a plaint/suit already filed against the person (defence in an ongoing civil case)',
+  petition: 'filing a petition or writ before a court/tribunal (e.g. constitutional petition, family petition, consumer complaint)',
+  affidavit: 'a sworn statement of facts needed to support another proceeding',
+  contract: 'drafting an agreement/contract between two or more parties (not a dispute — a deal being formed)',
+  appeal: 'challenging/appealing a court judgment, order, or decision already passed against the person',
+};
+
+/**
+ * Given a free-text description of someone's legal problem, decides which
+ * of the fixed draft types actually fits — the same judgment call a real
+ * advocate makes before drafting anything. Returns null draftType (rather
+ * than guessing) if the facts are too thin/ambiguous to tell.
+ */
+async function classifyDraftType(problemText) {
+  const typeList = DRAFT_TYPE_ENUM.map((t) => `- "${t}": ${DRAFT_TYPE_DESCRIPTIONS[t]}`).join('\n');
+
+  const systemInstruction = `You are a senior Pakistani advocate. A client has just described their legal problem to you in their own words. Your first job — before drafting anything — is deciding which single type of legal document actually fits what they need, exactly the way an advocate mentally sorts a walk-in client's problem before reaching for a template.\n\nThe only valid draft types are:\n${typeList}\n\nRespond with ONLY a JSON object with exactly these keys:\n{\n  "draft_type": one of the exact type strings above, or null if the facts given are too thin/ambiguous to confidently decide,\n  "confidence": "high" | "medium" | "low",\n  "reasoning": a short (1-2 sentence) explanation, in plain language, of why this document fits the client's situation,\n  "clarifying_question": string|null — if confidence is "low" or draft_type is null, one specific question that would resolve the ambiguity; otherwise null\n}\n\nCLIENT'S PROBLEM (in their own words):\n${problemText}`;
+
+  const result = await generateContent({
+    contents: 'Decide the draft type as instructed and return the JSON.',
+    systemInstruction,
+    jsonMode: true,
+    disableSearch: true,
+    appendSources: false,
+    maxTokens: 1024,
+  });
+
+  const parsed = parseJsonSafe(result.text);
+  // Guard against the model inventing a type outside the fixed enum —
+  // fall back to null (ambiguous) rather than passing a bad value down
+  // to generateDraft, which has no fallback of its own for an unknown type.
+  if (parsed.draft_type && !DRAFT_TYPE_ENUM.includes(parsed.draft_type)) {
+    parsed.draft_type = null;
+    parsed.clarifying_question = parsed.clarifying_question
+      || 'Could you clarify what outcome you\'re looking for (bail, filing a case, replying to a notice, an appeal, etc.)?';
+  }
+  return { classification: parsed, tokens: result.tokens };
+}
+
+// ============================================================
 // GENERIC DRAFT GENERATOR (used by /api/v1/drafts/generate)
 // ============================================================
 
-async function generateDraft(draftType, details = {}, language = 'english') {
+async function generateDraft(draftType, details = {}, language = 'english', deepAnalysis = null) {
   const detailsText = typeof details === 'string' ? details : JSON.stringify(details, null, 2);
+  const deepBlock = buildDeepAnalysisBlock(deepAnalysis);
 
   const languageInstruction = {
     english: 'Write the draft in formal legal English.',
@@ -923,7 +1132,7 @@ async function generateDraft(draftType, details = {}, language = 'english') {
     bilingual: 'Write the draft with English legal headings and Urdu explanatory text where natural.',
   }[language] || 'Write the draft in formal legal English.';
 
-  const systemInstruction = `Draft a complete, court-ready "${draftType}" document for use in a Pakistani court/legal context, based on the details below. Follow the standard Pakistani format for this document type (proper heading/title, numbered paragraphs, verification clause where applicable, prayer/relief clause where applicable). Use placeholders like [COURT NAME], [PARTY NAME], [DATE] for any specific detail not supplied. ${languageInstruction}\n\nDETAILS PROVIDED:\n${detailsText}`;
+  const systemInstruction = `Draft a complete, court-ready "${draftType}" document for use in a Pakistani court/legal context, based on the details below.${deepBlock ? ' A senior advocate has already worked through the case theory and strategy below — draft as that advocate, grounding the document in that reasoning rather than the raw details alone.' : ''} Follow the standard Pakistani format for this document type (proper heading/title, numbered paragraphs, verification clause where applicable, prayer/relief clause where applicable). Use placeholders like [COURT NAME], [PARTY NAME], [DATE] for any specific detail not supplied. ${languageInstruction}\n\nDETAILS PROVIDED:\n${detailsText}${deepBlock}`;
 
   const result = await generateContent({
     contents: `Draft the ${draftType} now, in full.`,
@@ -950,5 +1159,7 @@ module.exports = {
   generateNoticeReply,
   analyzeJudgment,
   analyzePlaint,
+  classifyDraftType,
+  DRAFT_TYPE_DESCRIPTIONS,
   generateDraft,
 };
