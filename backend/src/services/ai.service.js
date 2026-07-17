@@ -14,7 +14,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const logger = require('../utils/logger');
-const { retrieveRelevantLaw } = require('./legalRetrievalService');
+const { retrieveRelevantLawWithCitations } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
@@ -167,7 +167,7 @@ async function retrieveLawContext(query) {
   if (!query || !query.trim()) return '';
 
   try {
-    const { constitution, statute, judgment } = await retrieveRelevantLaw(query.slice(0, 2000));
+    const { constitution, statute, judgment } = await retrieveRelevantLawWithCitations(query.slice(0, 2000));
 
     const sections = [];
     const render = (label, rows) => {

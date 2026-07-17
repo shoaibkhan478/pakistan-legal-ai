@@ -94,4 +94,57 @@ async function retrieveRelevantLaw(query) {
   };
 }
 
-module.exports = { retrieveRelevantLaw };
+/**
+ * TRUE citation-graph lookup — given one or more legal_knowledge row ids
+ * (statute/constitution provisions), returns every judgment that has a
+ * recorded case_citations link to that provision (built by
+ * scripts/extractCaseCitations.js), instead of a fresh semantic/keyword
+ * search. This is the difference between "text similar to this Section"
+ * (retrieveRelevantLaw above) and "cases that actually cite this Section".
+ *
+ * Verified links are returned first, then by confidence, so an
+ * unreviewed/low-confidence regex match doesn't outrank a confirmed one.
+ *
+ * @param {number[]} provisionIds - legal_knowledge.id values (statute/constitution rows)
+ * @param {number} [limit]
+ * @returns {Promise<object[]>} judgment rows, each with citation_context/confidence/verified attached
+ */
+async function getRelatedCases(provisionIds, limit = 5) {
+  if (!Array.isArray(provisionIds) || provisionIds.length === 0) return [];
+
+  const result = await pool.query(
+    `SELECT lk.id, lk.title, lk.citation, lk.court, lk.judge_name, lk.year, lk.full_text,
+            cc.citation_context, cc.confidence, cc.verified, cc.cited_provision_id
+     FROM case_citations cc
+     JOIN legal_knowledge lk ON lk.id = cc.case_id
+     WHERE cc.cited_provision_id = ANY($1::bigint[])
+     ORDER BY cc.verified DESC,
+              CASE cc.confidence WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
+              lk.year DESC NULLS LAST
+     LIMIT $2`,
+    [provisionIds, limit]
+  );
+  return result.rows;
+}
+
+/**
+ * Convenience wrapper for the common case: run the normal hybrid search,
+ * then ALSO pull true citation-graph matches for whichever statute/
+ * constitution rows came back, and merge them into the judgment list
+ * (citation-graph matches first — they're a confirmed link, not just a
+ * text-similarity guess). This is the function chat/answer-generation
+ * should call instead of retrieveRelevantLaw() directly, once
+ * case_citations has been populated.
+ */
+async function retrieveRelevantLawWithCitations(query) {
+  const base = await retrieveRelevantLaw(query);
+
+  const provisionIds = [...base.constitution, ...base.statute].map((r) => r.id);
+  const relatedCases = await getRelatedCases(provisionIds, RESULTS_PER_SOURCE_TYPE * 2);
+
+  const mergedJudgments = mergeResults(relatedCases, base.judgment);
+
+  return { ...base, judgment: mergedJudgments };
+}
+
+module.exports = { retrieveRelevantLaw, getRelatedCases, retrieveRelevantLawWithCitations };
