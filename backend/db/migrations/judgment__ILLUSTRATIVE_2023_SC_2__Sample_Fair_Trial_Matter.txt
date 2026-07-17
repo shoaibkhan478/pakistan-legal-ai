@@ -1,0 +1,32 @@
+[ILLUSTRATIVE SAMPLE FILE — NOT A REAL REPORTED JUDGMENT]
+This file is placeholder/demo data written for testing the ingestion and
+citation-linking pipeline only. Replace it with genuine, verified judgment
+text before relying on this system for any real legal research.
+
+Court: Supreme Court of Pakistan (illustrative)
+Case: Sample Petitioner v. Federation of Pakistan (illustrative constitutional petition)
+
+SUMMARY OF FACTS
+The petitioner invoked the constitutional jurisdiction of the High Court
+under Article 199 of the Constitution, challenging departmental
+proceedings conducted without affording him an opportunity of hearing.
+
+ISSUE
+Whether the denial of an opportunity of hearing before an adverse
+departmental order violates the right to a fair trial and due process
+guaranteed under Article 10-A of the Constitution, and whether
+constitutional jurisdiction under Article 199 was properly invoked in the
+absence of an alternate adequate remedy.
+
+REASONING (illustrative)
+The Court reiterated that Article 10-A guarantees a fair trial and due
+process in all proceedings, including departmental/administrative
+proceedings with civil consequences, not merely criminal trials. Where an
+order is passed in flagrant violation of natural justice, the existence
+of a departmental appeal does not, by itself, oust the writ jurisdiction
+under Article 199.
+
+HELD
+The impugned order was set aside for want of due process under Article
+10-A, and the matter was remanded for a fresh hearing in accordance with
+law.
