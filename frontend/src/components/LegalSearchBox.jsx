@@ -25,7 +25,7 @@ export default function LegalSearchBox() {
     setResult(null);
 
     try {
-      const res = await fetch(`${backendUrl}/api/legal-search`, {
+      const res = await fetch(`${backendUrl}/api/v1/legal-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question }),
