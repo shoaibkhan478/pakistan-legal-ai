@@ -6,14 +6,11 @@ const helmet = require('helmet');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-
-
 const { connectDB } = require('./config/database');
 const { connectRedis } = require('./config/redis');
 const logger = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const rateLimiter = require('./middleware/rateLimiter');
-
 // Route imports
 // NOTE: only ONE legal routes file/name is used now (legal.routes.js) to match
 // the naming convention of every other route file below (xxx.routes.js).
@@ -31,13 +28,11 @@ const studentRoutes = require('./routes/student.routes');
 const adminRoutes = require('./routes/admin.routes');
 const notificationRoutes = require('./routes/notification.routes');
 const legalRoutes = require('./routes/legal.routes');
-
+const legalSearchRoutes = require('./routes/legal-search.routes');
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 // Middleware
 app.use(helmet());
-
 // // CORS Configuration for frontend connection
 // app.use(cors({
 //     origin: 'http://localhost:3000',
@@ -51,23 +46,19 @@ const allowedOrigins = [
     process.env.FRONTEND_URL,
     process.env.CORS_ORIGIN
 ].filter(Boolean);
-
 app.use(cors({
     origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
-
 // Rate Limiting
 app.use(rateLimiter);
-
 // Routes (all mounted AFTER body-parsing middleware, so req.body works everywhere)
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
@@ -81,19 +72,16 @@ app.use('/api/v1/students', studentRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/legal', legalRoutes);
-
+app.use('/api/v1/legal-search', legalSearchRoutes);
 // Static folders
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
 // Global Error Handler
 app.use(errorHandler);
-
 // Start Server Function
 const startServer = async () => {
     try {
         await connectDB();
         logger.info('Database connected successfully');
-
         app.listen(PORT, () => {
             logger.info(`Server is running on port ${PORT}`);
             console.log(`Server is running on port ${PORT}`);
@@ -103,18 +91,14 @@ const startServer = async () => {
         process.exit(1);
     }
 };
-
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
     logger.error('Uncaught Exception:', error);
     process.exit(1);
 });
-
 process.on('unhandledRejection', (reason) => {
     logger.error('Unhandled Rejection:', reason);
     process.exit(1);
 });
-
 startServer();
-
 module.exports = app;
