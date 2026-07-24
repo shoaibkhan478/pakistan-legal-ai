@@ -5,8 +5,10 @@ import DashboardShell from '@/components/layout/DashboardShell';
 import { Card } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
+import SeniorAdvocateToggle from '@/components/legal/SeniorAdvocateToggle';
+import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
 import api from '@/lib/api';
-import { Send, Bot, User, Loader2, Languages, Plus, History, Search, X, Paperclip } from 'lucide-react';
+import { Send, Bot, User, Loader2, Languages, Plus, History, Search, X, Paperclip, Gavel } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -14,6 +16,7 @@ import toast from 'react-hot-toast';
 interface Message {
   role: 'user' | 'assistant';
   message: string;
+  deepAnalysis?: DeepAnalysisData;
 }
 
 interface ChatSession {
@@ -82,6 +85,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [language, setLanguage] = useState('english');
+  const [deepMode, setDeepMode] = useState(false);
   const [sessionId, setSessionId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -137,8 +141,12 @@ export default function ChatPage() {
       const { data } = await api.post('/chat/message', {
         messages: historyToSend,
         language,
+        deepMode,
       });
-      setMessages((prev) => [...prev, { role: 'assistant', message: data.data.content }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', message: data.data.content, deepAnalysis: data.data.deepAnalysis },
+      ]);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to get response.');
       setMessages((prev) => prev.slice(0, -1));
@@ -222,7 +230,9 @@ export default function ChatPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold text-navy-900 dark:text-white">AI Legal Chat</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Ask legal questions in English, Urdu, or Roman Urdu</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {deepMode ? 'Senior Advocate Mode: deep issue-by-issue analysis with citation verification' : 'Ask legal questions in English, Urdu, or Roman Urdu'}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 rounded-lg px-1 py-1">
@@ -326,31 +336,45 @@ export default function ChatPage() {
               <div key={i} className={cn('flex gap-3', m.role === 'user' && 'flex-row-reverse')}>
                 <div className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-                  m.role === 'user' ? 'bg-navy-800 text-white' : 'bg-primary-700 text-white'
+                  m.role === 'user' ? 'bg-navy-800 text-white' : m.deepAnalysis ? 'bg-amber-600 text-white' : 'bg-primary-700 text-white'
                 )}>
-                  {m.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                  {m.role === 'user' ? <User className="w-4 h-4" /> : m.deepAnalysis ? <Gavel className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
-                <div className={cn(
-                  'max-w-[80%] rounded-2xl px-4 py-3 text-sm',
-                  m.role === 'user'
-                    ? 'bg-primary-700 text-white rounded-tr-sm'
-                    : 'bg-slate-100 dark:bg-navy-800 text-slate-800 dark:text-slate-200 rounded-tl-sm',
-                  language === 'urdu' && 'urdu-text'
-                )}>
-                  <div className="prose-legal prose-sm max-w-none">
-                    <ReactMarkdown>{m.message}</ReactMarkdown>
+                {m.deepAnalysis ? (
+                  <div className="max-w-[92%] w-full rounded-2xl rounded-tl-sm border border-amber-200 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/10 p-4">
+                    <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400 mb-3">
+                      <Gavel className="w-3.5 h-3.5" /> Senior Advocate Mode — full case analysis
+                    </p>
+                    <DeepAnalysisResult data={m.deepAnalysis} />
                   </div>
-                </div>
+                ) : (
+                  <div className={cn(
+                    'max-w-[80%] rounded-2xl px-4 py-3 text-sm',
+                    m.role === 'user'
+                      ? 'bg-primary-700 text-white rounded-tr-sm'
+                      : 'bg-slate-100 dark:bg-navy-800 text-slate-800 dark:text-slate-200 rounded-tl-sm',
+                    language === 'urdu' && 'urdu-text'
+                  )}>
+                    <div className="prose-legal prose-sm max-w-none">
+                      <ReactMarkdown>{m.message}</ReactMarkdown>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
 
             {isLoading && (
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary-700 text-white flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-4 h-4" />
+                <div className={cn('w-8 h-8 rounded-full text-white flex items-center justify-center flex-shrink-0', deepMode ? 'bg-amber-600' : 'bg-primary-700')}>
+                  {deepMode ? <Gavel className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
-                <div className="bg-slate-100 dark:bg-navy-800 rounded-2xl rounded-tl-sm px-4 py-3">
+                <div className="bg-slate-100 dark:bg-navy-800 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                  {deepMode && (
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      Building the full case analysis — issue-spotting, arguing both sides, verifying citations...
+                    </span>
+                  )}
                 </div>
               </div>
             )}
@@ -359,6 +383,7 @@ export default function ChatPage() {
 
           {/* Input */}
           <div className="border-t border-slate-200 dark:border-navy-800 p-4">
+            <SeniorAdvocateToggle checked={deepMode} onChange={setDeepMode} />
             <form
               onSubmit={(e) => { e.preventDefault(); sendMessage(); }}
               className="flex items-end gap-2"
@@ -390,7 +415,7 @@ export default function ChatPage() {
                     sendMessage();
                   }
                 }}
-                placeholder="Type your legal question..."
+                placeholder={deepMode ? 'Describe the case facts for a full senior-advocate analysis...' : 'Type your legal question...'}
                 rows={1}
                 className={cn(
                   'flex-1 resize-none px-4 py-3 rounded-xl border border-slate-300 dark:border-navy-700 bg-white dark:bg-navy-900',

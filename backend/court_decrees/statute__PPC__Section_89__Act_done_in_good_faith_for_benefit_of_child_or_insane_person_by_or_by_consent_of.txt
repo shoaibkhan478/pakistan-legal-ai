@@ -1,0 +1,195 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/PPC.pdf
+Retrieved: 2026-07-23
+
+PPC Section 89: Act done in good faith for benefit of child or insane person, by or by consent of guardian
+
+Nothing which is done in good faith for the benefit of a person under twelve years of age, or of unsound
+mind, by or by consent, either express or implied, of the guardian or other person having lawful charge
+of that person, is an offence by reason of any harm which it may cause, or be intended by the doer to
+cause or be known by the doer to be likely to cause to that person:
+Provisos. Provided—
+First. That this exception shall not extend to the intentional causing of death, or to the
+attempting to cause death ;
+Secondly. That this exception shall not extend to the doing of anything which the person doing it
+knows to be likely to cause death, for any purpose other than the preventing of death or grievous hurt;
+or the curing of any grievous disease or infirmity ;
+Thirdly. That this exception shall not extend to the voluntary causing of grievous hurt, or to the
+attempting to cause grievous hurt, unless it be for the purpose of preventing death or grievous hurt, or
+the curing of any grievous disease or infirmity ;
+Fourthly. That this exception shall not extend to the abetment of any offence, to the committing
+of which offence it would not extend.
+Illustration
+A, in good faith, for his child’s benefit without his child’s consent, has his child cut for the stone by
+a surgeon, knowing it to be likely that the operation will cause the child’s death, but not intending to
+cause the child’s death. A is within the exception, inasmuch as his object was the cure of the child.
+90. Consent known to be given under fear or misconception. A consent is not such a consent as
+is intended by any section of this Code, if the consent is given by a person under fear of injury, or under
+a misconception of fact, and if the person doing the act knows, or has reason to believe, that the consent
+was given in consequence of such fear or misconception ; or
+Consent of insane person. if the consent is given by a person who, from unsoundness of mind, or
+intoxication,is unable to understand the nature and consequence of that to which he gives his consent
+; or
+Consent of child. unless the contrary appears from the context, if the consent is given by a person
+who is under twelve years of age.
+91. Exclusion  of  acts  which  are  offences  independently  of  harm  caused. The exceptions in
+sections 87, 88 and 89 do not extend to acts which are offences independently of any harm which they
+may cause, or be intended to cause, or be known to be likely to cause, to the person giving the consent,
+or on whose behalf the consent is given.
+41
+Illustration
+Causing miscarriage (unless caused in good faith for the purpose of saving the life of the woman)
+is an offence  independently of any harm which it may cause or be intended to cause to the woman.
+Therefore, it is not an offence “by reason of such harm” , and the consent of the woman or of her
+guardian to the causing of such miscarriage does not justify the act.
+92. Act done in good faith for benefit of a person without consent. Nothing is an offence by
+reason  of  any  harm  which it may  cause  to  a  person  for  whose  benefit it is done in good faith,  even
+without that person's consent, if the circumstances are such that it is impossible for that person to signify
+consent, or if that person is incapable of giving consent, and has no guardian or other person in lawful
+charge of him from whom it is possible to obtain consent in time for the thing to be done with benefit:
+Proviso. Provided—
+First. That this exception shall not extend to the intentional causing of death, or the attempting
+to cause death;
+Secondly.
+That this exception shall not extend to the doing of anything which the person doing
+it knows to  be likely to cause death,  for any  purpose other than the preventing of death or grievous
+hurt, or the curing of any grievous disease or infirmity ;
+Thirdly. That this exception shall not extend to the voluntary causing of hurt, or to the
+attempting to cause hurt, for any purpose other than the preventing of death or hurt ;
+Fourthly. That this exception shall not extend to the abetment of any offence, to the
+committing of which offence, it would not extend.
+Illustrations
+(a) Z is thrown  from his horse,  and is insensible. A,  a surgeon, finds  that  Z  requires  to  be
+trepanned. A not intending Z’s death but in good faith for Z’s benefit, performs the trepan
+before Z recovers his power of judging for himself. A has committed no offence.
+(b) Z is carried off by a tiger. A fires at the tiger knowing it to be likely that the shot may kill Z,
+but not intending to kill Z, and in good faith intending Z’s benefit. A’s ball gives Z a mortal
+wound. A has committed no offence.
+(c) A, a surgeon, sees a child suffer an accident which is likely to prove fatal unless an operation
+be immediately performed. There is not time to apply to the child’s guardian. A performs
+the operation inspite of the entreaties of the child, intending in good faith, the child's benefit.
+A has committed no offence.
+(d) A is in a house which is on fire, with Z, a child. People below hold out a blanket. A drops
+the child from the housetop, knowing it to be likely that the fall may kill the child, but not
+intending to kill the child, and intending, in good faith, the child’s benefit. Here even if the
+child is killed by the fall, A has committed no offence.
+92.
+Explanation. Mere pecuniary benefit is not benefit within the meaning of sections 88, 89 and
+93. Communication made in good faith. No communication made in good faith is an offence by
+reason of any harm to the person to whom it is made, if it is made for the benefit of that person.
+Illustration
+A, a surgeon, in good faith, communicates to a patient his opinion that he cannot live. The patient
+dies in consequence of the shock. A has committed no offence, though he knew it to be likely that the
+communication might cause the patient’s death.
+94. Act to which a person is compelled by threats. Except murder, and offences against the State
+punishable with death, nothing is an offence which is done by a person who is compelled to do it by
+threats,  which,  at  the time of  doing  it,  reasonably  cause  the  apprehension  that  instant  death  to  that
+person will otherwise be the consequence : Provided the person doing the act did not of his own accord,
+or  from  a  reasonable  apprehension  of  harm  to himself short  of  instant  death,  place himself  in the
+situation by which he became subject to such constraint.
+Explanation 1. A person who, of his own accord, or by reason of a threat of being beaten, joins
+a gang of dacoits, knowing their character, is not entitled to the benefit of this exception, on the ground
+of his having been compelled by his associates to do anything that is an offence by law.
+Explanation 2. A person seized by a gang of dacoits, and forced by threat of instant death, to
+do a thing which is an offence by law ; for example, a smith compelled to take his tools and to force
+the door of a house for the dacoits to enter and plunder it, is entitled to the benefit of this exception.
+95. Act causing slight harm. Nothing is an offence by reason that it causes, or that it is intended
+to cause, or that it is known to be likely to cause, any harm, if that harm is so slight that no person of
+ordinary sense and temper would complain of such harm.
+Of the Right of Private Defence
+96. Things done in private defence. Nothing is an offence which is done in the exercise of the
+right of private defence.
+97. Right of private defence of the body and of property. Every person has a right, subject to
+the restrictions contained in section 99, to defend
+First.
+body ;
+His own body, and the body of any other person, against any offence affecting the huma
+Secondly. The property, whether moveable or immoveable, of himself or of any other person,
+against any act which is an offence falling under the definition of theft, robbery, mischief or criminal
+trespass, or which is an attempt to commit theft, robbery, mischief or criminal trespass.
+98. Right of private defence against the act of a person of unsound mind, etc. When an act,
+which would otherwise  be  a  certain  offence is not  that  offence,  by  reason  of  the  youth,  the  want  of
+maturity of understanding, the unsoundness of mind or the intoxication of the person doing that act, or
+by reason of any misconception on the part of that person, every person has the same right of private
+defence against that act which he would have if the act were that offence.
+Illustrations
+(a) Z, under the influence of madness, attempts to kill A ; Z is guilty of no offence. But A has
+the same right of private defence which he would have if Z were sane.
+(b) A enters by night a house which he is legally entitled to enter. Z, in good faith, taking A for
+a house-breaker, attacks A. Here Z, by attacking A under this misconception, commits no
+offence. But A has the same right of private defence against Z, which he would have if Z
+were not acting under that misconception.
+99. Acts against which there is no right of private defence. There is no right of private defence
+against an act which does not reasonably cause the apprehension of death or of grievous hurt, if done,
+or attempted to be done by a public servant acting in good faith under colour of his office, though that
+act may not be strictly justifiable by law.
+There is no right of  private  defence against an  act  which  does  not  reasonably  cause  the
+apprehension of death or of grievous hurt, if done, or attempted to be done, by the direction of a public
+servant acting in good faith under colour of his office though that direction may not be strictly justifiable
+by law.
+There is no right of private defence in cases in which there is time to have recourse to the protection
+of the public authorities.
+Extent to which the right may be exercised. The right of private defence in no case extends to
+the inflicting of more harm than it is necessary to inflict for the purpose of defence.
+Explanation 1. A person is not deprived of the right of private defence against an act done, or
+attempted to be done, by a public servant, as such, unless he knows, or has reason to believe, that the
+person doing the act is such public servant.
+Explanation 2. A person is not deprived of the right of private defence against an act done, or
+attempted to be done, by the direction of a public servant, unless he knows, or has reason to believe,
+that the person doing the act is acting by such direction, or unless such person states the authority under
+which he acts, or if he has authority in writing, unless he produces such authority, if demanded.
+100. When  the  right  of  private  defence  of  the  body  extends  to  causing  death. The right of
+private defence of the body extends, under the restrictions mentioned in the last preceding section, to
+the voluntary causing of death or of any other harm to the assailant, if the offence which occasions
+the exercise of the right be of any of the descriptions hereinafter enumerated, namely:
+First. — Such an assault as may reasonably cause the apprehension that death will otherwise be
+the consequence of such assault ;
+Secondly. — Such  an  assault  as  may  reasonably  cause  the  apprehension  that  grievous  hurt  will
+otherwise be the consequence of such assault ;
+Thirdly. — An assault with the intention of committing rape ; Fourthly. —
+An assault with the intention of gratifying unnatural lust ;
+Fifthly.
+Sixthly.
+An assault with the intention of kidnapping or abducting ;
+An assault with the intention of wrongfully confining a person, under circumstances
+which  may  reasonably  cause  him  to  apprehend  that  he  will  be  unable  to  have  recourse  to  the  public
+authorities for his release.
+101. When such right extends to causing any harm other than death. If the offence be not of
+any of the descriptions enumerated in the last preceding section, the right of private defence of the body
+does not extend to the voluntary causing of death to the assailant, but does extend, under the restrictions
+mentioned in section 99 to the voluntary causing to the assailant of any harm other than death.
+102. Commencement and continuance of the right of private defence of the body. The right of
+private defence of the body commences as soon as a reasonable apprehension of danger to the body
+arises from an attempt or threat to commit the offence though the offence may not have been committed
+; and it continues as long as such, apprehension of danger to the body continues.
+103. When  the  right  of  private  defence  of  property  extends  to  causing  death. The right of
+private defence of property extends, under the restrictions  mentioned in section 99, to the  voluntary
+causing of death or of any other harm to the wrong-doer, if the offence, the committing of which, or the
+attempting  to commit which,  occasions  the  exercise  of  the right, be  an  offence  of  any  of  the  des-
+criptions hereinafter enumerated, namely: —
+First. — Robbery ;
+Secondly.— House­breaking by night ;
+Thirdly.— Mischief by fire committed on any building, tent or vessel, which building, tent or vessel
+is used as a human dwelling or as a place for the custody of property ;
+Fourthly. — Theft, mischief or house trespass, under such circumstances as may reasonably cause
+apprehension that death or grievous hurt will be the consequence, if such right of private defence is not
+exercised.
+104. When  such  right  extends  to  causing  any  harm other  than  death. If  the  offence,  the
+committing of which, or the attempting to commit which, occasions the exercise of the right of private
+defence, be theft, mischief, or criminal trespass, not of any of the descriptions enumerated in the last
+preceding section, that right does not extend to the voluntary causing of death, but does extend, subject
+to  the  restrictions  mentioned in section  99,  to  the  voluntary  causing  to  the  wrong-doer  of  any  harm
+other than death.
+105. Commencement and continuance of the right of private defence of property. The right of
+private  defence  of  property  commences  when  a  reasonable  apprehension  of  danger  to  the  property
+commences.
+The right of private  defence  of property against theft continues till  the offender  has effected his
+retreat with the property or either the assistance of the public authorities is obtained, or the property
+has been recovered.
+The right of private defence of properly against robbery continues as long as the offender causes
+or attempts to cause to any person death or hurt or wrongful restraint or as long as the fear of instant
+death or of instant hurt or of instant personal restraint continues.
+The right of private defence of property against criminal trespass or mischief continues as long as
+the offender continues in the commission of criminal trespass or mischief.
+The right of private defence of property against house-breaking by night continues as long as the
+house-trespass which has been begun by such house-breaking continues.

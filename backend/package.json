@@ -9,11 +9,14 @@
     "test": "jest --coverage",
     "lint": "eslint src/",
     "db:migrate": "node src/utils/migrate.js",
-    "db:seed": "node src/utils/seed.js"
+    "db:seed": "node src/utils/seed.js",
+    "ingest:docs": "node scripts/ingestLegalDocs.js",
+    "scrape:paklii": "node scripts/scrapePaklii.js"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
     "bcryptjs": "^2.4.3",
+    "cheerio": "^1.0.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -26,9 +29,10 @@
     "mammoth": "^1.8.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^9.0.3",
     "openai": "^4.68.0",
-    "pdf-parse": "^1.1.1",
+    "pdf-parse": "^1.1.4",
     "pg": "^8.11.5",
     "redis": "^4.6.14",
     "sharp": "^0.33.5",

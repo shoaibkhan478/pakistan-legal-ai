@@ -1,0 +1,670 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/CrPC.pdf
+Retrieved: 2026-07-23
+
+CrPC Section 74: Proof of service in such cases and when serving
+
+1
+[person] not present.-(1) When a summons
+issued by a Court is served outside the local limits of its jurisdiction, and in any case where  the
+1
+[person] who
+has served a summons is not present at the hearing of the case, an affidavit, purporting to be  made  before a
+Magistrate, that such summons has been served, and a duplicate of the summons purporting to be endorsed (in
+manner  provided  by  section  69  and  section  70)  by  the  person  to  whom it was  delivered  or  tendered  or  with
+whom it was left, shall be admissible in evidence, and the statements made therein shall be deemed to be correct
+unless and until the contrary is proved.
+(2) The affidavit mentioned in this section may be attached to the duplicate of the summons and returned
+to the Court.
+B.---Warrant of Arrest
+75. Form of warrant of arrest. -(1) Every Warrant of arrest issued by a Court  under this Code  shall
+be in writing, signed by the presiding officer, or in the case of a Bench of Magistrates, by any member of such
+Bench; and shall bear the seal of the Court.
+(2) Continuance of warrant of arrest. Every such warrant shall remain in force until it is cancelled by
+the Court which issued it, or until it is executed.
+76. Court may direct security to be taken. Any Court issuing a warrant for the arrest of any person
+may in its discretion direct by endorsement on the warrant that, if such person execute a bond with sufficient
+sureties  for his attendance  before  the  court  at  a  specified time and thereafter  until otherwise  directed  by  the
+Court, the officer to whom the warrant is directed shall take such security and shall release such person from
+custody.
+(2) The endorsement shall state
+(a) the number of sureties;
+(b) the amount in which they and the person for whose arrest the warrant is issued, are to be
+respectively bound; and
+(c) the time at which he is to attend before the Court.
+(3) Recognizance to be forwarded. Whenever security is taken under this section the officer to whom
+the warrant is directed shall forward the bond to the Court.
+1
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s.2 and Sch., for “officer”.
+46
+77. Warrants  to  whom directed. (1)  A  warrant  of  arrest  shall  ordinarily  be  directed  to  one  or  more
+police-officers,
+1
+* * *; but
+2
+[any Court] issuing such a warrant may, if its immediate execution is necessary and
+no police-officer is immediately available, direct it to any other person or persons; and such person or persons
+shall execute the same.
+(2) Warrants to several persons. When a warrant is directed to more officers or persons than one, it
+may be executed by all, or by any one or more, of them.
+78. Warrant may be directed to land-holders, etc. -(1) A
+5
+[Magistrate of the first Class] may direct
+a warrant to any landholder, farmer or manager of land within his district or sub-division for the arrest of any
+escaped convict, proclaimed offender or person who has been accused of a non-bailable  offence, and who  has
+eluded pursuit.
+(2) Such landholder, farmer or manager shall acknowledge in writing the receipt of the warrant, and shall
+execute it if the person for whose arrest it  was issued, is in, or enters on, his land or farm, of the land under  his
+charge.
+(3) When the person against whom such warrant is issued is arrested, he shall be made over with the warrant
+to the nearest police-officer, who shall cause him to be taken before a Magistrate having jurisdiction in the case,
+unless security is taken under section 76.
+79. Warrant directed to police-officer. A warrant directed to any police-officer may also be executed
+by any other police-officer whose name is endorsed upon the warrant by the officer to whom it is directed or
+endorsed.
+80. Notification of substance of warrant. The police-officer or other person executing a  warrant  of
+arrest  shall  notify  the  substance  thereof  to  the  person  to  be  arrested,  and, if so  required,  shall  show him the
+warrant.
+81. Person arrested to be brought before Court without delay. The police-officer or other person
+executing a warrant of arrest shall (subject to the provisions of Section 76 as to  security)  without unnecessary
+delay bring the person arrested before the Court before which he is required by law to produce such person.
+82. Where warrant may be executed. A warrant of arrest may be executed at any place in
+3
+[Pakistan].
+4
+[Explanation.-   In this section, “warrant  of arrest”  includes a  warrant  of arrest  issued
+under this Code
+as in force in Azad Jammu and Kashmir.].
+1
+The words and commas “and, when issued by a Presidency Magistrate, shall always be so directed” omitted by A.O., 1949, Sch.
+2
+Subs ibid., for “any other Court”.
+3
+Subs. by the Central Laws (Statue Reform) Ordinance, 1960 (21 of 1960), s.3 and 2
+nd
+Sch. (with effect from the 14
+th
+October, 1955), for “the Provinces and the Capital of the Federation”, which had
+been subs. by A.O., 1949, Arts. 3 (2) and 4, for “British India”.
+4
+Added by Act. VIII of 1993, s.3, (w.e.f. 20-11-93, SRO-1106(1)/93, dated 16-11-93).
+5
+Subs. by Ord. 37 of 2001, s.23 (w.e.f. 14-8-2001).
+47
+83. Warrant  forwarded  for  execution  outside  jurisdiction. -(1) When  a warrant is to  be
+executed outside the local limits of the jurisdiction of the Court issuing the same, such Court may, instead
+of directing such warrant to a police-officer, forward the same by post or otherwise to any Magistrate
+or District Superintendent  of Police
+1
+*  * *within  the    local limits  of  whose   jurisdiction   it  is to  be
+executed.
+(2)  The Magistrate or District Superintendent
+2
+*  *  to  whom  such warrant is so  forwarded shall
+endorse his name thereon and, if practicable, cause it to be executed in manner hereinbefore provided
+within the local limits of his jurisdiction.
+84. Warrant directed to police-officer for execution outside jurisdiction. -(1) When  a warrant
+directed to a police-officer is to be  executed beyond the  local limits  of the  jurisdiction  of  the Court
+issuing the same, he shall ordinarily take it for endorsement either to a Magistrate or to a police-officer
+not below the rank of an officer in charge of a station, within the local limits of whose jurisdiction the
+warrant is to be executed.
+(2) Such Magistrate or police-officer shall endorse his  name  thereon  and  such  endorsement shall
+be sufficient authority to the police-officer to whom the  warrant is  directed  to  execute  the same within
+such limits, and the local police shall, if so required,  assist  such officer  in  executing  such warrant.
+(3) Whenever there is reason to believe  that the delay occasioned by obtaining the endorsement  of
+the Magistrate or police-officer within the local limits of whose jurisdiction the warrant is to be executed,
+will prevent such execution, the police-officer to whom it is directed  may  execute  the same without
+such endorsement in any place beyond the local limits of the jurisdiction of the Court which issued it.
+3
+* * * * * * *
+85. Procedure on arrest of person against to whom warrant issued.  When  a  warrant of arrest
+is executed outside the district in which it was issued, the person arrested shall,  unless the  Court which
+issued the warrant is within twenty miles of the place of arrest or is nearer than the Magistrate or District
+Superintendent of Police
+1
+* * * within  the  local limits  of whose  jurisdiction  the arrest was made, or
+unless  security is   taken  under  Section  76,  be  taken  before  such Magistrate
+2
+*  *  or District
+Superintendent.
+1
+The words “or the Commissioner of Police in a Presidency­town” omitted by A.O., 1949, Sch.
+2
+The word “or Commissioner” omitted ibid.
+3
+The original sub-section (4) as amended by the City of Bombay Police Act, 1902 (Bom. 4 of 1902), s.2 (1) and Sch. A, omitted, ibid.
+48
+86. Procedure by Magistrate before whom person arrested is brought. -(1) Such Magistrate or
+District Superintendent
+1
+* * shall, if the person arrested appears to be the person intended by the  Court  which
+issued the warrant, direct his removal in custody to such Court:
+Provided that, if the offence is bailable, and such person is ready and willing to give bail to  the  satisfaction
+of  such  Magistrate,  District  Superintendent
+1
+*  *,  or  a  direction  has  been  endorsed  under  section  76  on  the
+warrant  and  such  person is ready  and willing to give the  security  required  by  such  direction,  the  Magistrate,
+District Superintendent
+1
+* * shall take such bail or security, as the case may be, and forward the bond to the
+Court which issued the warrant [:]
+2
+3
+[Provided further that, if the offence is not bailable or no direction has been endorsed under section 76  on
+the warrant, the Sessions Judge of the Sessions division in  which the  person is arrested may,  subject  to  the
+provisions of section 497 and for sufficient reasons, release  the  person on an interim bail on such bond  or
+security as the Sessions Judge thinks fit and direct the person to appear by a specified date before  the  Court
+which issued the warrant and forward the bond to that Court.]
+(2) Nothing in this section shall be deemed to prevent a police-officer from taking security under section
+76.
+4
+[86A. Procedure for removal in custody to Tribal Area. Where a person arrested under section 85 is to be
+removed in  custody to any place in  the Tribal Areas, he shall be produced before a Magistrate within  the local
+limits of whose jurisdiction the arrest was made, and such Magistrate in directing the removal shall hear the case in
+the same manner and have the same jurisdiction and powers, as nearly as may be, including the power to order the
+production of evidence, as if the person arrested were charged with an offence committed within the jurisdiction of
+such Magistrate; and such Magistrate shall direct the removal of the arrested person in custody if he is satisfied that
+the evidence produced before him raises a strong or probable presumption that the person arrested committed the
+offence mentioned in the warrant.]
+C.—Proclamation and Attachment
+87. Proclamation  for  person  absconding. -(1)  If  any  Court
+5
+[is  satisfied  after  taking  evidence]  that
+any person against whom a warrant has been issued by it has absconded or is concealing himself so that such
+warrant  cannot  be  executed,  such  Court  may publish a  written  proclamation  requiring him to  appear  at  a
+specified place and at a specified time not less than thirty days from the date of publishing  such  proclamation.
+(2) The proclamation shall be published as follows:-
+1
+The words “or Commissioner” omitted by A.O., 1949, Sch.
+2
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s. 2 and Sch., for full-stop.
+3
+Proviso added ibid.
+4
+Ins. ibid.
+5
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s. 2 and Sch., for “has reason to believe (whether after taking evidence or not)”.
+49
+(a) it shall be publicly read in some conspicuous place of the town or village in which such person
+ordinarily resides ;
+(b) it shall be affixed to some conspicuous part of the house or homestead in which such person
+ordinarily resides or to some conspicuous place of such town or village; and
+(c) a copy thereof shall be affixed to some conspicuous part of the Court-house.
+(3) A statement in writing by the Court issuing the proclamation to the effect that the proclamation was duly
+published  on  a  specified  day  shall  be  conclusive  evidence  that  the  requirements  of  this  section  have      been
+complied with ,and that the proclamation was published on such day.
+88. Attachment  of  property  of  person  absconding. -(1) The Court issuing a  proclamation  under
+section 87 may at any time order the attachment of any property, movable or immovable, or both, belonging to
+the proclaimed person.
+(2) Such order shall authorize the attachment of any property belonging to such  person  within  the district
+in which it is made; and it shall authorize the attachment of any property belonging to such person without such
+district when endorsed by the
+2
+[Sessions Judge]
+1
+* * *within whose district such property is situate.
+(3) If  the  property  ordered  to  be attached is a  debt  or  other  movable  property,  the  attachment  under  this
+section shall be made—
+(a) by seizure; or
+(b) by the appointment of a receiver; or
+(c) by an order in writing prohibiting the delivery of such property to the  proclaimed person or to
+any one on his behalf; or
+(d) by all or any two of such methods, as the Court thinks fit.
+(4) If the property ordered to be attached is immovable, the attachment under this section shall, in the  case
+of land paying revenue to
+3
+[the Provincial Government], be made through the
+2
+[District Officer (Revenue)] in
+which the land is situate, and in all other cases
+(e) by taking possession ; or
+(f) by the appointment of a receiver; or
+(g) by an order in writing prohibiting the payment of rent or delivery of property to the proclaimed
+person or to any one on his behalf; or
+(h) by all or any two of such methods, as the Court thinks fit.
+1
+The words “or Chief Presidency Magistrate” omitted by A.O., 1949, Sch.
+2
+Subs. by Ord. 37 of 2001, s.24 (w.e..f. 14-8-2001).
+3
+Subs. by A.O., 1937 for “Govt.”.
+50
+(5) If the property ordered to be attached consists of live-stock or is of a perishable nature, the Court  may,
+if it thinks expedient, order immediate sale thereof, and in such case the  proceeds of the  sale  shall  abide the
+order of the Court.
+(6) The powers, duties and liabilities of a receiver appointed under this section shall be the same as those of
+a receiver appointed under
+1
+[Order XL of the Code of Civil Procedure, 1908 (Act V of 1908)].
+2
+[(6A) If any claim is preferred to, or objection made to the attachment of, any property attached under this
+section within six months from the date of such attachment, by any person other than the proclaimed person, on
+the ground that the claimant or objector has an interest in such property, and that such interest is not liable to
+attachment under this section, the claim or objection shall be inquired into, and may be allowed or disallowed
+in whole or in part:
+Provided that any claim preferred or objection made within  the  period allowed by this sub-section may, in
+the event of the death of the claimant or objector, be continued by his legal representative.
+(6B) Claims or objections under sub-section (6A) may be preferred or made in the Court by which the order
+of attachment is issued or, if the claim or objection is in respect of property attached under an order endorsed
+by a
+3
+[Sessions Judge]
+4
+* * * in accordance with the provisions of sub-section (2), in the Court of such
+Magistrate.
+(6C) Every such claim or objection shall be  inquired into by the  Court
+3
+[or Magistrate] in which it  is
+preferred or made
+3
+[.]
+3
+* * *
+(6D)  Any  person  whose  claim  or  objection  has  been disallowed in whole or in part  by  an  order  under
+sub-section (6A) may, within a period of one year from the date of such order, institute a suit to establish the
+right which he claims in respect of the property in dispute; but subject to the result of such suit, if any, the order
+shall be conclusive.
+(6E) If the proclaimed person appears within the time specified in the proclamation, the  Court  shall  make
+an order releasing the property from the attachment.]
+(7) If  the  proclaimed  person  does  not  appear within the time specified in the  proclamation,  the  property
+under  attachment  shall  be  at  the  disposal  of
+5
+[the  Provincial  Government],  but it shall  not  be sold until  the
+expiration of six months from the date of the attachment
+6
+[and until any claim preferred or objection made
+under sub-section (6A) has been disposed of under that sub-section], unless if is subject  to speedy and  natural
+decay, or the Court considers that the sale would be for the benefit of the owner, in either of which cases the
+Court may cause it to be sold whenever it thinks fit.
+1
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s. 2 and Sch., for “Chapter XXXVI of the Code of Civil Procedure”.
+2
+Sub-section (6A) to (6E) ins. by the Code of Criminal Procedure (Amdt.) Act, 1923 (18 of 1923), s.13.
+3
+Subs., Ins. and Omitted by Ord. 37 of 2001, s. 24 (w.e.f. 14-8-2001).
+4
+The words “or Chief Presidency Magistrate” omitted by A.O., 1949, Sch.
+5
+Subs. by A.O., 1937, for “Govt.”.
+6
+Ins. by the Code of Criminal Procedure (Amdt.) Act, 1923 (18 of 1923), s.13.
+51
+89. Restoration of attached property. If,within two years from the  date  of the  attachment,  any
+person whose property is or has been at the disposal of
+1
+[the Provincial Government], under sub-section
+(7) of section 88, appears voluntarily or  is  apprehended and brought before  the  Court  by whose order
+the property was attached, or the Court to which such Court is subordinate, and proves to the satisfaction
+of such Court that he  did  not abscond or  conceal himself for  the  purpose of avoiding execution of the
+warrant, and that he had not such notice of the  proclamation  as to  enable him to attend within the time
+specified therein, such property, or,  if the same has been sold,  the nett proceeds of the sale, or, if part
+only thereof  has  been sold, the  nett  proceeds  of  the sale and    the  residue  of  the  property, shall, after
+satisfying thereout all costs incurred in consequence of the attachment, be delivered to him.
+D.—Other Rules regarding Processes
+90. Issue of warrant in lieu of, or in addition to summons. A Court may,  in  any case  in which
+it is empowered by this Code to issue a summons for the appearance of any person
+2
+* * *  issue, after
+recording its reasons in writing, a warrant for his arrest—
+(a) if, either before the issue of such summons, or after the issue of the same but before the time
+fixed for his appearance, the Court sees reasons to believe that he has absconded or will not
+obey the summons; or
+(b) if at such time he fails to appear and the summons is proved to have been duly served in time
+to admit of his appearing in accordance therewith and no reasonable  excuse  is offered for
+such failure.
+91. Power  to  take  bond  for  appearance. When  any  person for whose appearance or  arrest  the
+officer presiding in any Court is empowered to issue a summons or  warrant,  is  present  in  such Court,
+such officer may require such person to execute a bond, with or without sureties, for his appearance in
+such Court.
+92. Arrest by breach of bond for appearance. When any person who is bound by any bond taken
+under this Code to appear before a Court, does not so appear, the officer  presiding in  such Court may
+issue a warrant directing that such person be arrested and produced before him.
+93. Provisions of this Chapter generally applicable to summonses and warrants of arrest. The
+provisions contained in this Chapter relating to a summons and warrant, and their  issue, service
+and execution, shall, so far as may be, apply to every summons and every warrant of arrest issued
+under this Code.
+1
+Subs. by A.O., 1937, for “Govt.”.
+2
+The words “other than a juror or assessor” omitted by the Law Reform Ordinance, 1972 (12 of 1972) s.2 and Sch.
+52
+1
+[E. — Special Rules regarding processes issued for service or execution outside
+2
+[Pakistan]  and
+processes received from outside
+2
+[Pakistan] for service or execution within
+2
+[Pakistan].
+1
+93A.  Sending  of  summons  for  service  outside  Pakistan. -(1)  Where  a  Court  in
+2
+[Pakistan]
+desires that a summons issued by it to an accused person shall be served at any place outside
+2
+[Pakistan]
+within the local limits  of the jurisdiction of a Court established or continued by the authority of the
+3
+[Federal  Government]
+4
+[in  exercise  of  its  foreign  jurisdiction],  it  shall  send  such  summons,  in
+duplicate, by post or otherwise, to the presiding officer of that Court to be served.
+(2) The provisions of section 74 shall apply in the case of a summons sent for service under this
+section as if the presiding officer of the Court to whom it was sent were a Magistrate in
+2
+[Pakistan].
+1
+93B. Sending of warrants for execution outside Pakistan. Notwithstanding anything contained
+in section 82, where  a  Court in
+2
+[Pakistan] desires that a  warrant issued  by  it  for  the arrest of an
+accused person shall be  executed  at  any  place outside
+2
+[Pakistan] within   the  local limits   of  the
+jurisdiction of  a  Court  established  or  continued  by  the  authority  of  the
+3
+[Federal Government]
+4
+[in
+exercise  of its foreign jurisdiction], it may  send  such  warrant,  by  post  or  otherwise,  to    the presiding
+officer of that Court to be executed.
+1
+93C.  Service  and  execution  in  Pakistan  of  processes  received  from  outside  Pakistan. -(1)
+Where a Court has received for  service  or execution a summons to, or a warrant for  the arrest of,   an
+accused person issued by  a  Court  established  or  continued  by  the  authority  of  the
+3
+[Federal
+Government]
+4
+[in exercise of its foreign jurisdiction],  outside
+2
+[Pakistan], it shall cause the same to  be
+served or executed as if it were a summons or warrant received by it from a Court in
+2
+[Pakistan]  for
+service or execution within the local limits of its jurisdiction.
+(2) Where any warrant of arrest has been so executed the person arrested shall  so  far  as
+possible be dealt with in accordance with the procedure prescribed by sections 85 and 86.]
+1
+Heading E and sections 93A to 93C ins. by the Code of Criminal Procedure (Amendment) Act, 1941 (14 of 1941) s. 2.
+2
+Subs. by the Central Laws (Statue Reform) Ordinance, 1960 (21 of 1960), s. 3 and 2
+nd
+Sch. (with effect from the 14
+th
+October, 1955), for “the Provinces and the Capital of the Federation”, which had
+been subs. by A.O., 1949, Arts. 3 (2) and 4, for “British India”.
+3
+Subs. by F.A.O., 1975, Art. 2 and Table, for “Central Government”.
+4
+Subs. by A.O., 1961, Art. 2 and Sch. (with effect from the 23
+rd
+March, 1956), for “in any part of Pakistan” which had been subs. by A.O., 1949, Sch., for “or the Crown Representative in any part of
+India”.
+53
+CHAPTER VII
+OF PROCESSES TO COMPEL THE PRODUCTION OF DOCUMENTS AND
+OTHER MOVABLE PROPERTY, AND FOR THE DISCOVERY OF PERSONS
+WRONGFULLY CONFINED.
+A ----Summons to produce
+94. Summons to produce document or other thing. -(1) Whenever any Court, or
+1
+* * *, any officer
+in charge  of  a  police-station  considers  that  the  production  of  any  document  or  other  thing is necessary  or
+desirable for the purposes of any investigation, inquiry, trial or other proceeding under  this Code  by  or before
+such Court or officer, such Court may issue a summons, or such officer a written order, to the person  in whose
+possession or power such document or thing is believed to be, requiring him to attend and produce  it, or to
+produce it, at the time and place stated in the summons or order [:]
+2
+3
+[Provided that no such officer shall issue any such order requiring the production of any document or other
+thing which is in the custody of a bank or banker as defined in the Banker's Books Evidence Act, 1891 (XVIII
+of 1891), and relates, or might disclose any information which relates to the bank account of any
+person except,
+(a) for the purpose of investigating an offence under sections 403, 406, 408 and 409 and sections 421 to
+424 (both inclusive) and sections 465 to 477A (both inclusive) of the Pakistan Penal Code, with
+the prior permission in writing of a Sessions Judge ; and
+(b) in other cases, with the prior permission in writing of the High Court.]
+(2) Any person required under this section merely to produce a document or other thing shall be deemed to
+have complied with the requisition if he causes such document or thing to be produced  instead  of attending
+personally to produce the same.
+(3) Nothing in this section shall be deemed to affect the Evidence  Act, 1872 (I of 1872), sections 123  and
+124, or to apply to a letter, postcard, telegram or other document or any parcel or thing in the custody of the
+Postal or Telegraph authorities.
+95. Procedure as to letters and telegrams. -(1) If any document, parcel or thing in such custody is,  in
+the  opinion  of  any
+5
+*  *  *  Magistrate,
+4
+*  *  * High Court  or  Court  of Session, wanted  for  the  purpose  of  any
+investigation, inquiry, trial or other proceeding under this Code, such Magistrate or Court may require the Postal
+or Telegraph authorities, as the case may be, to deliver such document, parcel or thing to such person  as such
+Magistrate or Court directs.
+1
+The words “in any place beyond the limits of the towns of Calcutta and Bombay” omitted by A.O., 1949, Sch.
+2
+Subs. by the Code of Criminal Procedure (Amdt.) Act, 1968 (3 of 1968) s. 2, for full-stop (w.e.f. 21-5-68).
+3
+Proviso added ibid.
+4
+The words “Chief Presidency Magistrate” omitted by A.O., 1949, Sch.
+5
+Omitted by Ord. 37 of 2001, s. 25 (w.e.f. 14-8-2001).
+54
+(2)  If  any  such  document,  parcel  or  thing is,  in the  opinion  of  any  other  Magistrate,
+1
+*  *  *or  District
+Superintendent of Police, wanted for any such purpose, he may require the Postal or Telegraph Department,  as
+the case may be, to cause search to be made for and to detain such document, parcel or thing pending the orders
+of any such
+2
+* * * Court.
+B.—Search warrants
+96. When search-warrant may be issued. -(1) Where any Court has reason to believe that a person to
+whom a summons or order under section 94 or a requisition under section 95, sub-section (1), has been or might
+be addressed, will not or would not produce the document or thing as required by such summons or requisition,
+or where such document or thing is not known to the Court to be in the possession of any person,
+or where the Court considers that the purposes of any inquiry, trial or other proceedings under this Code
+will be served by a general search or inspection,
+it may issue a search­warrant; and the person to whom such warrant is directed, may search or inspect in
+accordance therewith and the provision hereinafter contained.
+2
+* * *
+97. Power to restrict warrant. The Court may, if it thinks fit, specify in the warrant the particular place
+or part thereof to which only the search or inspection shall extend; and the person charged  with  the execution
+of such warrant shall then search or inspect only the place or part so specified.
+98. Search of house suspected to contain stolen property, forged documents, etc. -(1) If a [
+2
+* *
+*] Magistrate of the first class, upon information and after such inquiry as he thinks necessary, has reason to
+believe that any place is used for the deposit or sale of stolen property,
+or for the deposit or sale or manufacture of forged documents, false seals or counterfeit stamps
+3
+[bank notes,
+currency  notes  or  coins  or  instruments  or  materials  for  counterfeiting  coin,  stamps,  bank  notes  or  currency
+notes] or for forging,
+or  that  any forged documents,  false  seals  or  counterfeit  stamps
+3
+[bank  notes,  currency  notes  or  coins  or
+instruments or materials for counterfeiting coin, stamps, bank notes or currency notes] or for forging,  are  kept
+or deposited in any place,
+4
+[or
+5
+* * * for the deposit, sale, manufacture or production of any obscene object such as is referred to  in
+section 292 of the Pakistan Penal Code (XLV of 1860) or that any such obscene objects are kept or deposited
+in any place ;]
+1
+The words “or of any Commissioner of Police” omitted by A.O., 1949, Sch.
+2
+Omitted. by Ord. 37 of 2001, ss. 25-27 (w.e.f. 14-8-2001).
+3
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s. 2. and Sch., for “or coin, or instruments or materials for counterfeiting coin or stamps”.
+4
+Ins. by the Obscene Publications Act, 1925 (8 of 1925), s. 3.
+5
+The commas and words “, if a District Magistrate, [or a Sub­divisional Magistrate], upon information and after such inquiry as he thinks necessary, has reason to believe that any place is used”
+omitted by Ord. 12 of 1972, s. 2 and Sch. The words in crotches were subs. by A.O., 1949, Sch., for “Sub­divisional Magistrate or a Presidency Magistrate”.
+55
+he may by his warrant authorize any police-officer above the rank of a constable-
+(a) to enter, with such assistance as may be required, such place, and
+(b) to search the same in manner specified in the warrant, and
+(c)  to take possession of any property, document, seals, stamps
+1
+[,bank notes, currency notes] or coins
+therein  found  which  he  reasonably  suspects  to  be  stolen, unlawfully obtained,  forged,  false  or
+counterfeit, and also of any such instruments and material
+2
+[or of any such obscene  objects]  as
+aforesaid, and
+(d) to  convey  such  property,  documents,  seals,  stamps,
+1
+[bank  notes,  currency  notes,]  coins,
+instruments or materials
+2
+[or such obscene objects] before a Magistrate, or to guard the same on
+the spot until the offender is taken before a Magistrate, or otherwise to dispose thereof in some place
+of safety, and
+(e) to take into custody and carry before a Magistrate every person found in such place who appears to
+have been privy to the deposit, sale or manufacture or keeping of any such property, documents,
+seals,  stamps,
+3
+[bank  notes,  currency  notes,]  coins,    instruments  or    materials
+4
+[or  such  obscene
+objects]  knowing  or  having  reasonable  cause  to  suspect  the  said  property  to  have  been  stolen  or
+otherwise unlawfully obtained, or the said documents, seals, stamps, coins, instruments or materials
+to have been forged, falsified  or counterfeited, or the  said instruments  or materials to have been
+or to be intended to be used for counterfeiting coin
+5
+[, stamps, bank notes or currency notes] or for
+forging
+3
+[or  the  said  obscene  objects  to  have  been  or  to    be  intended to be sold, let to hire,
+distributed, publicly exhibited, circulated, imported or exported].
+(2) The provisions of this section with respect to
+(a) counterfeit coin,
+(b) coin suspected to be counterfeit, and
+(c) instruments or materials for counterfeiting coin, shall, so far as they can be made  applicable, apply
+respectively to
+(a) pieces of metal made in contravention of the Metal Tokens Act,1889 (I of 1889)  ,  or brought
+into
+6
+[Pakistan] in contravention of any notification for the time  being in  force under
+7
+[Section
+16 of the Customs Act, 1969 (IV of 1969)],
+1
+Ins. by Ord. 12 of 1972, s. 2. and Sch.
+2
+Ins. by the Obscene Publications Act, 1925 (8 of 1925), s. 3.
+3
+Ins. by the Law Reforms Ordinance, 1972 (12 of 1972), s.2 and Sch.
+4
+Ins. by the Obscene Publications Act, 1925 (8 of 1925), s. 3.
+5
+Subs. by Ordinance 12 of 1972, s. 2 and Sch., for “or stamps.”
+6
+Subs. by the Central Laws (Statue Reform) Ordinance, 1960 (21 of 1960), s. 3 and 2
+nd
+Sch. (with effect from the 14
+th
+October, 1955), for “the Provinces and the Capital of the Federation” which had
+been subs. by A.O., 1949, Arts. 3(2) and 4, for “British India”.
+7
+Subs. by the Law Reform Ordinance, 1972 (12 of 1972) s. 2 and Sch. for “section 19 of the Sea Customs Act, 1878”.
+56
+(b) pieces  of  metal  suspected  to have been  so  made  or  to have been  so  brought into
+1
+[Pakistan] or to be intended to be issued in contravention of the former of those  Acts,
+and
+(c) instruments or materials for making pieces of metal in contravention of that Act.
+99. Disposal  of  things  found  in  search  beyond  jurisdiction. When, in the  execution  of  a
+search-warrant at  any  place  beyond  the  local limits of  the jurisdiction of  the  Court  which issued the
+same, any of the things for  which search is  made, are found, such things,  together with the list  of   the
+same prepared under the provisions hereinafter contained, shall be immediately taken before the Court
+issuing the warrant, unless such place is nearer to the Magistrate having jurisdiction  therein  than to such
+Court, in which case the list and things shall be immediately taken before such Magistrate; and, unless
+there be good cause to the contrary, such Magistrate shall make an order authorizing them to be taken
+to such Court.
+2
+[99A. Power to declare certain publications forfeited and to issue search-warrants for
+the same. -  (1) Where
+(a)  any  newspaper,  or  book  as  defined in the
+3
+[West Pakistan Press and Publications
+Ordinance, 1963(W.P.Ord. XXX of 1963), or any other law relating to press and publications
+for the time being in force,] or
+(b) any document,
+wherever printed, appears to the
+4
+[Provincial Government] to contain any
+5
+[treasonable or] seditious
+matter
+6
+[or any matter which is prejudicial to national integration]
+7
+[or any matter which promotes or is
+intended to promote feelings of enmity or hatred between different classes of
+8
+[the citizens of Pakistan]].
+9
+[or which is deliberately and maliciously intended to outrage the religious feelings of any such class by
+insulting the religion or the religious beliefs of that class],
+10
+[or any  matter of the nature referred to in
+clause (jj) of sub-section (1) of section 24 of the West Pakistan Press and Publications Ordinance, 1963,(
+W.P.XXX of 1963)] that is to say,
+1
+Subs. by the Central Laws (Statute Reform) Ordinance, 1960 (21 of 1960), s. 3 and 2nd Sch. (with effect from the 14th October, 1955), for "the Provinces and the Capital of the Federation"  which
+had been subs. by A. O., 1949, Arts. 3(2) and 4, for "Brithish India".
+2
+Ss. 99A to 99G ins. by the Press Law Repeal and Amendment Act, 1922 (14 of 1922), s. 5 and Sch. III.
+3
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s. 2 and Sch, for “Press and Registration of Books Act, 1867”.
+4
+Subs. by A.O., 1937, for “L.G.”.
+5
+Ins. by the Code of Criminal Procedure (Amdt.) Act, 1951 (19 of 1951), s. 2.
+6
+Ins. by the Criminal Law (Amdt.) Act, 1973 (6 of 1973), s. 3 (w.e.f. 31-1-73).
+7
+Ins. by the Code of Criminal Procedure (Third Amdt.) Act, 1926 (36 of 1926), s. 2.
+8
+Subs. by A.O., 1961, Art. 2 and Sch., for “His Majesty’s subjects” (with effect from the 23
+rd
+March, 1956).
+9
+Ins. by the Criminal Law Amendment Act, 1927 (25 of 1927), s. 3.
+10
+Ins. by the Anti-Islamic Activities of the Qudiani Group, Lahori Group and Ahmadis (Prohibition and Punishment) Ordinance, 1984 (20 of 1984), s.4.
+57
+any matter the publication of which is punishable under
+1
+[section 123A or] section 124A
+2
+[or section
+153A]
+3
+[or section 295A]
+4
+[or section 298A or section 298B or section 298C]  of  the Pakistan Penal
+Code (XLV of 1860), the
+5
+[Provincial Government] may, by notification in  the
+6
+[official Gazette], stating
+the grounds of its opinion,  declare every copy of the issue of the newspaper containing such matter,
+and every copy of such book or  other  document to be  forfeited  to
+7
+[Government] ,and thereupon any
+police-officer may seize the same wherever found in
+8
+[Pakistan] and any Magistrate may by warrant
+authorize any police-officer not below the rank of sub-inspector to enter upon and search for the  same
+in  any premises where  any copy of such issue or any such book or other document may be or may be
+reasonably suspected to be.
+(2) In sub­section (1) “document” includes also any painting, drawing or photograph, or other
+visible representation.

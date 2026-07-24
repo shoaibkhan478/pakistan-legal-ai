@@ -1,0 +1,116 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/CrPC.pdf
+Retrieved: 2026-07-23
+
+CrPC Section 221: Charge to state offence
+
+accused is charged.
+(1) Every charge under this Code shall state the offence with which the
+(2) Specific name of offence sufficient description. If the law which creates the offence gives it any
+specific name, the offence may be described in the charge by that name only.
+(3) How stated where offence has no specific name. If the law which creates the offence does not
+give  it any specific name, so much of the definition of the offence must be stated as to give the accused notice
+of the matter with which he is charged.
+(4) The law  and  section  of  the  law against which  the  offence is said  to  have  been  committed  shall  be
+mentioned in the charge.
+(5) What implied  in charge. The  fact  that  the  charge is made is equivalent  to  a statement  that  every
+legal condition required by law to constitute the offence charged was fulfilled in the particular case.
+3
+[(6) Language of charge. The charge shall be written either in English or in the language of the Court.]
+1
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s.2 and sch., for “Magistrate”.
+2
+Chapter XVIII was previously amended by the Criminal Law Amendment Act, 1923 (12 of 1923), s. 9, A.O., 1949, Sch., Code of Criminal Precedure (Amdt.) Act, 1923 (18 of 1923), s. 57 and A.O,
+1937.
+3
+Subs. by A.O., 1949, Sch., for the Original sub-section (6).
+Page 106 of 319
+(7) Previous conviction when to be set out. If the accused
+1
+[having been previously convicted of any
+offence, is liable, by reason of such previous conviction, to enhanced punishment ,or to punishment of a different
+kind, for a subsequent offence, and it is intended to prove such previous conviction for the purpose of affecting
+the punishment which the Court may think fit to award for the subsequent  offence,] the  fact,  date and place
+of the previous conviction shall be stated in the charge. If such statement
+2
+[has  been  omitted,] the Court may
+add it at any time before sentence is passed.
+Illustrations
+(a) A is charged  with  the  murder  of  B. This  is equivalent  to  a  statement  that A's act  fell within the
+definition of murder given in sections 299 and 300 of the  Pakistan  Penal  Code;  (XLVI  of 1860).
+that it did not fall within any of the general exceptions of the same Code; and that it  did  not fall
+within any of the five exceptions to section 300, or that, if it did fall within Exception 1, one or other
+of the three provisos to that exception apply to it.
+(b) A is charged, under section 326 of the Pakistan Penal Code, (XLV of 1860) with voluntarily causing
+grievous hurt to B by means of an instrument for shooting. This is equivalent to a statement that the
+case was not provided for by section 335 of the Pakistan Penal Code, and that the general exceptions
+did not apply to it.
+(c) A is accused of murder, cheating, theft, extortion, adultery or criminal intimidation, or using a false
+property-mark. The charge may state that A committed murder, or cheating, or theft, or extortion,
+or adultery, or criminal intimidation, or that he used a false property-mark, without reference to the
+definitions of those crimes contained in the Pakistan  Penal Code;  (XLV  of 1860) but the sections
+under which the offence is punishable must, in each instance, be referred  to in the charge.
+(d)  A is charged, under section 184 of the Pakistan Penal Code (XLV of  1860)  with intentionally
+obstructing a sale of property offered for sale by the lawful authority of a public servant. The charge
+should be in those words.
+222. Particulars as to  time  Place and person. (1) The charge shall contain such particulars as to the
+time and place of the alleged offence, and the  person (if any) against  whom, or the  thing (if any) in  respect of
+which, it was committed, as are reasonably sufficient to give the accused notice of the matter with which  he is
+charged.
+(2) When the accused is charged with criminal breach of trust or dishonest misappropriation of money, it
+shall be sufficient to specify the gross sum in respect of which the offence is alleged to  have  been  committed,
+and the dates between which the offence is alleged to have been committed, without specifying particular items
+or exact dates, and the charge so framed shall be deemed to be a charge of one  offence  within the meaning of
+section 234 :
+Provided that the time included between the first and last of such dates shall not exceed one year.
+1
+Subs. by the Code of Criminal Procedure (Amdt.) Act, 1923 (18 of 1923) s. 61, for "has been previously convicted of any offence, and it is intended to prove such previous conviction for the
+purpose of affecting the punishment which the court is competent to award".
+2
+Subs. ibid., for “is omitted”.
+Page 107 of 319
+223. When manner of committing offence must be stated. When the nature of the  case  is such
+that the particulars mentioned in sections 221 and 222 do not give the accused sufficient notice of the
+matter with which he is  charged, the charge shall also contain such particulars of the manner   in which
+the alleged offence was committed as will be sufficient for that purpose.
+Illustrations
+(a) A is accused of the theft of a certain article at a certain time and place. The charge need not
+set out the manner in which the theft was effected.
+(b)  A is accused of cheating B at a given time and place. The charge must  set  out  the manner
+in which A cheated B.
+(c) A is accused of giving false evidence at a  given  time  and  place.  The  charge  must  set out
+that portion of the evidence given by A which is alleged to be false.
+(d) A is accused of obstructing B, a public servant, in  the discharge  of his public  functions at a
+given time  and place. The charge must set out the manner in  which A obstructed B in the
+discharge of his functions.
+(e) A is accused of the murder of B at a given time and place. The charge need not state the
+manner in which A murdered B.
+(f)  A is accused of disobeying a direction of the law with intent to save B from punishment.The
+charge must set out the disobedience charged and the law infringed.
+224. Words in charge taken in sense of law under which offence is punishable. In every charge
+words used in describing an offence shall be deemed to have been used in the sense attached to them
+respectively by the law under which such offence is punishable.
+225. Effect of errors. No error in stating either the offence or the  particulars required to be  stated
+in  the charge, and no omission  to state the offence or those particulars, shall be regarded at  any stage
+of the case as material, unless the accused  was in fact misled  by such error  or omission, and it has
+occasioned a failure of justice.
+Illustrations
+(a) A is charged under section 242 of the Pakistan Penal Code, (XLV of 1860) with "having been
+in possession  of  counterfeit  coin, having known  at  the time when  he  became  possessed
+thereof that such coin was counterfeit," the  word  "fraudulently" being omitted in the charge.
+Unless it appears that A was in fact misled by this omission, the error shall not be regarded
+as material.
+Page 108 of 319
+(b) A is charged with cheating B, and the manner in which he cheated B is not set  out in the
+charge, or is set out incorrectly. A defends himself, calls witnesses and gives his own account
+of the transaction. The Court may infer from this that the omission to set out the manner of
+the cheating is not material.
+(c) A is charged with cheating  B,  and  the  manner in which  he  cheated  B is not  set  out in the
+charge. There were many transactions between A and B, and A had no means  of  knowing
+to  which  of  them  the  charge  referred,  and  offered  no  defence.  The  Court  may infer from
+such facts that the omission to set out the manner of the cheating was, in the case, a material
+error.
+(d) A is charged with the  murder  of  Khoda  Bakhsh  on  the  21st  January  1882. In fact,  the
+murdered person's name was Haider Baksh, and the date of the murder was the 20
+th
+January

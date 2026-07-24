@@ -20,15 +20,16 @@ const fs = require('fs');
 const path = require('path');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
-const { generateEmbedding } = require('../src/services/embeddingService');
 // Reuse the same pool config as the running app (supports DATABASE_URL OR
 // the discrete DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD vars) instead of
 // a second pool that only understood DATABASE_URL.
 const { pool } = require('../src/config/database');
+// Chunking/embedding/insert/dedupe logic now lives in one shared place
+// (backend/src/services/knowledgeIngest.js) so this script and
+// backend/scripts/scrapePaklii.js can never drift out of sync.
+const { ingestDocument } = require('../src/services/knowledgeIngest');
 
 const SOURCE_DIR = path.join(__dirname, '../court_decrees');
-const CHUNK_SIZE = 1200;      // characters per chunk
-const CHUNK_OVERLAP = 200;    // overlap to preserve context across chunk boundaries
 
 // ---------- File readers ----------
 async function readFileContent(filePath) {
@@ -97,65 +98,9 @@ function extractJudgmentMetadata(text) {
   };
 }
 
-// ---------- Chunking ----------
-function chunkText(text) {
-  const clean = text.replace(/\r\n/g, '\n').replace(/[ \t]+/g, ' ').trim();
-  const chunks = [];
-  let start = 0;
-  while (start < clean.length) {
-    const end = Math.min(start + CHUNK_SIZE, clean.length);
-    chunks.push(clean.slice(start, end).trim());
-    start += CHUNK_SIZE - CHUNK_OVERLAP;
-  }
-  return chunks.filter((c) => c.length > 30); // drop near-empty trailing chunks
-}
-
-// ---------- Duplicate guard ----------
-async function alreadyIngested(sourceFile) {
-  const result = await pool.query(
-    `SELECT 1 FROM legal_knowledge WHERE metadata->>'source_file' = $1 LIMIT 1`,
-    [sourceFile]
-  );
-  return result.rowCount > 0;
-}
-
-// ---------- Insert ----------
-async function insertChunk(meta, chunkText, chunkIndex, sourceFile, judgmentMeta = {}) {
-  const embedding = await generateEmbedding(chunkText);
-  const embeddingLiteral = `[${embedding.join(',')}]`;
-
-  await pool.query(
-    `INSERT INTO legal_knowledge
-      (source_type, title, citation, court, judge_name, year, chapter,
-       article_or_section, statute_name, full_text, ratio_decidendi,
-       embedding, metadata)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
-    [
-      meta.source_type,
-      meta.title,
-      meta.citation || null,
-      judgmentMeta.court || null,
-      judgmentMeta.judge_name || null,
-      judgmentMeta.year || null,
-      meta.chapter || null,
-      meta.article_or_section || null,
-      meta.statute_name || null,
-      chunkText,
-      judgmentMeta.ratio_decidendi || null,
-      embeddingLiteral,
-      JSON.stringify({ source_file: sourceFile, chunk_index: chunkIndex }),
-    ]
-  );
-}
-
 // ---------- Process a single file ----------
 async function ingestFile(filename) {
   const filePath = path.join(SOURCE_DIR, filename);
-
-  if (await alreadyIngested(filename)) {
-    console.log(`  ↳ SKIP (already ingested): ${filename}`);
-    return;
-  }
 
   console.log(`  ↳ Reading: ${filename}`);
   const rawText = await readFileContent(filePath);
@@ -165,14 +110,18 @@ async function ingestFile(filename) {
     ? extractJudgmentMetadata(rawText)
     : {};
 
-  const chunks = chunkText(rawText);
-  console.log(`  ↳ ${chunks.length} chunk(s) generated`);
+  const { skipped, chunksInserted } = await ingestDocument({
+    sourceId: filename,
+    rawText,
+    meta,
+    extra: judgmentMeta,
+  });
 
-  for (let i = 0; i < chunks.length; i++) {
-    await insertChunk(meta, chunks[i], i, filename, judgmentMeta);
-    process.stdout.write(`    seeded chunk ${i + 1}/${chunks.length}\r`);
+  if (skipped && chunksInserted === 0) {
+    console.log(`  ↳ SKIP (already ingested or no usable text): ${filename}`);
+    return;
   }
-  console.log(`\n  ✔ Done: ${filename}`);
+  console.log(`  ✔ Done: ${filename} (${chunksInserted} chunk(s) seeded)`);
 }
 
 // ---------- Main ----------

@@ -1,0 +1,244 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/CrPC.pdf
+Retrieved: 2026-07-23
+
+CrPC Section 230: Stay of proceedings if prosecution of offence in altered charge require previous sanction
+
+If  the offence stated in the new or altered or added charge is one  for the  prosecution of which previous  sanction
+is necessary, the case shall not be proceeded with until such sanction is  obtained, unless sanction  has been
+already obtained for a prosecution on the same facts as those on which the new or altered charge is founded.
+231. Re-call of witnesses when charge altered. Whenever a charge is altered or added to by the Court
+after the commencement of the trial, the prosecutor and the accused shall be allowed to re-call or  re- summon,
+and examine with reference to such alteration or addition, any witness who may have been examined, and also
+to call any further witness whom the Court may think to be material.
+232. Effect of material error.-(1) If any Appellate Court, or the High Court
+1
+[,or the Court of Session]
+in the exercise of its powers of revision or of its powers under Chapter XXVII, is of opinion that any person
+convicted of an offence  was misled in his defence by the absence of  a charge or by  an error in the charge, it
+shall direct a new trial to be had upon a charge framed in whatever manner it thinks fit.
+(2)  If  the  Court  is  of  opinion  that  the  facts  of  the  case  are  such  that  no  valid  charge  could  be  preferred
+against the accused in respect of the facts proved, it shall quash the conviction.
+Illustration
+A is convicted of an offence, under section 196 of the Pakistan  Penal Code,  (XLV of 1860) upon a charge
+which omits to state that he knew the evidence, which he corruptly used or attempted to use as true    or genuine,
+was false or fabricated. If the Court thinks it probable that A had such knowledge, and that  he was misled in
+his defence by the omission from the charge of the statement that he had it, it  shall direct a   new trial upon an
+amended charge; but, if it appears probable from the proceedings that A had no such knowledge, it shall quash
+the conviction.
+Joinder of charges
+233. Separate charges for distinct offences. For every distinct offence of which any person is accused
+there shall be a separate charge, and every such charge shall be tried separately, except in the cases  mentioned
+in sections 234, 235, 236 and 239.
+Illustration
+A is accused of a theft on one occasion, and of causing grievous hurt on another occasion. A must be
+separately charged and separately tried for the theft and causing grievous hurt.
+1
+Ins. by the Law Reforms Ordinance, 1972 (12 of 1972) s. 2 and Sch.
+Page 110 of 319
+234. Three offences of same kind within year may be charged together.-(1) When a person  is
+accused of more offences than one of the same kind committed within the space of twelve months from the first
+to the last of such offences,
+1
+[whether in respect of the same person or not], he may be charged with, and
+tried at one trial for, any number of them not exceeding three.
+(2) Offences are of the same kind when they are punishable with the same amount of punishment under the
+same section of the Pakistan Penal Code (XLV of 1860) or of any special or local law:
+2
+[Provided that, for the purpose of this section, an offence punishable under section 379 of the Pakistan
+Penal Code (XLV of 1860) shall be deemed to be an offence of the same kind as an offence  punishable  under
+section 380 of the said Code, and that an offence punishable under any section of the Pakistan Penal Code (XLV
+of  1860),  or  of  any  special  or  local law, shall  be  deemed  to  be  an  offence  of  the  same  kind  as  an attempt  to
+commit such offence, when such an attempt is an offence.]
+235. Trial for more than one offence.-(1) If, in one series of acts so connected together as to form the
+same transaction, more offences than one are committed by the same person, he may be charged with, and tried
+at one trial for, every such offence.
+(2) Offence falling within two definitions. If the acts alleged constitute an offence falling within two
+or more separate definitions of any law in force for the time being by which offences are defined or punished,
+the person accused of them may be charged with, and tried at one trial for, each of such offences.
+(3) Acts  constituting  one  offence,  but  constituting  when  combined  a  different  offence.  If
+several  acts, of which one or more than one would by itself or themselves constitute an offence, constitute when
+combined a different offence, the person accused of them may be charged with, and tried at one trial for, the
+offence constituted by such acts when combined, and for any offence constituted by any one, or more, of  such
+acts.
+(4) Nothing contained in this section shall affect the Pakistan Penal Code, (XLV of 1860) section 71.
+Illustrations
+to sub-section (1)—
+(a) A rescues B, a person in lawful custody, and in so doing causes grievous hurt to C, a constable in
+whose custody B was. A may be  charged with, and convicted of, offences under sections 225  and
+333 of the Pakistan Penal Code (XLV of 1860).
+(b) A commits house-breaking  by  day  with  intent  to commit adultery,  and commits in the  house  so
+entered adultery with B's wife. A may be separately charged with, and convicted of, offences under
+sections 454 and 497 of the Pakistan Penal Code (XLV of 1860).
+(c) A entices B, the wife of C, away from C, with intent to commit adultery with B,  and  then commits
+adultery with her. A may be separately charged with, and convicted of, offences under sections 498
+and 497 of the Pakistan Penal Code (XLV of 1860).
+1
+Ins. by the Code of Criminal Procedure (Amdt.) Act, 1923 (18 of 1923), s. 62.
+2
+Proviso ins., ibid.
+Page 111 of 319
+(d) A has in his possession several seals, knowing them to be counterfeit and intending to use them for
+the  purpose  of  committing  several  forgeries  punishable  under  section  466  of  the  Pakistan Penal
+Code.  A  may  be  separately  charged  with,  and  convicted  of,  the  possession  of, each seal  under
+section 473 of the Pakistan Penal Code.
+(e) With intent to cause injury to B, A institutes a criminal proceeding against  him,  knowing that there
+is no just or lawful ground for such proceeding; and also falsely accuses B of having committed an
+offence,  knowing  that  there is no just or  lawful  ground  for  such  charges.  A  may  be  separately
+charged with, and convicted of, two offences under section 211 of the Pakistan Penal Code.
+(f) A, with intent to cause injury to B, falsely accuses him of having committed an offence, knowing
+that there is no just or lawful ground for such charge. On the trial, A gives false evidence against B,
+intending thereby to cause B to be convicted of a capital offence. A may  be  separately charged
+with and convicted of, offences under sections 211 and 194 of the Pakistan Penal Code.
+(g) A,  with six others, commits the  offences  of rioting, grievous  hurt  and  assaulting  a public servant
+endeavouring in the discharge of his duty as such to suppress the riot. A may be separately charged
+with, and convicted of, offences under sections 147, 325 and 152 of the Pakistan Pena! Code.
+(h) A threatens B, C and D at the same time with injury to their persons with intent to cause alarm to
+them. A may be separately charged with, and convicted of, each of the three offences under section
+506 of the Pakistan Penal Code.
+The separate charges referred to in Illustrations (a) to (h) respectively may be tried at the same
+time.
+to sub-section (2)
+(i) A wrongfully strikes B with a cane. A may be separately charged with, and convicted of,
+offences under sections 352 and 323 of the Pakistan Penal Code.
+(j) Several stolen sacks of corn are made over to A and B, who know they are  stolen property, for  the
+purpose of concealing them. A and B thereupon voluntarily assist each other to conceal the sacks
+at the bottom of a grain pit. A and B may be separately charged with, and convicted of, offences
+under sections 411 and 414 of the Pakistan Penal Code.
+(k) A exposes her child with the knowledge that she is thereby likely to cause  its death. The  child  dies
+in consequence  of  such  exposure.  A  may  be  separately  charged  with,  and  convicted  of,  offences
+under sections 317 and 304 of the Pakistan Penal Code.
+(l) A dishonestly uses a forged document as genuine evidence, in order to convict B,  a  public servant,
+of an offence under section 167 of the Pakistan Penal Code. A may be  separately charged with,
+and convicted of, offences under sections 471 (read with 466)  and 196 of  the  same Code.
+Page 112 of 319
+to sub-section (3)
+(m) A commits robbery  on  B,  and in doing  so  voluntarily  causes  hurt  to him. A  may  be  separately
+charged  with,  and  convicted  of,  offences  under  sections  323,  392  and  394  of  the  Pakistan Penal
+Code.
+236. Where it is doubtful  what offence  has been committed. If a single  act or series of acts is of
+such  a nature that it is doubtful which of several offences the facts which can be proved will  constitute,  the
+accused may be charged with having committed all or any of such offences, and any number of such charges
+may be tried at once; or he may be charged in the  alternative  with  having  committed some one  of  the  said
+offences.
+Illustrations
+(a) A is accused of an act which may amount  to theft, or receiving stolen property, or criminal  breach
+of  trust  or  cheating.  He  may  be  charged  with  theft,  receiving  stolen  property,  criminal  breach  of
+trust and cheating, or he may be charged with having committed theft, or receiving stolen property,
+or criminal breach of trust or cheating.
+(b) A states on oath before the Magistrate that he saw B hit C with a club. Before the Sessions Court A
+states on oath that B never hit C. A may be charged in the alternative and convicted of intentionally
+giving false  evidence,  although it cannot  be  proved  which  of  these  contradictory  statements  was
+false.
+237. When a person is charged with one offence, he can be convicted of another.-(1) If, in the
+case  mentioned in section  236,  the  accused is charged  with  one  offence,  and it appears in evidence  that  he
+committed a different offence for which he might have been charged under the provisions of that section, he
+may be convicted of the offence which he is shown to have committed, although he was not charged with it.
+1
+* * * * * *
+Illustration
+A  is  charged  with  theft.  It  appears  that  he  committed  the  offence  of  criminal  breach  of  trust,  or  that  of
+receiving stolen goods. He may be convicted of  criminal breach of trust  or of receiving stolen goods (as the
+case may be) though he was not charged with such offence.
+238. When  offence  proved  included  in  offence  charged.-(1)  When  a  person is charged  with  an
+offence consisting of several particulars, a combination of some only of which constitutes, a  complete  minor
+offence, and such combination is proved, that the remaining particulars are not proved, he may be convicted of
+the minor offence, though he was not charged with it.
+(2) When a person is charged with an offence and facts are proved which reduce it  to a  minor  offence, he
+may be convicted of the minor offence, although he is not charged with it.
+1
+Sub-section (2) rep. by the Code of Criminal Procedure (Amendment) Act, 1923 (18 of 1923), s. 63.
+Page 113 of 319
+1
+[(2A) When a person is charged with an offence, he may be convicted of an attempt to commit such
+offence although the attempt is not separately charged.]
+(3) Nothing in this section shall be deemed to authorize a conviction of any offence referred  to  in
+section 198 or section 199 when no complaint has been made as required by that section.
+Illustrations
+(a) A is charged, under section 407 of the Pakistan Penal Code (XLV of 1860), with criminal breach of
+trust in respect of property entrusted to him as a carrier. It appears, that  he  did  commit criminal
+breach of trust under section 406 in respect of the property, but that it was not entrusted to him as a
+carrier. He may be convicted of criminal breach of trust under section 406.
+(b) A is charged, under section 325 of the Pakistan Penal Code (XLV of 1860), with  causing grievous
+hurt. He proves that he acted on grave and sudden provocation. He may be convicted under section
+335 of that Code.
+2
+[239.  What  persons  may  be  charged  jointly.  The  following  persons  may  be  charged  and
+tried together, namely:
+(a) persons accused of the same offence committed in the course of the same transaction;
+(b) persons accused of an offence  and persons accused of abetment, or of an attempt to commit  such
+offence;
+(c) persons  accused  of  more  than  one  offence  of  the  same  kind, within the  meaning  of  section  234
+committed by them jointly within the period of twelve months;
+(d) persons accused of different offences committed in the course of the same transaction;
+(e) persons  accused  of  an  offence  which  includes  theft,  extortion,  or  criminal  misappropriation,  and
+persons accused of receiving or retaining, or assisting in the disposal or concealment of, property
+possession  of  which is alleged to  have  been  transferred  by  any  such  offence  committed  by  the
+first-named persons, or of abetment of or attempting to commit any such last­named offence;
+(f) persons accused of offences under sections 411 and 414 of the Pakistan Penal Code  (XLV of 1860)
+or either of those sections in respect of stolen property the possession of which has been transferred
+by one offence; and
+(g) persons  accused  of  any  offence  under  Chapter  XIl  of  the  Pakistan Penal Code (XLV of  1860)
+relating to counterfeit coin, and persons accused of any other offence under the said
+1
+Sub-section (2A) ins. by the Code of Criminal Procedure (Amdt.) Act, 1923 (18 of 1923), s. 64.
+2
+Subs. ibid., s. 65, for original s. 239.
+Page 114 of 319
+Chapter relating to the same coin, or of abetment of or attempting to commit any such offence;
+and the provisions contained in the former part of this Chapter shall, so far as may be, apply to all such
+charges.]
+240. Withdrawal of remaining charges on conviction on one of several charges. When a charge
+containing more heads than one is framed against the same person, and when a conviction has been had on one
+or  more  of  them,  the  complainant,  or  the  officer  conducting  the  prosecution, may,  with  the   consent    of  the
+Court, withdraw the remaining charge or charges, or the Court of its own accord may stay the inquiry  into, or
+trial of, such charge or charges. Such withdrawal shall have the effect of an acquittal on such charge or charges,
+unless the conviction be set aside, in which case the  said Court  (subject  to the  order of the  Court setting aside
+the conviction) may proceed with the inquiry into or trial of the charge or charges so withdrawn.
+CHAPTER XX
+OF THE TRIAL OF
+1
+[CASES] BY MAGISTRATES
+241.
+2
+[Procedure  in trial  of cases]. The  following procedure  shall be  observed by Magistrates in
+the trial of
+1
+[cases.]
+3
+[241A.  Supply  of  statements  and  documents  to  the    accused.-(1) In all cases instituted upon
+police report, except those tried summarily or punishable with fine or imprisonment not exceeding six months,
+copies  of  statements  of  all  witnesses  recorded  under  sections  161  and  164  and  of  the  inspection   note
+recorded by an investigation officer on his first visit  to the  place  of occurrence, shall be  supplied free of cost
+to the accused not less than seven days before the commencement of the trial:
+Provided  that, if any  part  of  the  statement  recorded  under  section  161 is such  that  its  disclosure  to  the
+accused would be inexpedient in the public interest, such part of the statement shall be excluded from the  copy
+of the statement furnished to the accused.
+(2) In all cases instituted upon a complaint in writing, the complainant shall,
+(a) state in the petition of complaint the substance of the accusation, the names of his witnesses and the
+gist of the evidence which he is likely to adduce at the trial; and
+(b) within three days of the order of the Court under section 204 for issue of process to the accused, file
+in the Court for supply to the accused, as many copies of the complaint and any other document
+which he has filed with his complaint as the number of the accused:
+1
+Subs. by the Law Reforms Ordinance, 1972 (12 of 1972), s.2 and Sch. for “summons  cases”.
+For enforcement of this amendment in the Provinces, see, para 2 of foot ntoe 3 on p. 40, supra.
+2
+Subs. ibid., for “Procedure in summons cases”.
+3
+Ins. ibid.
+Page 115 of 319
+Provided that the provisions of this sub-section shall not apply in any case in which the complaint has been
+made by a Court or by a public servant acting or purporting to act in the  discharge  of his official  duties].
+1
+[242. Charge to be framed. When the accused appears or is brought before the Magistrate, a formal
+charge shall be framed relating to the offence of which he is accused and he shall be  asked whether he  admits
+that he has committed the offence with which he is charged.].
+243. Conviction on admission of truth of accusation. If the accused admits that he has committed
+the offence
+2
+[with which he is charged], his admission shall be recorded as nearly as possible in the words
+used  by him; and, if he shows no sufficient cause why he should not be convicted, the Magistrate
+3
+[may
+convict] him accordingly.
