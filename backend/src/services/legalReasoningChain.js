@@ -31,6 +31,7 @@ const logger = require('../utils/logger');
 const { generateContent, parseJsonSafe } = require('./ai.service');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
+const { checkPrecedentFreshness } = require('./precedentFreshnessService');
 
 const MAX_ISSUES = 1; // reduced to the single most significant issue — on a
                        // 20/min free-tier quota, even 2 issues with retries
@@ -179,18 +180,21 @@ Respond with ONLY JSON:
 // ------------------------------------------------------------------
 async function simulateRebuttal(issue, argumentsResult) {
   const opposing = (argumentsResult.opposing_arguments || []).join('\n- ');
-  if (!opposing) return { data: { rebuttal_points: [] }, tokens: 0 };
+  if (!opposing) return { data: { rebuttal_points: [], cross_examination_questions: [] }, tokens: 0 };
 
   const systemInstruction = `The opposing side has just raised these arguments on the issue "${issue.issue}":
 - ${opposing}
 
-You are responding on behalf of the client. For each opposing argument, give a specific rebuttal — not a generic dismissal. If an opposing argument is actually strong and can't be fully rebutted, say so honestly rather than forcing a weak counter-argument; overstating your position is worse than admitting a genuine weakness.
+You are responding on behalf of the client, the way a senior advocate prepares before a hearing. Do two things:
+
+1. For each opposing argument, give a specific rebuttal — not a generic dismissal. If an opposing argument is actually strong and can't be fully rebutted, say so honestly rather than forcing a weak counter-argument; overstating your position is worse than admitting a genuine weakness.
+2. Draft cross-examination questions for the opposing party's witness(es) on this issue — the kind a senior advocate would actually put to a witness in court to expose weaknesses in the opposing case: short, closed (yes/no or single-fact) questions, not open-ended ones that let the witness explain their way out. Only include this if the issue actually turns on disputed facts a witness could speak to; skip it (return an empty array) for a purely legal/documentary issue with no witness testimony involved.
 
 Respond with ONLY JSON:
-{ "rebuttal_points": string[] }`;
+{ "rebuttal_points": string[], "cross_examination_questions": string[] }`;
 
-  const fallback = { rebuttal_points: [] };
-  const { data, tokens } = await runStep(systemInstruction, 'Provide the rebuttals as instructed.', fallback, 800);
+  const fallback = { rebuttal_points: [], cross_examination_questions: [] };
+  const { data, tokens } = await runStep(systemInstruction, 'Provide the rebuttals and cross-examination questions as instructed.', fallback, 1000);
   return { data, tokens };
 }
 
@@ -216,6 +220,7 @@ async function runIssueChain(issue, caseText) {
     supporting_arguments: researchArgsResult.data.supporting_arguments || [],
     opposing_arguments: researchArgsResult.data.opposing_arguments || [],
     rebuttal_points: rebuttalResult.data.rebuttal_points || [],
+    cross_examination_questions: rebuttalResult.data.cross_examination_questions || [],
     tokens,
   };
 }
@@ -311,6 +316,11 @@ async function runLegalReasoningChain(caseText, caseTypeLabel = 'criminal case')
     if (references.length > 0) {
       const retrievedRows = await retrieveRelevantLaw(caseText.slice(0, 2000));
       legal_references_verified = verifyCitations(references, retrievedRows, '');
+      // Second pass: for every citation matched against the local library,
+      // check whether a LATER judgment has since overruled/doubted it —
+      // being "real" and being "still good law" are different questions,
+      // and citing overruled authority in a filing is a serious mistake.
+      legal_references_verified = await checkPrecedentFreshness(legal_references_verified);
       verificationSummary = summarizeVerification(legal_references_verified);
     }
   } catch (error) {

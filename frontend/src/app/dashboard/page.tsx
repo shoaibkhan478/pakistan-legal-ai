@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DashboardShell from '@/components/layout/DashboardShell';
 import { Card, CardContent, Badge } from '@/components/ui';
+import DeadlineAlerts from '@/components/legal/DeadlineAlerts';
 import { useAuthStore } from '@/lib/authStore';
 import api from '@/lib/api';
 import {
@@ -13,6 +14,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts';
 
 const quickActions = [
+  { href: '/intake', label: 'Case Intake (AI decides what you need)', icon: Sparkles, color: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400' },
   { href: '/chat', label: 'AI Legal Chat', icon: MessageSquare, color: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400' },
   { href: '/fir-analysis', label: 'Analyze FIR', icon: FileWarning, color: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' },
   { href: '/notice-analysis', label: 'Notice Analysis', icon: FileText, color: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400' },
@@ -50,6 +52,8 @@ export default function DashboardPage() {
             {stats?.plan || 'free'} plan
           </Badge>
         </div>
+
+        <DeadlineAlerts />
 
         {/* Stat cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

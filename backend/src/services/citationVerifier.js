@@ -102,6 +102,7 @@ function verifyCitations(legalReferences, retrievedRows = {}, liveSearchText = '
         matchedSource: [localMatch.row.statute_name, localMatch.row.article_or_section, localMatch.row.citation]
           .filter(Boolean)
           .join(' — '),
+        matchedSourceId: localMatch.row.id,
       };
     }
 

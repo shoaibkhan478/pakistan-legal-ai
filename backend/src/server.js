@@ -29,6 +29,7 @@ const adminRoutes = require('./routes/admin.routes');
 const notificationRoutes = require('./routes/notification.routes');
 const legalRoutes = require('./routes/legal.routes');
 const legalSearchRoutes = require('./routes/legal-search.routes');
+const intakeRoutes = require('./routes/intake.routes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 // Middleware
@@ -73,6 +74,7 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/legal', legalRoutes);
 app.use('/api/v1/legal-search', legalSearchRoutes);
+app.use('/api/v1/intake', intakeRoutes);
 // Static folders
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Global Error Handler

@@ -6,6 +6,16 @@ const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth.middleware');
 const { query } = require('../config/database');
+const { getUpcomingDeadlines } = require('../services/deadlineTrackerService');
+
+// IMPORTANT: this must be registered BEFORE router.get('/:id', ...) below,
+// otherwise Express would match "/deadlines" as an :id param instead.
+router.get('/deadlines', authenticate, async (req, res, next) => {
+  try {
+    const deadlines = await getUpcomingDeadlines(req.user.id);
+    res.json({ success: true, data: deadlines });
+  } catch (e) { next(e); }
+});
 
 router.get('/', authenticate, async (req, res, next) => {
   try {
