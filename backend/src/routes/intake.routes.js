@@ -16,7 +16,7 @@ const { aiLimiter } = require('../middleware/rateLimiter');
 const { query } = require('../config/database');
 const logger = require('../utils/logger');
 const { runCaseIntake } = require('../services/caseIntakeOrchestrator');
-const MAX_PROBLEM_LENGTH = 50000;
+const MAX_PROBLEM_LENGTH = 150000;
 router.post('/', authenticate, aiLimiter, async (req, res, next) => {
   try {
     const { problemText, language, triggerDate, limitationCaseTypeKey, forceDraft, skipDraft, caseId } = req.body || {};
