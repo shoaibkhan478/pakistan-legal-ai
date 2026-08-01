@@ -9,7 +9,6 @@
 // of the user having to pick a mode. If caseId is supplied, the result
 // (including any limitation deadline found) is also saved onto that case's
 // metadata/next_action so it shows up in the deadline tracker.
-
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth.middleware');
@@ -17,20 +16,16 @@ const { aiLimiter } = require('../middleware/rateLimiter');
 const { query } = require('../config/database');
 const logger = require('../utils/logger');
 const { runCaseIntake } = require('../services/caseIntakeOrchestrator');
-
-const MAX_PROBLEM_LENGTH = 20000;
-
+const MAX_PROBLEM_LENGTH = 50000;
 router.post('/', authenticate, aiLimiter, async (req, res, next) => {
   try {
     const { problemText, language, triggerDate, limitationCaseTypeKey, forceDraft, skipDraft, caseId } = req.body || {};
-
     if (!problemText || typeof problemText !== 'string' || !problemText.trim()) {
       return res.status(400).json({ success: false, error: 'problemText is required.' });
     }
     if (problemText.length > MAX_PROBLEM_LENGTH) {
       return res.status(400).json({ success: false, error: `problemText exceeds max length of ${MAX_PROBLEM_LENGTH} characters.` });
     }
-
     const result = await runCaseIntake(problemText, {
       language,
       triggerDate,
@@ -38,7 +33,6 @@ router.post('/', authenticate, aiLimiter, async (req, res, next) => {
       forceDraft: Boolean(forceDraft),
       skipDraft: Boolean(skipDraft),
     });
-
     // If this intake is tied to an existing case, persist the limitation
     // deadline (if one was found) onto the case so it surfaces in the
     // deadline tracker without the user having to re-enter it manually.
@@ -59,12 +53,10 @@ router.post('/', authenticate, aiLimiter, async (req, res, next) => {
         logger.warn('intake.routes: failed to persist limitation deadline onto case:', err.message || err);
       }
     }
-
     return res.status(200).json({ success: true, data: result });
   } catch (error) {
     logger.error('handleCaseIntake error:', error);
     return res.status(500).json({ success: false, error: error.message || 'Case intake failed.' });
   }
 });
-
 module.exports = router;
