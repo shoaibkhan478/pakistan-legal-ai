@@ -1,0 +1,13 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-12
+
+CPC Section 2: The following are the particulars of the mortgage:- (a) (date) ;
+
+(b) names of mortgagor and mortgagee);
+(c)  (sum secured);
+(d)  (rate of interest);
+(e)  (property subject to mortgage);
+(f)  (If the plaintiff's title is derivative, state shortly the transfers or, devolution
+under which he claims).
+(If the defendant is mortgagee in possession, add)

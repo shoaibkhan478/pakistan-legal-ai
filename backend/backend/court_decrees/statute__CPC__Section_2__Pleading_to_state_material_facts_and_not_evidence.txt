@@ -1,0 +1,13 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-12
+
+CPC Section 2: Pleading to state material facts and not evidence
+
+_
+Every pleading
+shall contain, and contain only, a statement in a concise form of the material facts
+on which the party pleading relies for his claim or defence, as the case may be,
+but not the evidence by which they are to be proved, and shall, when necessary,
+be divided into paragraphs, numbered consecutively. Dates, sums and
+numbers shall be expressed in figures.

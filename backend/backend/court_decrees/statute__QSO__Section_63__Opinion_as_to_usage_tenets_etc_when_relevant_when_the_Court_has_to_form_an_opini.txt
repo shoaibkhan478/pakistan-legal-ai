@@ -1,0 +1,171 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/QANUN-E-SHAHADAT.pdf
+Retrieved: 2026-08-12
+
+QSO Section 63: Opinion as to usage, tenets, etc, when relevant: when the Court has to form an opinion as
+
+to—
+the usages and tenets of any body of men or family, the constitution and government of any religious or
+charitable foundation, or
+the meaning of words to terms used in particular districts or by particular classes of people.
+The opinions of persons having special means of knowledge thereon, are relevant facts.
+64. Opinion on relationship when relevant.— When the Court has to form an opinion as to the
+relationship of one person to another, the opinion, expressed by conduct, as to the existence of such relationship,
+of any person who, as a member of the family or otherwise, has special means of knowledge on the subject, is a
+relevant fact:
+Provided that such opinion shall not be sufficient to prove a marriage in proceedings under the Divorce
+Act, 1869 (IV of 1869), or in prosecutions under Section 494 or 495 of the Pakistan Penal Code (Act XLV of
+1860).
+Illustrations
+(a) The question is, whether A and B were married.
+The  fact  that  they  were  usually  received  and  treated  by  their  friends  as  husband and  wife,  is
+relevant.
+(b) The question is, whether A was the legitimate son of B. The fact that A was always treated as
+such by members of the family, is relevant.
+65. Grounds of opinion when relevant.— Whenever the opinion of any living person is relevant,
+the grounds on which such opinion is based are also relevant.
+Illustration
+An expert may give an account of experiments performed by him for the purpose of forming his opinion.
+CHARACTER WHEN RELEVANT
+66. In civil cases character to prove conduct imputed irrelevant.— In civil cases the fact that
+the character of any person concerned is such as to render probable or improbable any conduct imputed to him
+is irrelevant, except in so far as such character appears from facts otherwise relevant.
+67. In criminal cases previous good character relevant.— In criminal proceedings the fact that
+the person accused is of a good character is relevant.
+68. Previous bad character not relevant, except in reply.— In criminal proceedings the fact
+that  the  accused  person  has  a  bad  character  is  irrelevant,  unless  evidence  has  been  given  that  he  has  a  good
+character, in which case it become relevant.
+Page 33 of 59
+Explanation 1.— This Article does not apply to cases in which the bad character of any person is itself
+a fact in issue.
+Explanation 2.—A previous conviction is relevant as evidence of bad character.
+69. Character as affecting damages.— In civil cases the fact that the character of any person is
+such as to affect the amount of damages which he ought to receive, is relevant.
+Explanation:— In Articles 66, 67, 68 and 69, the word “character” includes both reputation and
+disposition; but, except as provided in Article 68, evidence may be given only of general reputation and general
+disposition, and not of particular acts by which reputation or disposition were shown.
+Page 34 of 59
+CHAPTER IV
+OF ORAL EVIDENCE
+70. Proof of facts by oral evidence. — All facts, except the contents of documents, may be proved
+by oral evidence.
+71. Oral evidence must be direct.— Oral evidence must, in all cases whatever be direct, that is to
+say—
+If it refers to a fact which could be seen, it must be the evidence of a witness who says he saw it;
+If it refers to a fact which could be heard, it must be the evidence of a witness who says he heard it;
+If it refers to a fact which could be perceived by any other sense or in any other manner, it must be the
+evidence of a witness who says he perceived it by that sense or in that manner;
+If it refers to an opinion or to the grounds on which that opinion is held, it must be the evidence of the
+person who holds that opinion on those grounds:
+Provided  that  the  opinions  of  experts  expressed  in  any  treaties  commonly  offered  for  sale,  and  the
+grounds on which such opinions are held, may be proved by the production of such treaties if the author is dead,
+or cannot be found, or has become incapable of giving evidence,  or cannot be  called  as  a  witness  without an
+amount of delay or expense which the Court regards as unreasonable:
+Provided further that, if oral evidence refers to the existence or condition of any material thing other
+than a document, the Court may, if it thinks fit, require the production of such material thing for its inspection:
+Provided  further  that,  if  a  witness  is  dead,  or  cannot  be  found  or  has  become  incapable  of  giving
+evidence,  or  his  attendance  cannot,  be  procured  without  an  amount  of  delay  or  expense  which  under  the
+circumstances of the case the Court regards as unreasonable, a party shall have the right to produce, shahada
+ala al-shahadah Jl by which a witness can appoint two witnesses to depose on his
+behalf, except in the case of Hudood.
+CHAPTER V
+OF DOCUMENTARY EVIDENCE
+72. Proof of contents of documents.— The contents of documents may be proved either by primary
+or by secondary evidence.
+73. Primary evidence.— “Primary evidence” means the document itself produced for the inspection
+of the Court.
+Explanation 1.—Where a document is executed in several parts, each part is primary evidence of the
+document.
+Where a document is executed in counterpart, each counterpart being executed by one or some of the
+parties only, each counterpart is primary evidence as against the parties executing it.
+Explanation 2. —Where a number of documents are all made by one uniform process, as in the case
+of printing, lithography or photography, each is primary evidence of the contents of the rest; but where they are
+all copies of a common original, they are not primary evidence of the contents of the original.
+Page 35 of 59
+1
+[.Explanation 3.—A printout or other form of output of an automated information system shall not be
+denied  the  status  of  primary  evidence  solely  for  the  reason  that  it  was  generated,  sent,  received  or  stored  in
+electronic  form  if  the  automated  information  system  was  in  working  order  at  all  material  times  and,  for  the
+purposes hereof, in the absence of evidence to the contrary, it shall be presumed that the automated information
+system was in working order at all material times.
+Explanation  4.—A  printout  or  other  form  of  reproduction  of  an  electronic  documents,  other  than  a
+document mentioned in Explanation 3 above, first generated, sent, received or stored in electronic form, shall be
+treated as primary evidence where a security procedure was applied thereto at the time it was generated, sent,
+received or stored.]
+Illustration
+A person is shown to have been in possession of a number of placards, all printed at one time from one original. Any one
+of the placards is primary evidence of the contents of any other, but no one of them is primary evidence of the contents of
+the original.
+74. Secondary evidence.— “Secondary evidence” means and includes—
+(1) certified copies given under the provisions hereinafter contained ;
+(2) copies made from the original by mechanical processes which in themselves insure the accuracy of
+the copy, and copies compared with such copies ;
+(3) copies made from or compared with the original;
+(4) counterparts of documents as against the parties who did not execute them ;
+(5) oral accounts of the contents of a document given by some person who has himself seen it.
+Illustrations
+(a) A photograph of an original is secondary evidence of its contents though the two have not been
+compared, if it is proved that the thing photographed was the original.
+(b) A copy, compared with a copy of a letter made by a copying machine is secondary evidence of
+the contents of the letter, if it is shown that the copy made by the copying machine was made
+from the original.
+(c) A  copy  transcribed  from  a  copy,  but  afterwards  compared  with  the  original,  is  secondary
+evidence; but the copy not so compared is not secondary evidence of the original, although the
+copy from which it was transcribed was compared with the original.
+(d) Neither  an  oral  account  of  a  copy  compared  with  the  original,  nor  an  oral  account  of  a
+photograph or machine-copy of the original, is secondary evidence of the original.
+75. Proof of documents by primary evidence.— Documents must be proved by primary
+evidence except in the cases hereinafter mentioned.
+76. Cases in which secondary evidence relating to documents may be given.— Secondary
+evidence may be given of the existence, condition or contents of a document in the following cases:—
+1
+Added “Explanations 3 and 4 in Article 73” by Ord. No. L1 of 2002, s. 29 and schedule
+Page 36 of 59
+(a) when the original is shown or appears to be in the possession or power of the person
+against whom the document is sought to be proved, or of any person out of reach of, or
+not subject to, the process of the Court, or of any person legally bound to produce it,
+and when, after the notice mentioned in Article 77 such person does not produce it;
+(b) when  the  existence,  condition  or  contents  of  the  original  have  been  proved  to  be
+admitted in writing by the person against whom it is proved or by his representative in
+interest;
+(c) when the original has been destroyed or lost, or when the party offering evidence of its
+contents  cannot,  for  any  other  reason  not  arising  from  his  own  default  or  neglect,
+produce it in reasonable time ;
+(d) when,  due  to  the  volume  or  bulk  of  the  original,  copies  thereof  have  been  made  by
+means of microfilming or other modern devices ;
+(e) when the original is of such a nature as not to be easily movable ;
+(f) when the original is public document within the meaning of Article 85 ;
+(g) when the original is a document of which a certified copy is permitted by this Order, or
+by any other law in force in Pakistan, to be given in evidence ;
+(h) when  the  originals  consist  of  numerous  accounts  or  other  documents  which  cannot
+conveniently be examined in Court, and the fact to be proved is the general result of the
+whole collection ;
+(i) when an original document forming part of a judicial record is not available and only a
+certified  copy  thereof  is  available,  certified  copy  of  that  certified  copy  shall  also  be
+admissible as a secondary evidence.
+In cases (a), (c), (d) and (e), any secondary evidence of the contents of the document is
+admissible.
+In case (b), the written admission is admissible.
+In  case  (f)  or  (g),  certified  copy  of  the  document,  but  no other  kind  of  secondary
+evidence, is admissible.
+In  case  (h), evidence  may be  given  as  to  the  general result  of  the  documents  by  any
+person  who  has  examined  them,  and  who  is  skilled  in  the  examination  of  such
+document.
+77. Rules as to notice to produce.— Secondary evidence of the contents of the documents referred
+to in Article 76, paragraph (a), shall not be given unless the party proposing to give such secondary evidence has
+previously given to the party in whose possession or power the document is, or to his advocate, such notice to
+produce it as is prescribed by Law; and, if no notice is prescribed by law, then such notice as the Court considers
+reasonable under the circumstances of the case:
+Page 37 of 59
+Ins. new article 78A by Ord. No. L1 of 2002, s. 29 and schedule
+Provided that such notice shall not be required in order to render secondary evidence admissible in any
+of the following cases, or in any other case in which the Court thinks fit to dispense with it: —
+(1) when the document to be proved is itself a notice ;
+(2) when, from the nature of the case, the adverse party must know that he will be required to produce
+it;
+(3) when it appears or is proved that the adverse party has obtained possession of the original by fraud
+or force ;
+(4) when the adverse party or his agent has the original in Court ;
+(5) when the adverse party or his agent has admitted the loss of the document ;
+(6) when the person in possession of the document is out of reach of, or not subject to, the process of
+the Court.

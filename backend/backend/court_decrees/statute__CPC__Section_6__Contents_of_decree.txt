@@ -1,0 +1,17 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-12
+
+CPC Section 6: Contents of decree
+
+_
+(1) The decree shall agree with the judgment; it shall
+contain the number of the suit, the names and descriptions of the parties, and
+particulars of the claim, and shall specify clearly the relief granted or other
+determination of the suit.
+(2) The decree shall also state the amount of costs incurred in the suit,
+and by whom or out of what property and in what proportions such costs are to be
+paid.
+(3) The Court may direct that the costs payable to one party by the
+other shall be set off against any sum which is admitted or found to be due from
+the former to the latter.

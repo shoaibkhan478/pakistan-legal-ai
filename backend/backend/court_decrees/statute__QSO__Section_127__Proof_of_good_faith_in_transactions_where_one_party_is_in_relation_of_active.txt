@@ -1,0 +1,157 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/QANUN-E-SHAHADAT.pdf
+Retrieved: 2026-08-12
+
+QSO Section 127: Proof  of  good  faith  in  transactions  where  one  party  is  in  relation  of  active
+
+confidence.— When there is a question as to the good faith of a transaction between parties, one of whom stands
+to the other in a position of active confidence, the burden of proving the good faith of the transaction is on the
+party who is in a position of active confidence.
+Illustrations
+(a) The good faith of a sale by a client to an advocate is in question in a suit brought by the client. The
+burden of proving the good faith of the transaction is on the advocate.
+(b) The good faith of a sale by a son just come of age to a father is in question in a suit brought by the
+son. The burden of proving the good faith of the transaction is on the father.
+128. Birth during marriage conclusive proof of legitimacy.—(1) The fact that any person was
+born during the continuance of a valid marriage between his mother and any man and not earlier than the
+expiration of six lunar months from the date of the marriage, or within two years after its dissolution, the
+mother remaining unmarried, shall be conclusive proof that he is the legitimate child of that man, unless—
+(a) the husband had refused, or refuses, to own the child ; or
+(b) the child was born after the expiration of six lunar months from the date on which the
+woman had accepted that the period of iddat had come to an end.
+(2) Nothing contained in clause (1) shall apply to a non-Muslim if it is inconsistent with his faith.
+129. Court may presume existence of certain facts.— The Court may presume the existence of
+any fact which it thinks likely to have happened, regard being had to the common course of natural events, human
+conduct and public and private business, in their relation to the facts of the particular case.
+Illustrations
+The Court may presume—
+(a) that  a  man  who  is  in  possession  of  stolen  goods  soon  after  the  theft  is  either  the  thief  or  has
+received the goods knowing them to be stolen, unless he can account for his possession ;
+(b) that an accomplice is unworthy of credit, unless he is corroborated in material particulars ;
+(c) that a bill of exchange, accepted or endorsed, was accepted or endorsed for good consideration
+Page 52 of 59
+;
+(d) that a thing or state of things which has been shown to be in existence within a period shorter
+than that within which such things or states of things usually cease to exist, is still in existence ;
+(e) that judicial and official acts have been regularly performed ;
+(f) that the common course of business has been followed in particular cases;
+(g) that  evidence  which  could  be  and  is  not  produced  would,  if produced,  be  unfavourable  to  the
+person who withholds it ;
+(h) that,  if  a  man  refuses  to  answer  a  question  which  he  is  not  compelled  to  answer  by  law,  the
+answer, if given, would be unfavourable to him;
+(i) that when a document creating an obligation is in the hands of the obligor, the obligation has
+been discharged.
+But the Court shall also have regard to such facts as the following, in considering whether such maxims do or do
+not apply to the particular case before it;
+as to illustration (a).—a shopkeeper has in his till marked rupee soon after it was stolen, and cannot account for
+its possession specifically, but is continually receiving rupees in the course of his business;
+as  to  illustration  (b).—A, person of the highest character, is tried for causing a man’s death by an act of
+negligence  in  arranging  certain  machinery,  B,  a  person  of  equally  good  character,  who  also  took  part  in  the
+arrangement,  describes  precisely  what  was  done,  and  admits  and explains  the  common  carelessness  of  A  and
+himself ;
+as to illustration (b).—a crime is committed by several persons. A, B and C, three of the criminals, are captured
+on the shop and kept apart from each other. Each gives an account of the crime implicating D, and the accounts
+corroborate each other in such a manner as to render previous concert highly improbable;
+as to illustration (c).—A, the drawer of a bill of exchange, was a man of business. B, the acceptor, was a young
+and ignorant person, completely under A’s influence;
+as to illustration (d).— It is proved that a river ran in a certain course five years ago, but it is known that there
+have been floods since that time which might change its course ;
+as  to  illustration (e).—a  judicial  act,  the  regularity  of  which  is  in  question,  was  performed  under  exceptional
+circumstances ;
+as to illustration (f).—the question is, whether a letter was received. It is shown to have been posted, but the usual
+course of the post was interrupted by disturbances;
+as to illustration (g).—a man refuses to produce a document which would bear on a contract of small importance
+on which he is sued, but which might also injure the feelings and reputation of his family;
+as to illustration (h). —a man refuses to answer a question which he is not compelled by law to answer, but the
+answer to it might cause loss to him in matters unconnected with the matter in relation to which it is asked ;
+as to illustration (i).— a bond is in possession of the obligor, but the circumstances of the case are such that he
+may have stolen it.
+Page 53 of 59
+CHAPTER X
+OF THE EXAMINATION OF WITNESS
+130. Order of production and examination of witnesses.— The order in which witnesses are
+produced and examined shall be regulated by the law and practice for the time being relating to civil and criminal
+procedure respectively, and, in the absence of any such law, by the discretion of the Court.
+131. Judge  to  decide  as  to  admissibility  of  evidence.—(1)  When  either  party  proposes to  give
+evidence of any fact, the Judge may ask the party proposing to give the evidence in what manner the alleged fact,
+if proved, would be relevant, and the Judge shall admit the evidence if he thinks that the fact, if proved, would be
+relevant and not otherwise.
+(2) If the fact proposed to be proved is one of which evidence is admissible only upon proof of some
+other fact, such last-mentioned fact must be proved before evidence is given of the fact first- mentioned, unless
+the party undertakes to give proof of such fact, and the Court is satisfied with such undertaking.
+(3) If the relevancy of one alleged fact depends upon another alleged fact being first proved, the Judge
+may,  in his  discretion,  either  permit  evidence  of the  first fact to  be  given  before  the  second fact is  proved,  or
+require evidence to be given of the second fact before evidence is given of the first fact.
+Illustrations
+(a) It is proposed to prove a statement about a relevant fact by a person alleged to be dead, which
+statement is relevant under Article 46.
+The fact that the person is dead must be proved by the person proposing to prove the statement,
+before evidence is given of the statement.
+(b) It is proposed to prove, by a copy, the contents of a document said to be lost.
+The fact that the original is lost must be proved by the person proposing to produce the copy,
+before the copy is produced.
+(c) A is accused of receiving stolen property knowing it to have been stolen.
+It is proposed to prove that he denied the possession of the property. The relevancy of the denial
+depends on the identity of the property.
+The Court may, in its discretion, either require the property to be identified before the denial of
+the possession is proved or permit the denial of possession to be proved before the property is
+identified.
+(d) It is proposed to prove a fact (A) which is said to have been the cause or effect of a fact- in-issue.
+There are several intermediate facts (B, C and D) which must be shown to exist before the fact
+(A) can be regarded as the cause or effect of the fact-in-issue. The Court may either permit A to
+be proved before B, C or D is proved, or may require proof of B, C and D before permitting proof
+of A.
+132. Examination-in-chief, etc.—(1) The examination of a witness by the party who calls him shall
+be called his examination-in-chief.
+(2) The examination of a witness by the adverse party shall be called his cross-examination.
+Page 54 of 59
+(3) The  examination  of  a  witness,  subsequent  to  the  cross-examination  by  the  party  who  called  him,
+shall be called his re-examination.
+133.  Order  of  examinations.—(1) Witnesses  shall be  first examined-in-chief, then  (if the  adverse
+party so desires) cross-examined, then (if the party calling him so desires) re-examined.
+(2) The examination and cross-examination must relate to relevant facts but the cross-examination need
+not be confined to the facts to which the witness testified on his examination-in-chief.
+(3) The re-examination shall be directed to the explanation of matters referred to in cross-examination;
+and, if new matter is, by permission of the Court, introduced in re-examination, the adverse party may further
+cross-examine that matter.
+134. Cross-examination  of  person  called  to  produce  a  document.— A  person  summoned  to
+produce a document does not become a witness by the mere fact that he produces it and cannot be cross-examined
+unless and until he is called as a witness.
+135. Witnesses to character.— Witnesses to character may be cross-examined and reexamined.
+136. Leading questions.— Any question suggesting the answer which the person putting it wishes or
+expects to receive is called a leading question.
+137. When leading questions must not be asked.— (1) Leading questions must not, if objected to
+by the adverse party, be asked in an examination-in-chief, or in a re-examination, except with the permission of
+the Court.
+(2) The Court shall permit leading questions as to matters which are introductory or undisputed, or which
+have, in its opinion, been already sufficiently proved.
+138. When  leading  questions  may  be  asked.— Leading  questions  may  be  asked  in  cross-
+examination.
+139. Evidence as to matters in writing.— Any witness may be asked, whilst under examination,
+whether any contract, grant or other disposition of property, as to which he is giving evidence, was not contained
+in a document, and if he says that it was, or if he is about to make any statement as to the contents of any document,
+which, in the opinion of the Court, ought to be produced, the adverse party may object to such evidence being
+given until such document is  produced, or until facts have been proved  which entitle the party who called the
+witness to give secondary evidence of it.
+Explanation.— A witness may give oral evidence of statements made by other persons about the
+contents of documents if such statements are in themselves relevant facts.
+Illustration
+The question is, whether A assaulted B.
+C deposes that he heard A say to D—“B wrote a letter accusing me of theft, and I will be revenged on him”. This
+statement is relevant, as showing A’s motive for the assault, and evidence may be given of it, though no other evidence is
+given about the letter.
+140. Cross-examination  as  to  previous  statements  in  writing.— A  witness  may  be  cross-
+Page 55 of 59
+examined  as  to  previous  statements  made  by  him in writing or reduce into  writing, and  relevant to matters  in
+question, without such writing being shown to him, or being proved; but, if it is intended to contradict him by the
+writing, his attention must, before the writing can be proved, be called to those parts of it which are to be used
+for the purpose of contradicting him.
+141. Questions  lawful  in  cross-examination.— When  a  witness  is  cross-examined,  he  may,  in
+addition to the questions hereinbefore referred to, be asked any questions which tend—
+(1) to test his veracity,
+(2) to discover who he is and what is his position in life, or
+(3) to  shake  his  credit,  by  injuring  his  character,  although  the  answer  to  such  questions  might  tend
+directly or indirectly to criminate him or might expose or tend directly or indirectly to expose him to a penalty or
+forfeiture.
+142. When witness to be compelled to answer.— If any such question relates to a matter relevant
+to the suit or proceeding, the provisions of Article 15 shall apply thereto.

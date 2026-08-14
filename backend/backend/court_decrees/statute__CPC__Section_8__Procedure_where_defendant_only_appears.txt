@@ -1,0 +1,13 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-12
+
+CPC Section 8: Procedure where defendant only appears
+
+_
+Where the defendant
+appears and the plaintiff does not appear when the suit is called on for hearing,
+the Court shall make an order that the suit be dismissed, unless the defendant
+admits the claim, or part thereof, in which case the Court shall pass a decree
+against the defendant upon such admission, and, where part only of the
+claim has been admitted, shall dismiss the suit so far as it relates to the remainder.

@@ -1,0 +1,22 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-12
+
+CPC Section 1: Framing of issues
+
+_
+(1) Issues arise when a material proposition of fact
+or law is affirmed by the one party and denied by the other.
+(2) Material propositions are those propositions of law or fact which a
+plaintiff must allege in order to show a right to sue or a defendant must allege in
+order to constitute his defence.
+(3) Each material proposition affirmed by one party and denied by the
+other shall form the subject of a distinct issue.
+(4) Issues are of two kinds: (a) issues of fact, (b) issues of law.
+(5) At the first hearing of the suit the Court shall, after reading the
+plaint and the written statements, if any, and after such examination of the
+parties as may appear necessary, ascertain upon what material propositions of
+fact or of law the parties are at variance, and shall thereupon proceed to frame
+and record the issues on which the right decision of the case appears to depend.
+(6) Nothing in this rule requires the Court to frame and record issues
+where the defendant at the first hearing of the suit makes no defence.

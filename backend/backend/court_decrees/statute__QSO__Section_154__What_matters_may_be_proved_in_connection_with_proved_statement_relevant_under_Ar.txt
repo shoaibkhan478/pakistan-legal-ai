@@ -1,0 +1,203 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/assets/Acts_Ordinances_Rules2/QANUN-E-SHAHADAT.pdf
+Retrieved: 2026-08-12
+
+QSO Section 154: What matters may be proved in connection with proved statement relevant under Article
+
+46 or 47.. ............................................................................................................................................ 58
+155. Refreshing memory ............................................................................................................. 58
+156. Testimony to facts stated in document mentioned in Article 155 ....................................... 58
+157. Right of adverse party as to writing used to refresh memory .............................................. 59
+158. Production of documents ..................................................................................................... 59
+159. Giving, as evidence, of document called for and produced on notice ................................. 59
+160. Using, as evidence, of document production of which was refused on notice .................... 59
+161. Judge’s power to put questions or order production ............................................................ 59
+CHAPTER XI
+OF IMPROPER ADMISSION AND REJECTION OF EVIDENCE
+162.       No new trial for improper admission or rejection of evidence ............................................ 60
+CHAPTER XII
+DECISION OF CASE ON THE BASIS OF OATH
+163. Acceptance or denial of claim on oath ................................................................................ 60
+CHAPTER XIII
+MISCELLANEOUS
+164. Production of evidence that has become available because of modern devices, etc ........... 60
+165. Order to override other laws ................................................................................................ 60
+166. Repeal .................................................................................................................................. 60
+8
+THE QANUN-E-SHAHADAT, 1984
+THE QANUN-E-SHAHADAT, 1984
+PRESIDENT’S ORDER No. X OF 1984
+[28th October, 1984]
+WHEREAS  it  is  expedient  to revise,  amend  and  consolidate  the  law  of  evidence  so  as  to  bring  it  in
+conformity with the injunctions of Islam as laid down in the Holy Quran and Sunnah;
+NOW, THEREFORE, in pursuance of the Proclamation of the fifth day of July, 1977, and in exercise of
+all powers enabling him in that behalf, the President is pleased to make the following Order:—
+PART I
+RELEVANCY OF FACTS
+CHAPTER I
+PRELIMINARY
+1. Short title, extent and commencement.—(1) This Order may be called the Qanun-e-Shahadat,
+1984.
+(2) It extends to the whole of Pakistan and applies to all judicial proceedings in or before any Court,
+including a court martial, a tribunal or other authority exercising judicial or quasi-judicial powers or jurisdiction,
+but does not apply to proceedings before an arbitrator.
+(3) It shall come into force at once.
+2. Interpretation.—(1) In this Order, unless there is anything repugnant in the subject or context,—
+(a) “Court” includes all Judges and Magistrates, and all persons, except arbitrators, legally
+authorised to take evidence;
+(b) “document” means any matter expressed or described upon any substance by means of
+letters, figures or marks, or by more than one of those means, intended to be used, or
+which may be used, for the purpose of recording that matter;
+Illustrations
+A writing is a document;
+Words printed, lithographed or photographed are documents ;
+A map or plan is a document;
+An inscription on a metal plate or stone is a document
+A caricature is a document.
+(c) “evidence” includes:—
+(i) all  statements  which  the Court  permits  or  requires  to  be  made  before  it  by
+witnesses,  in  relation  to  matters  of  fact  under  inquiry  ;  such  statements  are
+called oral evidence ; and
+9
+(ii) all  documents  produced  for  the  inspection  of  the  Court;  such  documents  are
+called documentary evidence ;
+(d) “fact” includes—
+(i) anything, state of things, or relation of things capable of being perceived by the
+senses; and
+(ii) any mental condition of which any person is conscious.
+1
+[(e) the expression, “automated”, “electronic”, “information”, information system” “electronic
+document”,  “electronic  signature”,  “advanced  electronic  signature”  and  “security
+procedure”, shall bear the meanings given in the Electronic Transactions Ordinance,
+2002;
+(f) the expression “ certificate”, where the context so admits, includes the meaning given
+to it in the Electronic Transactions Ordinance, 2002.]
+Illustrations
+(a) That there are certain objects arranged in a certain order in a certain place, is a fact.
+(b) That a man heard or saw something, is a fact.
+(c) That a man said certain words, is a fact.
+(d) That a man holds a certain opinion, has a certain intention, acts in good faith or fraudulently,
+or uses a particular word in a particular sense, or is or was at a specified time conscious of a
+particular sensation,is a fact.
+(e) That a man has a certain reputation, is a fact.
+(2) One fact is said to be relevant to another when the one is connected with the other in any of the ways
+referred to in the provisions of this Order relating to the relevancy of facts.
+(3) The expression “facts in issue” includes any fact from which, either by itself or in connection with
+other facts, the existence, non-existence, nature or extent of any right, liability, or disability, asserted or denied in
+any suit or proceeding, necessarily follows.
+Explanation:—Whenever, under the provisions of the law for the time being in force relating to civil
+procedure, any Court records an issue of fact, the fact to be asserted or denied in the answer to such issue is a fact
+in issue.
+Illustrations
+A is accused of the murder of B.
+At his trial the following facts may be in issue:—
+that A caused B’s death ;
+that A had intended to cause B’s death ;
+that A had received grave sudden provocation from B ;
+that A, at the time of doing the act which caused B’s death, was by reason of unsoundness of
+mind, incapable of knowing its nature.
+10
+(4) A fact is said to be proved when, after considering the matters before it, the Court either believes it
+to exist, or considers its existence so probable that a prudent man ought, under the circumstances of the particular
+case, to act upon the supposition that it exists.
+(5) A fact is said to be disproved when, after considering the matters before it, the Court either believes
+that it does not exist, or considers its non-existence so probable that a prudent man ought, under the circumstances
+of the particular case, to act upon the supposition that it does not exist.
+(6) A fact is said not to be proved when it is neither proved nor disproved.
+(7) Whenever it is provided by this Order that the Court may presume a fact, it may either regard such
+fact as proved, unless and until it is disproved, or may call for proof of it.
+(8) Whenever it is directed by this Order that the Court shall presume a fact, it shall regard such fact as
+proved, unless and until it is disproved.
+(9) When one fact is declared by this Order to be conclusive proof of another, the Court shall, on proof
+of the one fact, regard the other as proved, and shall not allow evidence to be given for the purpose of disproving
+it.
+CHAPTER II
+OF WITNESSES
+3. Who may testify.— All persons shall be competent to testify unless the Court considers that they
+are prevented from understanding the questions put to them, or from giving rational answers to those questions,
+by tender years, extreme old age, disease, whether of body or mind, or any other cause of the same kind:
+Provided that a person shall not be competent to testify if he has been convicted by a Court for perjury
+or giving false evidence:
+Provided further that the provisions of the first proviso shall not apply to a person about whom the Court
+is satisfied that he has repented thereafter and mended his ways:
+Provided  further  that  the  Court  shall  determine  the  competence  of  a  witness  in  accordance  with  the
+qualifications prescribed by the injunctions of Islam as laid down in the Holy Quran and Sunnah for a witness,
+and, where such witness is not forthcoming, the Court may take the evidence of a witness who may be available.
+Explanation.—A  lunatic  is  not  incompetent  to  testify,  unless  he  is prevented  by  his  lunacy  from
+understanding the questions put to him and giving rational answers to them.
+4. Judges and Magistrates.— No Judge or Magistrate shall, except upon the special order of some
+Court to which he is subordinate, be compelled to answer any questions as to his own conduct in Court as Judge
+or Magistrate, or as to anything which come to his knowledge in Court as such Judge or Magistrate; but he may
+be examined as to other matters which occurred in his presence whilst he was so acting.
+Illustrations
+(a) A, on his trial before the Court of Session, says that a deposition was improperly taken by B, the
+Magistrate. B cannot be compelled to answer questions as to this, except upon the special order
+of a superior Court.
+(b) A is accused before the Court of Session of having given, false evidence before B, a Magistrate.
+B cannot be asked what A said, except upon the special order of the superior Court.
+11
+(c) A is accused before the Court of Session of attempting to murder a police officer whilst on his
+trial before B, a Sessions Judge, B may be examined as to what occurred.
+5. Communications during marriage.— No person who is or has been married shall be compelled
+to disclose any communication made to him during marriage by any person to whom he is or has been married;
+nor shall he be permitted to disclose any such communication, unless the person who made it, or his representative
+in-interest,  consents,  except  in  suits  between  married  persons,  or  proceedings  in  which  one  married  person  is
+prosecuted for any crime committed against the other.
+6. Evidence as to affairs of State.— No one shall be permitted to give any evidence derived from
+unpublished official records relating to any affairs of State, except with the permission of the officer at the head
+of the department concerned, who shall give or withhold such permission as he thinks fit.
+Explanation:—In this Article, “official records relating to the affairs of State” includes documents
+concerning industrial or commercial activities carried on, directly or indirectly, by the Federal Government or a
+Provincial Government or any statutory body or corporation or company set up or controlled by such Government.
+7. Official  communications.— No  public  officer  shall  be  compelled  to  disclose  communications
+made to him in official confidence, when he considers that the public interests would suffer by the disclosure.
+Explanation.—In this Article, “communications” includes communications concerning industrial or
+commercial activities carried on, directly or indirectly, by the Federal Government or a Provincial Government
+or any statutory body or corporation or company set up or controlled by such Government.
+8. Information  as  to  commission  of  offences.— No  Magistrate  or  Police -officer  shall  be
+compelled to say whence he got any information as to the commission of any offence, and no Revenue-officer
+shall be compelled to say whence he got any information as to the commission of any offence against the public
+revenue.
+Explanation.— In this Article, “Revenue-officer” means any officer employed in or about the business
+of any branch of the public revenue.
+9. Professional  communications.— No  advocate  shall  at  any  time  be  permitted,  unless  with  his
+client’s express consent, to disclose any communication made to him in the course and for the purpose of his
+employment as such advocate, by or on behalf of his client, or to state the contents or condition of any document
+with which he has become acquainted in the course and for the purpose of his professional employment, or to
+disclose any advice given by him to his client in the course and for the purpose of such employment:
+Provided that nothing in this Article shall protect from disclosure —
+(1) any such communication made in furtherance of any illegal purpose; or
+(2) any fact observed by any advocate, in the course of his employment as such, showing that any crime
+or fraud has been committed since the commencement of his employment, whether the attention of such advocate
+was or was not directed to such fact by or on behalf of his client.
+Explanation. — The obligation stated in this Article continues after the employment has
+ceased.
+Illustrations
+(a) A, a client says to B, an advocate “I wish to obtain possession of property by the use of
+12
+a forged deed on which I request you to sue”.
+The communication, being made in furtherance of a criminal purpose, is not protected
+from disclosure.
+(b) A,  being  charged  with  embezzlement,  retains  B,  an  advocate,  to  defend  him.  In  the
+course of the proceedings, B observes that an entry has been made in A’s account book
+charging A with the sum said to have been embezzled, which entry was not in the book
+at the commencement of his employment.
+This being a fact observed by B in the course of his employment, showing that a fraud has been committed since
+the commencement of the proceedings, it is not protected from disclosure.
+10. Article 9 to apply to interpreters, etc.— The provisions of Article 9 shall apply to interpreters,
+and the clerks or servants of advocates.
+11. Privilege not waived by volunteering evidence.— If any party to a suit gives evidence therein
+at  his  own  instance  or  otherwise,  he  shall  not  be  deemed  to  have  consented  thereby  to  such  disclosure  as  is
+mentioned in Article 9, and, if any party to a suit or proceeding calls any such advocate as a witness, he shall be
+deemed to have consented to such disclosure only if he questions such advocate on matters which, but for such
+question, he would not be at liberty to disclose.
+12. Confidential communications with legal advisers.— No one shall be compelled to disclose
+to the Court, tribunal or other authority exercising judicial or quasi-judicial powers or jurisdiction any confidential
+communication which has taken place between him and his legal professional adviser, unless he offers himself
+as a witness, in which case he may be compelled to disclose any such communications as may appear to the Court
+necessary to be known in order to explain any evidence which he has given, but no others.
+13. Production of title deed of witness, not a party.— No witness who is not a party to a suit shall
+be compelled to produce his title deeds to any property or any document in virtue of which he holds any property
+as pledgee or mortgagee or any document the production of which might tend to criminate him, unless he has
+agreed in writing to produce them with the person seeking the production of such deeds or some person through
+whom he claims.
