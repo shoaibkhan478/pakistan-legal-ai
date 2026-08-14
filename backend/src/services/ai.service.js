@@ -168,7 +168,7 @@ function normalizeContents(contents) {
 async function retrieveLawContext(query) {
   if (!query || !query.trim()) return '';
 
-  try {
+  const attempt = async () => {
     const { constitution, statute, judgment } = await retrieveRelevantLawWithCitations(query.slice(0, 2000));
 
     const sections = [];
@@ -194,9 +194,23 @@ async function retrieveLawContext(query) {
     if (sections.length === 0) return '';
 
     return `\n\nRELEVANT MATERIAL RETRIEVED FROM OUR OWN VERIFIED LAW LIBRARY (these are real excerpts already confirmed to exist). Base your answer on these excerpts and cite them directly (e.g. "per Section 302 PPC, per our verified law library"). Live web search is NOT available for this turn — do not say you searched the web or reference external websites; answer using only this material and your own legal knowledge.\n\n${sections.join('\n\n')}`;
+  };
+
+  try {
+    return await attempt();
   } catch (error) {
-    logger.error('retrieveLawContext: local law library lookup failed (continuing without it):', error.message || error);
-    return '';
+    // The Supabase pooler (Tokyo region) has shown intermittent transient
+    // connection failures/timeouts — retry once after a short pause before
+    // giving up and falling back to web search, rather than losing the
+    // local-library answer to a one-off network blip.
+    logger.warn('retrieveLawContext: first attempt failed, retrying once:', error.message || error);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      return await attempt();
+    } catch (retryError) {
+      logger.error('retrieveLawContext: local law library lookup failed after retry (continuing without it):', retryError.message || retryError);
+      return '';
+    }
   }
 }
 
