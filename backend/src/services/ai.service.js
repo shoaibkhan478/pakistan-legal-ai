@@ -1,5 +1,6 @@
 /**
  * AI Service - Google Gemini Integration (FREE TIER)
+ * VERSION MARKER: claude-fix-2026-08-13-v2 (search-for-this-string-to-confirm-file-is-loaded)
  * All AI-powered legal features, routed through Gemini's REST API via
  * native fetch (v1beta endpoint, which supports systemInstruction).
  *
