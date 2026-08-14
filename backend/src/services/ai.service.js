@@ -1,5 +1,6 @@
 /**
  * AI Service - Google Gemini Integration (FREE TIER)
+ * VERSION MARKER: claude-fix-2026-08-13-v2 (search-for-this-string-to-confirm-file-is-loaded)
  * All AI-powered legal features, routed through Gemini's REST API via
  * native fetch (v1beta endpoint, which supports systemInstruction).
  *
@@ -203,12 +204,12 @@ async function retrieveLawContext(query) {
     // connection failures/timeouts — retry once after a short pause before
     // giving up and falling back to web search, rather than losing the
     // local-library answer to a one-off network blip.
-    logger.warn('retrieveLawContext: first attempt failed, retrying once:', error.message || error);
+    logger.warn('retrieveLawContext: first attempt failed, retrying once:', error.stack || error.message || JSON.stringify(error) || error);
     await new Promise((resolve) => setTimeout(resolve, 500));
     try {
       return await attempt();
     } catch (retryError) {
-      logger.error('retrieveLawContext: local law library lookup failed after retry (continuing without it):', retryError.message || retryError);
+      logger.error('retrieveLawContext: local law library lookup failed after retry (continuing without it):', retryError.stack || retryError.message || JSON.stringify(retryError) || retryError);
       return '';
     }
   }
