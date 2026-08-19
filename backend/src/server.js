@@ -12,9 +12,14 @@ const startServer = async () => {
   try {
     await connectDB();
     logger.info('Database connected successfully');
-    app.listen(PORT, () => {
-      logger.info(Pakistan Legal AI API server is running on port );
-      console.log(Server is running on port );
+    // app.listen(PORT, () => {
+    //   logger.info(Pakistan Legal AI API server is running on port );
+    //   console.log(Server is running on port );
+    // Pehle (broken):
+logger.info(Pakistan Legal AI API server is running on port );
+
+// Fix (maine kar diya):
+logger.info(`Pakistan Legal AI API server is running on port ${PORT}`);
     });
   } catch (error) {
     logger.error('Failed to start server:', error);
