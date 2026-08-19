@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, Badge } from '@/components/ui';
 import {
   ChevronDown, ChevronUp, Scale, ShieldCheck, ShieldAlert, ShieldQuestion,
-  Swords, BookOpen, Lightbulb, Target, AlertTriangle, Brain,
+  Swords, BookOpen, Lightbulb, Target, AlertTriangle, Brain, Globe,
 } from 'lucide-react';
 
 interface IssueChain {
@@ -39,6 +39,7 @@ export interface DeepAnalysisData {
   synthesis: Synthesis;
   legal_references_verified: VerifiedCitation[];
   verificationSummary: { verified_local: number; verified_live: number; unverified: number; total: number };
+  liveGroundingSources?: { title: string; url: string }[];
 }
 
 function CitationBadge({ citation, verified }: { citation: string; verified: VerifiedCitation[] }) {
@@ -269,6 +270,31 @@ export default function DeepAnalysisResult({ data }: { data: DeepAnalysisData })
               separate live-search pass — not that a human has checked it. Always verify with a qualified
               advocate before relying on any citation in court.
             </p>
+          </CardContent>
+        </Card>
+      )}
+      {/* Live sources actually checked for this analysis */}
+      {data.liveGroundingSources && data.liveGroundingSources.length > 0 && (
+        <Card>
+          <CardHeader>
+            <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
+              <Globe className="w-4 h-4 text-blue-600" /> Live sources checked for this case
+            </h3>
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-slate-400 mb-2">
+              Before analyzing, the AI searched these official sites just now for the current text of relevant provisions —
+              instead of relying only on what it remembers from training.
+            </p>
+            <ul className="space-y-1.5">
+              {data.liveGroundingSources.map((s, i) => (
+                <li key={i} className="text-sm">
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 hover:underline break-all">
+                    {s.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       )}

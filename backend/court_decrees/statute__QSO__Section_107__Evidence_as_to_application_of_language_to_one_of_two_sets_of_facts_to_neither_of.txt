@@ -1,233 +1,176 @@
 [AUTO-EXTRACTED — verify against source before treating as authoritative]
-Source: https://khalidzafar.com/wp-content/files_mf/1527158791QanuneShahadatOrder1984.pdf
-Retrieved: 2026-08-14
+Source: https://sja.gos.pk/wp-content/uploads/2026/01/QANUN-E-SHAHADAT-ORDER1984-Amendment-up-to-date-2025.pdf
+Retrieved: 2026-08-15
 
-QSO Section 107: Evidence as to application of language to one of two sets of facts to neither of which the
+QSO Section 107: Evidence as to application of language to one of two sets of facts to neither of
 
-whole correctly applies. When the language used applies partly to one set of existing facts, and
-partly to another set of existing facts, but the whole of it does not apply correctly to either,
+which the whole correctly applies. — When the language used applies partly to one set of existing
+facts, and partly to another set of existing facts, but the whole of it does not apply correctly to either,
 evidence may be given to show to which of the two it was meant to apply.
-Illustration
-A agrees to sell to B ―my land at X in the occupation of Y‖. A has land at X, but not in the
-occupation of Y, and he has land in the occupation of Y, but it is to at X. Evidence may be given
-of facts showing which he meant to sell.
-108. Evidence as to meaning of illegible characters, etc. Evidence may be given to show the
-meaning of illegible or not commonly intelligible characters, of foreign, absolute, technical, local
-and provincial expressions, of abbreviations and of words used in a peculiar sense.
-Illustration
-A a sculptor, agrees to sell to B, ―All my mods.‖
-A has both models and modeling tools. Evidence may be given to show which he meant to sell.
-109. Who may give evidence of agreement varying terms of document. Persons who are not
-parties to a document, or their representatives-in-interest, may give evidence of any facts
+Illustrations
+A agrees to sell to B “my land at X in the occupation of Y”. A has land at X, but not in the occupation of
+Y,  and he has land in the  occupation of Y,  but it is not at X. Evidence may  be given of facts showing which he
+meant to sell.
+108. Evidence as to meaning of illegible characters, etc.— Evidence may be given to
+show the meaning of illegible or not commonly intelligible characters, of foreign, obsolete, technical,
+local and provincial expressions, of abbreviations and of words used in a peculiar sense.
+Illustrations
+A, a sculptor, agrees to sell to B, “All may mods.”
+A has both models and modelling tools. Evidence may be given to show which he meant to sell.
+109. Who may give evidence of agreement varying terms of document. — Persons
+who are not parties to a document, or their representatives in interest, may give evidence of any facts
 tending to show a contemporaneous agreement varying the terms of the document.
-Illustration
-A and B make a contract in writing that B shall sell A certain cotton, to be paid for on delivery.
-At the same time they make an oral agreement that three months credit shall be given to A.
-This could not be show as between A and B, but it might be shown by C, if it affected his
-interest.
-110. Saving of provisions of Succession Act relating to wills. Nothing in this Chapter contained
-shall be taken to affect any of the provisions of the Succession Act, 1925 (XXXIX of 1925), as to
-the construction of wills.
+Illustrations
+A and B make a contract in writing that B shall sell A certain cotton, to be paid for on delivery. At the
+same time, they make an oral agreement that three months’ credit shall be given to A. This could not be shown as
+between A and B, but it might be shown by C, if it affected his interest.
+110. Saving  of  provisions  of  Succession  Act  relating  to wills. — Nothing  in  this
+Chapter contained shall be taken to affect any of the provisions of the Succession Act, 1925 (XXXIX of
+1925), as to the construction of wills.
+Page 49 of 59
 PART II
 ON PROOF
 CHAPTER VII
 FACTS WHICH NEED NOT BE PROVED
-111. Fact judicially noticeable need not be proved. No fact of which the Court will take judicial
-notice need be proved.
-112. Facts of which Court must take judicial notice. (1) The Court shall take judicial notice of
-the following facts: —
-(a) All-Pakistan laws:
-(b) Articles of War for the Armed Force;
-(c) the course of proceeding of the Central Legislature and any person is authorized to use by
-any Legislature established under any law for the time being in force in Pakistan;
-(d) the seals of all the Courts in Pakistan and of all Courts out of Pakistan established by the
-authority of the Federal Government or the Government representative, the seals of Courts of
-Admiralty and Maritime Jurisdiction and of Notaries Public and all seals which by any Act or
-Regulation having the force of law in Pakistan;
-(e) the accession to office, names, titles, functions and signatures of the persons filling for the
-time being any public office in Pakistan, if the fact of their appointment to such office is notified
-in the official Gazette;
-(f) the existence, title and national flag of every State or Sovereign recognized by the Federal
-Government;
-(g) the divisions of time, the geographical divisions of the world, and public festivals, fasts and
-holidays notified in the official Gazette;
-(h) the territories under the dominion of Pakistan;
-(i) the commencement, continuance and termination of hostilities between Pakistan and any
-other State or body of persons;
-(j) the names of the members and officers of the Court and of their deputies and subordinate
-officers and assistants, and also of all officers acting in execution of its process, and of all
-Advocates and other persons authorized by law to appear or act before it;
-(k) the rule of the road on land or at sea.
-(2) In all cases referred to in clause (1), and also on all matters of public history, literature,
+111. Fact judicially noticeable need not be proved. — No fact of which the Court will
+take judicial notice need be proved.
+112. Facts of which Court must take judicial notice. — (1) The Court shall take judicial
+notice of the following facts: —
+(a) All-Pakistan laws;
+(b) Articles of War for the Armed Forces;
+(c) The  course  of  proceeding  of  the  Central  Legislature  and  any  Legislature
+established under any law for the time being in force in Pakistan;
+(d) The  seals  of  all  the  Courts  in  Pakistan  and  of  all  Courts  out  of  Pakistan
+established  by  the  authority  of  the  Federal  Government  or  the  Government
+representative, the seals of Courts of Admiralty and Maritime Jurisdiction and
+of Notaries Public and all seals which any person is authorised to use by any
+Act or Regulation having the force of law in Pakistan;
+(e) The accession to office, names, titles, functions and signatures of the persons
+filling  for  the  time  being  any  public  office  in  Pakistan,  if  the  fact  of  their
+appointment to such office is notified in the official Gazette;
+(f) The existence, title and national flag of every State or Sovereign recognised by
+the Federal Government;
+(g) The  divisions  of  time,  the  geographical  divisions  of  the  world,  and  public
+festivals, fasts and holidays notified in the official Gazette;
+(h) The territories under the dominion of Pakistan;
+(i) The  commencement,  continuance  and  termination  of  hostilities  between
+Pakistan and any other State or body of persons;
+(j) The names of the members and officers of the Court and of their deputies and
+subordinate officers and assistants, and also of all officers acting in execution
+of  its  process,  and  of  all  advocates  and  other  persons  authorized  by  law  to
+appear or act before it;
+(k) The rule of the road on land or at sea.
+(2) In all cases  referred  to in clause  (1), and also  on all matters  of public  history, literature,
 science or art, the Court may resort for its aid to appropriate books or documents of reference.
-(3) If the Court is called upon by any person to take judicial notice of any fact, it may refuse to
-do so unless and until such person produces any such book or document as it may consider
-necessary to enable it to do so.
-COMMENTARY
-Official Gazette notification can be looked into by Court and judicial notice can be taken under
-Art. 112.6a
-113. Facts admitted need not be proved. — No fact need be proved in any proceeding which
-the parties thereto or their agents agree to admit at the hearing, or which, before the hearing,
-they agree to admit by any writing under their hands, or which by any rule or pleading in force
-at the time they are deemed to have admitted by their pleadings:
+(3) If the Court is called upon by any person to take judicial notice of any fact, it may refuse
+to do so unless and until such person produces any such book or document as it may consider necessary
+to enable it to do so.
+Page 50 of 59
+113. Facts admitted need not be proved. — No fact need be proved in any proceeding
+which the parties thereto or their agents agree to admit at the hearing, or which, before the hearing, they
+agree to admit by any writing under their hands, or which by any
+13
+[rule of pleading] in force at the
+time they are deemed to have admitted by their pleadings:
 Provided that the Court may, in its discretion, require the facts admitted to be proved otherwise
 than by such admissions.
-COMMENTARY
-Suit for specific performance of agreement to sell — Respondent admitted the execution of
-agreements in her first written statement and in her cross-examination, but she subsequently in
-amended written statement took the plea that agreements were fictitious, forged and
-fraudulent — Trial Court decreed the suit, but was set aside by Appellate and Revisional Court
-— Validity — Admission made by respondent in her first written statement would be binding on
-her under Art. 113 of Qanun-e-Shahadat, 1984 — Such admission stood corroborated by her
-own further statement made in cross-examination with regard to due execution of agreements
-and passing of consideration, besides overwhelming oral and documentary evidence of
-appellant and her marginal witnesses — Subsequent denial of execution of agreements and
-receipt of amounts stated therein, and non-mentioning of Identity Cards of respondent and
-marginal witnesses in the agreements would not make them doubtful — Respondent could not
-be allowed to lead oral agreement or make statement to contradict, vary, add or subtract the
-terms of agreements, which were reduced into writing under Art. 103 of Qanun-e-Shahadat,
-1984 — Inconsistent conduct and denial of admitted facts by respondent proved that she had
-not come to Court with clean hands — Supreme Court allowed the appeal and set aside the
-impugned judgments and decrees and restored that passed by the Trial Court.7
+13
+Sub by Fed. Act No.XLI of 2025, dt 24
+th
+Dec,2025, vide S.2
+Page 51 of 59
 CHAPTER VIII
 ESTOPPEL
-114. Estoppel. When one person has by his declaration, act or omission, intentionally caused or
-permitted another person to believe a thing to be true and to act upon such belief, neither he
-nor his representative shall be allowed, in any suit or proceeding between himself and such
-person or his representative, to deny the truth of that thing.
+114. Estoppel. — When  one  person  has,  by  his  declaration,  act  or  omission,  intentionally
+caused or permitted another person to believe a thing to be true and to act upon such belief, neither he
+nor his representative shall be allowed, in any suit or proceeding between himself and such person or
+his representative, to deny the truth of that thing.
 Illustration
-A intentionally and falsely leads B to believe that certain land belongs to A, and thereby induces
-B to buy and pay for it.
-The land afterwards becomes the property of A, and A seeks to set aside the sale on the
-ground that, at the time of the sale, he had no title. He must not be allowed to prove his want
-of title.
-COMMENTARY
-Estoppel. If a party, by it conduct obliges the Court to adopt a course which is contrary to its
-practice, that party will be debarred from raising objection as to the procedure on the very
-salutary principle that after having led the Court to do a certain thing for the benefit of the
-parties, none of them can be allowed to challenges the same.7
-Estoppel. Once a mode (procedure) is adopted by the High Court on the request of the parties,
-the decision given in pursuance of that mode should be given effect to. Necessary corollary of
-such rule would be that the same parties were estopped from subsequently challenging that
-mode of decision in an appeal.8
-Estoppel. Party accepting a benefit under a compromise, an award, or a partition was estopped
-from questioning the transaction.9
-Non-raising of question of limitation would neither be waiver nor estoppel.1
-Estoppel. Where a party persuaded a Tribunal to adopt a particular course for determining the
-issue in question and accepted benefit of such, arrangement, he cannot be allowed to repudiate
-when it comes to liabilities and obligations thereunder.2
-Estoppel. Benefit or rule of estoppel. Entitlement of only that party who, while acting on the
-representation of another person had changed its position to its prejudice could claim benefit of
-rule of estoppel. Where, however, correct factual position was within knowledge of the
-represented or would have come to his knowledge, on making inquiry as he ought to have
-reasonably made, rule or estoppel was not attracted.3
-115. Estoppel of tenant and of licensee of person in possession. No tenant of immovable
-property, or person claiming through such tenant, shall, during the continuance of the tenancy,
-be permitted to deny that the landlord of such tenant had, at the beginning of the tenancy, a
-title to such immovable property; and no person who came upon any immovable property by
-the licence of the person in possession thereof shall be permitted to deny that such person had
-a title to such possession at the time when which license was given.
-COMMENTARY
-A person entering premises as tenant cannot be permitted to deny that status as estoppel
-under Art. 115 would operate and principle ―once a tenant always a tenant‖ would apply.4
-Once a tenant always a tenant. Tenant having been inducted as a tenant cannot claim adverse
-to what was acquired by him in a lawful manner. Tenant‘s claim that he had acquired title
-through sale having not been established, no period of limitation would stand against owners to
-seek declaration of title against such person.5
-Tenancy of land once entered upon would continue until determined in accordance with
-requirement of law.6
-116. Estoppel of acceptor of bill of exchange, bailee or licensee. No acceptor of a bill of
-exchange shall be permitted to deny that the drawer had authority to draw such bill or to
-endorse it; nor shall any bailee or licensee be permitted to deny that his bailer or licensor had,
-at the time then the bailment or license commenced, authority to make such bailment or grant
-such license.
-Explanation 1. The acceptor of a bill of exchange may deny that the bill was really drawn by the
-person by whom it purports to have been drawn.
-Explanation 2. If a bailee delivers the goods bailed to a person other than the bailer, he may
-prove that such person had a right to them as against the bailor.
+A intentionally and falsely leads B to believe that certain land belongs to A, and thereby induces B to buy
+and pay for it.
+The land afterwards becomes the property of A, and A seeks to set aside the sale on the ground that, at
+the time of the sale, he had no title. He must not be allowed to prove his want of title.
+115. Estoppel  of  tenant  and  of  licensee  of  person  in  possession.— No  tenant  of
+immovable  property,  or  person  claiming  through  such  tenant,  shall,  during  the  continuance  of  the
+tenancy, be permitted to deny that the landlord of such tenant had, at the beginning of the tenancy, a title
+to such immovable property; and no person who came upon any immovable property by the license of
+the person in possession thereof shall be permitted to deny that such person had a title to such possession
+at the time when such license was given.
+116. Estoppel of acceptor of bill of exchange bailee or licensee. — No acceptor of a
+bill of exchange shall be permitted to deny that the drawer had authority to draw such bill or to endorse
+it; nor shall any bailee or licensee be permitted to deny that his bailer or licenser had, at the time when
+the bailment or license commenced, authority to make such bailment or grant such license.
+Explanation 1. —The acceptor of a bill of exchange may deny that the bill was really drawn by
+the person by whom it purports to have been drawn.
+Explanation 2. — If a bailee delivers the goods bailed to a person other than the bailor, he may
+prove that such person had a right to them as against the bailer.
+Page 52 of 59
 PART III
 PRODUCTION AND EFFECT OF EVIDENCE
 CHAPTER IX
 OF THE BURDEN OF PROOF
-117. Burden of proof. (1) Whoever desires any Court to give judgment as to any legal right or
-liability dependent on the existence of facts which he asserts, must prove that those facts exist.
-(2) When a person is bound to prove the existence of any fact, it is said that the burden of
-proof lies on that person.
+117. Burden of proof. — (1) Whoever desires any Court to give judgment as to any legal
+right or liability dependent on the existence of facts which he asserts, must prove that those facts exist.
+(2) When a person is bound to prove the existence of any fact, it is said that the burden of proof
+lies on that person.
 Illustrations
-(a) A desires a Court to give judgment that B shall be punished for a crime which A says B has
-committed.
+(a) A desires a Court to give judgment that B shall be punished for a crime which A says
+B has committed.
 A must prove that B has committed the crime.
-(b) A desires a Court to give judgment that he is entitled to certain land in the possession of B
-by reason of facts which he asserts, and which B denies be true.
+(b) A desires a Court to give judgment that he is entitled to certain land in the possession
+of B by reason of facts which he asserts, and which B denies to be true.
 A must prove the existence of those facts.
-COMMENTARY
-Burden of proof. Transfer of property through mutation. Burden of proof in case of transfer of
-property through mutation is on vendee.8
-118. On whom burden of proof lies. The burden of proof in a suit or proceeding lies on that
-person who would fail if no evidence at all were given on either side.
+118. On whom burden of proof lies. — The burden of proof in a suit or proceeding lies
+on that person who would fail if no evidence at all were given on either side.
 Illustrations
-(a) A sues B for land of which B is in possession, and which, as A asserts, was left to A by the
-will of C, B‘s father.
-If no evidence were given on either side. B would be entitled to retain his possession.
-Therefore the burden of proof is on A.
+(a) A sues B for land of which B is in possession, and which, as A asserts, was left to A by
+the will of C, B’s father.
+If no evidence were given on either side, B would be entitled to retain his possession.
+Therefore, the burden of proof is on A.
 (b) A sues B for money due on a bond.
-The execution of the bond is admitted, but B say that it was obtained by fraud, which A denies.
-If no evidence were given on either side, A would succeed as the bond is not disputed and the
-fraud is not proved.
-Therefore the burden of proof is on B.
-COMMENTARY
-Tort. Damages. Publication of article in the magazine owned and edited by defendant relating
-to murder case of ex-Prime Minister. Plaintiff‘s conduct in said murder case as counsel was
-ridiculed and his reputation as a lawyer was injured. Defendant claiming truth of allegations.
-Initial onus of proving that contents of said article were true and publication was not made with
-mala fides but by intelligent zeal in public interest, was to be discharged by defendant, who
-failed in doing so. Anything published against a person rendering him ridiculous and,
-contemptible was nothing but defamation. Defendant was, thus, liable to pay damages to
-plaintiff for publishing article in question, against him.1
-119. Burden of proof as to particular fact. The burden of proof as to any particular fact lies on
-that person who wishes the Court to believe in its existence, unless it is provided by any law
+The execution of the bond is admitted, but B says that it was obtained by fraud, which
+A denies.
+lf no evidence were given on either side, A would succeed as the bond is not disputed
+and the fraud is not proved.
+Therefore, the burden of proof is on B.
+119. Burden of proof as to particular fact. — The burden of proof as to any particular
+fact lies on that person who wishes the Court to believe in its existence, unless it is provided by any law
 that the proof of that fact shall lie on any particular person.
 Illustrations
-(a) A prosecutes B for theft, and wishes the Court to believe that B admitted the theft, to A, A
-must prove the admission.
+Page 53 of 59
+(a) A prosecutes B for theft, and wishes the Court to believe that B admitted the theft, to
+C. A must prove the admission.
 (b) B wishes the Court to believe that, at the time in question, he was elsewhere. He must
 prove it.
-120. Burden of proving fact to be proved to make evidence admissible. The burden of proving
-any fact necessary to be proved in order to enable any person to give evidence of any other
-fact is on the person who wishes to give such evidence.
+120. Burden  of  proving  fact  to  be  proved  to  make  evidence admissible. — The
+burden of proving any fact necessary to be proved in order to enable any person to give evidence of any
+other fact is on the person who wishes to give such evidence.
 Illustrations
-(a) A wishes to prove a dying declaration by B. A must prove B‘s death.
+(a) A wishes to prove a dying declaration by B. A must prove B’s death.
 (b) A wishes to prove, by secondary evidence, the contents of a lost document.
 A must prove that the document has been lost.
-121. Burden of proving that case of accused comes within exceptions. When a person is
-accused of any offence the burden of proving the existence of circumstances bringing the case
-within any of the General Exceptions in the Pakistan Penal Code (Act XLV of 1860), or within
-any special exception of proviso contained in any other part of the same Code, or in any law
-defining the offence, is upon hi, and the Court shall presume the absence of such
-circumstances.
+121. Burden  of  proving  that  case  of  accused  comes  within  exceptions.— When  a
+person is accused of any offence the burden of proving the existence of circumstances bringing the case
+within  any  of the  General  Exceptions  in  the  Pakistan  Penal  Code  (Act  XLV  of  1860),  or  within  any
+special exception or proviso contained in any other part of the same Code, or in any law defining the
+offence, is upon him, and the Court shall presume the absence of such circumstances.
 Illustrations
-(a) A accused of murder, alleges that by reason of unsoundness of mind, he did not know the
-nature of the act.
+(a) A accused of murder, alleges that by reason of unsoundness of mind, he did not know
+the nature of the act.
 The burden of proof is on A.
-(b) A, accused of murder, alleged that, by grave and sudden provocation, he was deprived of
-the power of self-control.
+(b) A, accused of murder, alleges that, by grave and sudden provocation, he was
+deprived of the power of self-control.
 The burden of proof is on A.
-(c) Section 325 of the Pakistan Penal Code (Act XLV of 1860), provides that whoever, except in
-the case provided for by section 335, voluntarily causes grievous hurt, shall be subject to
-certain punishments.
-A is charged with voluntarily causing grievous hurt under section 325.
-The burden of proving the circumstances bringing the case under section 335 lies on A.
-122. Burden of proving fact especially within knowledge. When any fact is especially within the
-knowledge of any person, the burden to proving that fact is upon him.
+(c) Section  325  of  the  Pakistan  Penal  Code  (Act  XLV  of  1860),  provides that  whoever,
+except in the case provided for by section 335, voluntarily causes grievous hurt, shall
+be subject to certain punishments.
+The burden of proving the circumstances bringing the case under section 335 lies on
+A.
+122. Burden  of  proving  fact  especially  within  knowledge. — When  any  fact  is
+especially within the knowledge of any person, the burden of proving that fact is upon him.
 Illustrations
-(a) When a person does an act with some intention other than that which the character and
-circumstances of the act suggest, the burden of proving that intention is upon him.
-(b) A is charged with traveling on a railway without a ticket. The burden of proving that he had
-a ticket is on him.
-123. Burden of proving death of person known to have been alive within thirty years. Subject to
-Article 124, when the question is whether a man is alive or dead, and it is shown that he was
-alive within thirty years, the burden of proving that he is dead is on the person who affirms it.
-124. Burden of proving that person is alive who has not been heard of for seven years. When
-the question is whether a man is alive or dead, and it is proved that he has not been heard of
-for seven years by those who would naturally have heard of him if had been alive, the burden
-of proving that he is alive is shifted to the person who affirms it.
+(a) When a person does on act  with some  intention other than that which the  character
+and circumstances of the act suggest, the burden of proving that intention is upon him.
+(b) A is charged with travelling on a railway without a ticket. The burden of proving that
+he had a ticket is on him.
+Page 54 of 59

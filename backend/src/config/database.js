@@ -1,8 +1,6 @@
-/**
- * Database Configuration
- * PostgreSQL connection pool using pg
- */
-
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { Pool } = require('pg');
 const logger = require('../utils/logger');
 

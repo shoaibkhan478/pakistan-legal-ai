@@ -1,0 +1,32 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-15
+
+CPC Section 6: Procedure when only plaintiff appears
+
+_
+(1) Where the plaintiff appears
+and the defendant does not appear when the suit is called on for hearing, then
+_
+(a) When summons duly served.
+_
+if it is proved that the
+summons was duly served, the Court may proceed ex parte
+1
+[and pass decree without recording evidence];
+(b) When summons not duly served.
+_
+if it is not proved that
+the summons was duly served, the Court shall direct a second
+summons to be issued and served on the defendant;
+(c) When summons served, but not in due time.
+_
+if it is
+proved that the summons was served on the defendant, but
+not in sufficient time to enable him to appear and answer on
+the day fixed in the summons, the Court shall postpone the
+hearing of the suit to a future day to be fixed by the Court, and
+shall direct notice of such day to be given to the defendant.
+(2) Where it is owing to the plaintiff's default that the summons was not
+duly served or was not served in sufficient time, the Court shall order the
+plaintiff to pay the costs occasioned by the postponement.

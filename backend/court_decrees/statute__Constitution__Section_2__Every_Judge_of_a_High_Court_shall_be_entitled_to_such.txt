@@ -1,6 +1,6 @@
 [AUTO-EXTRACTED — verify against source before treating as authoritative]
-Source: https://na.gov.pk/uploads/documents/63ea176f52421_610.pdf
-Retrieved: 2026-07-23
+Source: https://na.gov.pk/uploads/documents/6926e060076ed_467.pdf
+Retrieved: 2026-08-15
 
 Constitution Section 2: Every Judge of a High Court shall be entitled to such
 
@@ -10,7 +10,7 @@ and until so determined, to the privileges, allowances and rights
 to which, immediately before the commencing day, the Judges of
 the High Court were entitled.
 3
-[3. The pension payable per mensem to a Judge of a High
+[3.   The pension payable per mensem to a Judge of a High
 Court who retires after having put in not less than five years
 service as such Judge shall not be less or more than the amount
 specified in the table below, depending on the length of his
@@ -26,11 +26,10 @@ Chief Justice   rs. 5,640rs. 7,050
 Other Judge   rs. 5,040rs. 6,300.]
 ––––––––––––––––––––––––––––––––––––––––––––––––––––
 4
-[4. The widow of a Judge of the High Court shall be entitled to
+[4.   The widow of a Judge of the High Court shall be entitled to
 a pension at the following rates, namely :–
 (a) if the Judge dies after retirement–50 per cent of the net
 pension payable to him; or
-214CONSTITUTION OF PAKISTAN
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 *w.e.f.1-12-2001, the salary of the Chief Justice of High Court and other Judges of a
 High Court has been determined by the President to be rs. 51,000 and rs. 49,000 respec-
@@ -52,6 +51,7 @@ Added ibid.
 Subs.ibid., for ‘‘paragraph 3rd’’.
 4
 Added by P. O. No. 6 of 1985, Art. 2, (w.e.f. the 1st July, 1981).
+CONSTITUTION OF PAKISTAN229
 (b) if the Judge dies after having rendered not less than
 five years’ service as Judge and while still serving as
 such–50 per cent of the pension admissible to him at

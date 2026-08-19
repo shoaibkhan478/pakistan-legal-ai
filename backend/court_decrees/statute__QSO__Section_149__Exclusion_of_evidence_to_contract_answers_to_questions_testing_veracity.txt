@@ -1,0 +1,75 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://sja.gos.pk/wp-content/uploads/2026/01/QANUN-E-SHAHADAT-ORDER1984-Amendment-up-to-date-2025.pdf
+Retrieved: 2026-08-15
+
+QSO Section 149: Exclusion  of  evidence  to  contract  answers  to  questions  testing veracity
+
+When a witness has been asked and has answered any question which is relevant to the inquiry only in
+so far as it tends to shake his credit by injuring his character, no evidence shall be given to contradict
+him; but, if he answers falsely, he may afterwards be charged with giving false evidence.
+Exception 1. —If a witness is asked whether he has been previously convicted of any crime
+denies it, evidence may be given of his previous conviction.
+Exception 2. —If  a  witness  is  asked  any  question  tending  to  impeach  his  impartiality  and
+answers it by denying the facts suggested, he may be contradicted.
+Page 61 of 59
+Illustrations
+(a)  A claim against an underwriter is resisted on the ground of fraud.
+The claimant is asked whether, in a former transaction, he had not made a fraudulent
+claim. He denies it.
+Evidence is offered to show that he did make such a claim. The evidence is inadvisable.
+(b) A witness is asked whether he was not dismissed from a situation for dishonesty. He
+denies it.
+Evidence is offered to show that he was dismissed for dishonesty.
+The evidence is not admissible.
+(c) A affirms that on a certain day he saw B at Lahore.
+A is asked whether he himself was not on that day at Faisalabad. He denies it. Evidence
+is offered to show that A was on that day at Faisalabad.
+The evidence is admissible, not as contradicting A on a fact which affects his credit,
+but as contradicting the alleged fact that B was seen on the day in question in Lahore.
+In each of these cases the witness might, if his denial was false, be charged with giving
+false evidence.
+(d) A is asked whether his family has not had a blood feud with the family of B against
+whom he gives evidence.
+He denies it. He may be contradicted on the ground that the question tends to impeach
+his impartiality.
+150. Question by party to his own witness. — The Court may, in its discretion, permit
+the person who calls a witness to put any questions to him which might be put in cross-examination by
+the adverse party.
+151. Impeaching credit of witness. — The credit of a witness may be impeached in the
+following ways by the adverse party, or, with the consent of the Court, by the party who calls him:
+(1) by  the  evidence  of  persons  who  testify  that  they,  from  their  knowledge  of  the  witness,
+believe him to be unworthy of credit;
+(2) by  proof  that  the  witness  has  been  bribed,  or  has  accepted  the  offer  of  a  bribe,  or  has
+received any other corrupt inducement to give his evidence;
+(3) by proof of former statements inconsistent with any part of his evidence which is liable to
+be contradicted;
+[* * *****]
+14
+Explanation. —A witness declaring another witness to be unworthy of credit may not, upon his
+examination-in-chief, give reasons for his belief, but he may be asked his reasons in cross-examination,
+11
+Omitted clause (4) of Article 151, by Act No. XLIV of 2016, s. 16.
+Page 62 of 59
+and the answers which he gives cannot be contradicted, though, if they are false, he may afterwards be
+charged with giving false evidence.
+Illustrations
+(a) A sues B for the price of goods sold and delivered to B. C. says that A delivered the
+goods to B.
+Evidence  is  offered  to  show  that,  on  a  previous  occasion,  he  said  that  he  had  not
+delivered the goods to B.
+The evidence is admissible.
+(b) A is indicated for the murder of B.
+C says that B, when dying, declared that A had given B the wound of which he died.
+Evidence is offered to show that, on a previous occasion, C said that the wound was
+not given by A or in his presence.
+The evidence is admissible.
+152. Questions tending to corroborate evidence of relevant fact admissible.— When
+a witness whom it is intended to corroborate gives evidence of any relevant fact, he may be questioned
+as to any other circumstances which he observed at or near to the time or place at which such relevant
+fact  occurred  if  the  Court  is  of  opinion  that  such  circumstances,  if  proved,  would  corroborate  the
+testimony of the witness as to the relevant fact which he testifies.
+Illustration
+A,  on  accomplice,  gives  an  account  of  robbery  in  which  he  took  part.  He  describes  various  incidents
+unconnected with the robbery which occurred on his way to and from the place where it was committed.
+Independent evidence of these facts may be given in order to corroborate his evidence as to the robbery
+itself.

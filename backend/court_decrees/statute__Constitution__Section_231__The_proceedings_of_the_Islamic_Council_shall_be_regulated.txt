@@ -1,11 +1,11 @@
 [AUTO-EXTRACTED — verify against source before treating as authoritative]
-Source: https://na.gov.pk/uploads/documents/63ea176f52421_610.pdf
-Retrieved: 2026-07-23
+Source: https://na.gov.pk/uploads/documents/6926e060076ed_467.pdf
+Retrieved: 2026-08-15
 
 Constitution Section 231: The proceedings of the Islamic Council shall be regulated
 
 by rules of procedure
-2
+4
 to be made by the Council with approval
 of the President.
 ––––––
@@ -15,16 +15,21 @@ procedure.
 1
 See footnote 9 on page 5, supra.
 2
+Subs. by the Constitution (Twenty-sixth Amdt.) Act, 2024 (26 of 2024), s.24, for “full
+stop”.
+3
+Added ibid.,
+4
 For the Council of Islamic Ideology (Procedure Rules), 1974, see Gaz. of Pak., 1974,
 Ext., Pt. II, pp. 771–773.
-CONSTITUTION OF PAKISTAN                      131
+CONSTITUTION OF PAKISTAN                      143
 PART  X
 Emergency Provisions
 232. (1)    If the President is satisfied that a grave emergency
 exists in which the security of Pakistan, or any part thereof, is
-threatened by war or external aggression, or by internal distur-
-bance beyond the power of a Provincial Government to control,
-he may issue a Proclamation of Emergency
+threatened by war or external aggression, or by internal
+disturbance beyond the power of a Provincial Government to
+control, he may issue a Proclamation of Emergency
 1
 [:]
 2
@@ -44,11 +49,11 @@ make laws for a Province, or any part thereof, with
 respect to any matter not enumerated in the Federal
 Legislative List
 4
-* * *]
+* * *;]
 (b)    the executive authority of the Federation shall extend
-to the giving of directions to a Province as to the man-
-ner in which the executive authority of the Province is
-to be exercised; and
+to the giving of directions to a Province as to the
+manner in which the executive authority of the
+Province is to be exercised; and
 (c)    the Federal Government may by Order
 5
 assume to
@@ -68,29 +73,29 @@ disturbance,
 etc.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-Subs. by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 86, for the full stop.
+Subs. by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 86, for the full-stop.
 2
 New provisos ins. ibid.
 3
 Subs. by P. O. No. 14 of 1985, Art. 2 and Sch., for “paragraph (a)”.
 4
 The words “or the Concurrent Legislative List” stand omitted as a consequence of the
-(Eighteenth Amdt.) Act, 2010 (10 of 2010), see section 2.
+(Eighteenth Amdt.) Act, 2010 (10 of 2010), seesection 2.
 5
-For such Order, in respect of N.W.F.P., seeS.R.O. No. 202(I)/75, dated the 16th
+For such Order, in respect of N.W.F.P. seeS.R.O. No. 202(I)/75, dated the 16th
 February, 1975, see Gaz. of Pak. 1975, Ext., Pt. II, p. 329, since rescinded by S.R.O. No.
 522(I)/75, dated the 3rd May, 1975, seeGaz. of Pak., 1975, Ext., Pt. II, p. 727; and
 For such Order, in respect of the Province of Balochistan, seeS.R.O. No. 641(I)/76,
 dated the 30th June, 1976, see Gaz. of Pak., 1976, Ext., Pt. II, p. 1207 since rescinded by
-S. R. O. No. 1161 (I)/76, dated the 6th December, 1976, see Gaz. of Pak., 1976, Ext., Pt.
+S. R. O. No. 1161 (I)/76, dated the 6th December, 1976, see Gaz. of Pak. 1976, Ext., Pt.
 II, p. 2279.
-For such proclamation issued on 28-5-1998, seeGaz. of Pak., 1998, Ext., Pt. I,p. 32.
-132                       CONSTITUTION OF PAKISTAN
+For such proclamation issued on 28-5-1998, seeGaz. of Pak. 1998, Ext., Pt. I,p. 32.
+144                      CONSTITUTION OF PAKISTAN
 effect to the objects of the Proclamation, including
 provisions for suspending, in whole or in part, the
-operation of any provisions of the Constitution relat-
-ing to any body or authority in the Province :
-Provided that nothing in paragraph (c) shall authorise the
+operation of any provisions of the Constitution
+relating to any body or authority in the Province:
+Provided that nothing in paragraph (c) shall authorize the
 Federal Government to assume to itself, or direct the Governor of
 the Province to assume on its behalf, any of the powers vested in
 or exercisable by a High Court, or to suspend either in whole or
@@ -105,7 +110,7 @@ authorizing the conferring of powers and the imposition of duties
 upon the Federation, or officers and authorities of the Federation,
 as respects that matter.
 (4)    Nothing in this Article shall restrict the power of a
-Provincial Assembly to make any law which under the
+Provincial Assembly   to   make   any   law   which   under   the
 Constitution it has power to make, but if any provision of a
 Provincial law is repugnant to any provision of an Act of
 1
@@ -128,8 +133,7 @@ Proclamation of Emergency have been competent to make, shall,
 to the extent of the incompetency, cease to have effect on the
 expiration of a period of six months after the Proclamation of
 Emergency has ceased to be in force, except as respects things
-done or omitted to be done before the expiration of the said
-period.
+done or omitted to be done before the expiration of the said period.
 (6)    While a Proclamation of emergency is in force,
 1
 [Majlis-e-Shoora (Parliament)] may by law extend the term of
@@ -139,19 +143,19 @@ Proclamation has ceased to be in force.
 (7)    A Proclamation of Emergency shall be laid before a
 joint sitting which shall be summoned by the President to meet
 within thirty days of the Proclamation being issued and–
-(a)    shall cease to be in force at the expiration of two
-months unless before the expiration of that period it
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-See footnote 9 on page 5, supra.
-CONSTITUTION OF PAKISTAN                      133
+Seefootnote 9 on page 5, supra.
+CONSTITUTION OF PAKISTAN                      145
+(a)    shall cease to be in force at the expiration of two
+months unless before the expiration of that period it
 has been approved by a resolution
 1
 of the joint sitting;
 and
 2
 [(b)    shall, subject to the provisions of paragraph (a), cease
-to be in force upon a resolution disapproving
+to   be   in   force   upon   a   resolution   disapproving
 the proclamation being passed by the votes of the
 majority of the total membership of the two Houses in
 joint sitting.]
@@ -163,15 +167,14 @@ election to the Assembly is not held before the expiration of that
 period; it shall cease to be in force at the expiration of that
 period unless it has earlier been approved by a resolution of the
 Senate.
-233. (1)    Nothing contained in Articles 15, 16, 17, 18, 19 and
-24 shall, while a Proclamation of Emergency is in force, restrict
-the power of the State as defined in Article 7 to make any law or
-to take any executive action which it would, but for the provi-
-sions in the said Articles, be competent to make or to take, but
-any law so made shall, to the extent of the incompetency, cease
-to have effect, and shall be deemed to have been repealed, at the
-time when the Proclamation is revoked or has ceased to be in
-force.
+233. (1)    Nothing contained in Articles 15, 16, 17, 18, 19, and 24
+shall, while a Proclamation of Emergency is in force, restrict the
+power of the State as defined in Article 7 to make any law or to
+take any executive action which it would, but for the provisions in
+the said Articles, be competent to make or to take, but any law so
+made shall, to the extent of the incompetency, cease to have effect,
+and shall be deemed to have been repealed, at the time when the
+Proclamation is revoked or has ceased to be in force.
 Power to
 suspend
 Fundamental
@@ -182,23 +185,23 @@ period.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
 The joint sitting passed the following resolution on the 5th September, 1973 :–
-"That the joint sitting approves under clause (7) of Art. 232 of the Constitution read
+“That the joint sitting approves under clause (7) of Art. 232 of the Constitution read
 with Art. 280 thereof, the Proclamation of Emergency issued on the 23rd day of
 November, 1971, and the continuance in force of the said Proclamation for the period of
 six months following the expiration of the period mentioned in paragraph (a) of the said
-clause (7)."
+clause (7).”
 The joint sitting passed the following resolution on 10-6-1998.
-"That the joint sitting approve under clause (7) of Article 232 of the Constitution the
+“That the joint sitting approve under clause (7) of Article 232 of the Constitution the
 Proclamation of Emergency issued by the President on the 28th May, 1998, under clause
-(1) of Article 232 of the Constitution." seeGaz. of Pak. 1998, Ext., Pt. III, p. 647.
+(1) of Article 232 of the Constitution.” seeGaz. of Pak. 1998, Ext., Pt. III, p. 647.
 2
-Subs. by the Constitution (Third Amdt.) Act, 1975, (22 of 1975), s. 3, for
-original paragraph (b) (w.e.f. the 13th February, 1975), which reads as follows :–
-"(b)  may by resolution of a joint sitting, be continued in force for a period not exceed-
-ing six months at a time."
+Subs. by the Constitution (Third Amdt.) Act, 1975 (22 of 1975), s. 3, for
+original paragraph (b) (w.e.f. the 13th February, 1975) which reads as follows :–
+“(b)  may by resolution of a joint sitting, be continued in force for a period not exceed-
+ing six months at a time.”
 For resolutions under original paragraph (b) approving the continuance in force of the
 Proclamation of Emergency, seeGaz. of Pak., 1974, Ext., Pt. III, p. 343, and ibid., p. 1183.
-134                       CONSTITUTION OF PAKISTAN
+146                      CONSTITUTION OF PAKISTAN
 (2)    While a Proclamation of Emergency is in force, the
 President may, by Order,
 1
@@ -209,7 +212,7 @@ proceeding in any court which is for the enforcement, or involves
 the determination of any question as to the infringement, of any
 of the Rights so specified, shall remain suspended for the period
 during which the Proclamation is in force, and any such Order
-may be made in respect of the whole or any part of Pakistan.
+may be made in repect of the whole or any part of Pakistan.
 (3)    Every Order made under this Article shall, as soon as
 may be, be laid before
 2
@@ -238,18 +241,18 @@ other than the Provincial Assembly ;
 Power to issue
 Proclamation
 in case of fail-
-ure of consti-
+ure of Consti-
 tutional
 machinery in a
-province.
+Province.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
 The Order suspending the right to move any court for the enforcement of certain
 Fundamental Rights issued videsee Gaz. of Pak., 1973, Ext., Pt. I, p. 602, has been
-rescinded by S.R.O. 1093(I)/74, dated the 14th August, 1974, see Gaz. of Pak., 1974, Ext.,
+rescinded by S.R.O. 1093(I)/74, dated the 14th August, 1974, see Gaz. of Pak. 1974, Ext.
 Pt. II, p. 1548.
 2
-Subs. the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 87, for “a joint
+Subs. the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 87 for “a joint
 sitting”.
 3
 For the Order issued on 28-5-1998 suspending of Fundamental Rights, (See
@@ -259,19 +262,19 @@ The joint sitting passed the following resolution on the 6th September, 1973 :�
 read with clause (3) of Article 233 thereof, the President’s Order of the 14th August, 1973,
 made under clause (2) of the said Art. 233 and the continuance in force of the said Order
 for the period of six months following the expiration of the period mentioned in paragraph
-(a) of the said clause (7) of Art. 232."
+(a) of the said clause (7) of Art. 232.”
 For resolution approving the continuance in force of the President’s Order of the 14th
 August, 1973, for a further period of six months, seeGaz. of Pak., 1974, Ext., Pt. III, p.
 343.
 The joint sitting passed the following resolution on 10-6-1998.
-"That the joint sitting approves the Order made by the President on the 28th May,
-1998, under clause (2) of Article 233 of the Constitution." seeGaz. of Pak., 1998, Part III,
+“That the joint sitting approves the Order made by the President on the 28th May,
+1998, under clause (2) of Article 233 of the Constitution.” seeGaz. of Pak. 1998, Part III,
 p. 647.
 4
-The words “or otherwise” omitted by Act, 2010 (10 of 2010), s. 88.
+The words “or otherwise” omitted by the Act No. 10 of 2010, s. 88.
 5
 Subs. ibid.,for “at a joint sitting”.
-CONSTITUTION OF PAKISTAN                      135
+CONSTITUTION OF PAKISTAN                      147
 (b)    declare that the powers of the Provincial Assembly
 shall be exercisable by, or under the authority of,
 1
@@ -283,21 +286,21 @@ including provisions for suspending in whole or in
 part   the   operation   of   any   provisions   of   the
 Constitution relating to any body or authority in the
 Province :
-Provided that nothing in this Article shall authorise the
+Provided that nothing in this Article shall authorize the
 President to assume to himself, or direct the Governor of the
 Province to assume on his behalf, any of the powers vested in, or
 exercisable by, a High Court, or to suspend either in whole or in
 part the operation of any provisions of the Constitution relating
 to High Courts.
-(2)  The provisions of Article 105 shall not apply to the dis-
-charge by the Governor of his functions under clause (1).
+(2)  The provisions of Article 105 shall not apply to the
+discharge by the Governor of his functions under clause (1).
 (3)    A Proclamation issued under this Article shall be laid
-before a joint sitting and shall cease to be in force at the expira-
-tion of two months, unless before the expiration of that period it
-has been approved by resolution of the joint sitting and may by
-like resolution be extended for a further period not exceeding two
-months at a time; but no such Proclamation shall in any case
-remain in force for more than six months.
+before a joint sitting and shall cease to be in force at the
+expiration of two months, unless before the expiration of that
+period it has been approved by resolution of the joint sitting and
+may by like resolution be extended for a further period not
+exceeding two months at a time; but no such Proclamation shall
+in any case remain in force for more than six months.
 (4)    Notwithstanding anything contained in clause (3), if
 the National Assembly stands dissolved at the time when a
 Proclamation is issued under this Article, the Proclamation shall
@@ -308,48 +311,47 @@ period unless it has earlier been approved by a resolution of the
 Senate.
 (5)    Where by a Proclamation issued under this Article it
 has been declared that the powers of the Provincial Assembly
-shall be exercisable by or under the authority of
+shall   be   exercisable   by   or   under   the   authority   of
 1
-[Majlis-e-
-Shoora (Parliament)], it shall be competent–
+[Majlis-e-Shoora (Parliament)], it shall be competent–
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-See footnote 9 on page 5, supra.
-136                       CONSTITUTION OF PAKISTAN
+Seefootnote 9 on page 5, supra.
+148                      CONSTITUTION OF PAKISTAN
 (a)    to
 1
 [Majlis-e-Shoora (Parliament)] in joint sitting to
 confer on the President the power to make laws with
-respect to any matter within the legislative compe-
-tence of the Provincial Assembly ;
+respect   to   any   matter   within   the   legislative
+competence of the Provincial Assembly ;
 (b)    to
 1
 [Majlis-e-Shoora (Parliament)] in joint sitting, or
 the President, when he is empowered under paragraph
 (a), to make laws conferring powers and imposing
-duties, or authorising the conferring of powers and the
+duties, or authorizing the conferring of powers and the
 imposition of duties, upon the Federation, or officers
 and authorities thereof;
 (c)    to the President, when
 1
 [Majlis-e-Shoora (Parliament)]
-is not in session, to authorise expenditure from the
-Provincial Consolidated Fund, whether the expendi-
-ture is charged by the Constitution upon that fund or
-not, pending the sanction of such expenditure by
+is not in session, to authorize expenditure from the
+Provincial Consolidated Fund, whether the expenditure
+is charged by the Constitution upon that fund or not,
+pending   the   sanction   of   such   expenditure   by
 1
 [Majlis-e-Shoora (Parliament)] in joint sitting ; and
 (d)    to
 1
 [Majlis-e-Shoora (Parliament)] in joint sitting by
-resolution to sanction expenditure authorised by the
+resolution to sanction expenditure authorized by the
 President under paragraph (c).
 (6)    Any law made by
 1
 [Majlis-e-Shoora (Parliament)] or
 the President which
 1
-[Majlis-e-Shoora (Parliament)]or the
+[Majlis-e-Shoora (Parliament)] or the
 President would not, but for the issue of a Proclamation under
 this Article, have been competent to make, shall, to the extent of
 the incompetency, cease to have effect on the expiration of a
@@ -358,24 +360,24 @@ ceased to be in force, except as to things, done or omitted to be
 done before the expiration of the said period.
 235. (1)    If the President is satisfied that a situation has arisen
 whereby the economic life, financial stability or credit of
-Pakistan, or any part thereof, is threatened, he may, after consul-
-tation with the Governors of the Provinces or, as the case may be,
-the Governor of the Province concerned, by Proclamation make
-a declaration to that effect, and, while such a Proclamation is in
-force, the executive authority of the Federation shall extend to the
-giving of directions to any Province to observe such principles of
-financial propriety as may be specified in the directions, and to
-the giving of such other directions as the President may deem
+Pakistan, or any part thereof, is threatened, he may, after
+consultation with the Governors of the Provinces or, as the case
+may   be,   the   Governor   of   the   Province   concerned,   by
+Proclamation make a declaration to that effect, and, while such a
+Proclamation is in force, the executive authority of the Federation
+shall extend to the giving of directions to any Province to observe
+such principles of financial propriety as may be specified in the
+directions, and to the giving of such other directions as the
 Proclamation
 in case of
 financial
 emergency.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-See footnote 9 on page 5, supra.
-CONSTITUTION OF PAKISTAN                      137
-necessary in the interest of the economic life, financial stability
-or credit of Pakistan or any part thereof.
+Seefootnote 9 on page 5, supra.
+CONSTITUTION OF PAKISTAN                      149
+President may deem necessary in the interest of the economic
+life, financial stability or credit of Pakistan or any part thereof.
 (2)    Notwithstanding anything in the Constitution, any
 such directions may include a provision requiring a reduction of
 the salary and allowances of all or any class of persons serving in

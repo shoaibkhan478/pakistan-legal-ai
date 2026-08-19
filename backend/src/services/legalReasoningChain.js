@@ -32,6 +32,7 @@ const { generateContent, parseJsonSafe } = require('./ai.service');
 const { retrieveRelevantLaw } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 const { checkPrecedentFreshness } = require('./precedentFreshnessService');
+const { gatherLiveLegalGrounding } = require('./legal-search.service');
 
 const MAX_ISSUES = 1; // reduced to the single most significant issue — on a
                        // 20/min free-tier quota, even 2 issues with retries
@@ -148,14 +149,18 @@ Respond with ONLY JSON:
 // of two, since the model can do both in one focused JSON call without
 // meaningfully losing quality.
 // ------------------------------------------------------------------
-async function researchAndArgue(issue, caseText) {
+async function researchAndArgue(issue, caseText, liveGrounding) {
+  const groundingBlock = liveGrounding
+    ? `\n\nLIVE-VERIFIED LEGAL TEXT (fetched just now from official Pakistani government/court sources — this is the ACTUAL current wording, prefer it over anything you recall from training):\n${liveGrounding}\n\nWhen a section below is covered by the live-verified text above, use that exact wording/number — do not substitute your own recollection.`
+    : '';
+
   const systemInstruction = `You are researching and then arguing ONE specific legal issue for a Pakistani case, the way a senior advocate stress-tests a case before committing to a strategy.
 
 ISSUE: "${issue.issue}" (area of law: ${issue.area_of_law})
 
 Do this in order, in your head, then return only the final JSON:
 1. Research: what law/precedent actually applies? Never invent a section number or case citation — if you're not confident of the exact provision/citation, describe the principle without a specific number rather than guessing one.
-2. Argue BOTH sides using that research: the strongest case FOR the client's position, and the strongest case the OTHER side could genuinely make (don't straw-man the opposing side — make it as strong as it would honestly be in court).
+2. Argue BOTH sides using that research: the strongest case FOR the client's position, and the strongest case the OTHER side could genuinely make (don't straw-man the opposing side — make it as strong as it would honestly be in court).${groundingBlock}
 
 Respond with ONLY JSON:
 {
@@ -202,10 +207,10 @@ Respond with ONLY JSON:
 // Runs the full per-issue sub-chain (steps 2-4), issues run in parallel,
 // each issue's own steps run in sequence (each depends on the last).
 // ------------------------------------------------------------------
-async function runIssueChain(issue, caseText) {
+async function runIssueChain(issue, caseText, liveGrounding) {
   let tokens = 0;
 
-  const researchArgsResult = await researchAndArgue(issue, caseText);
+  const researchArgsResult = await researchAndArgue(issue, caseText, liveGrounding);
   tokens += researchArgsResult.tokens;
 
   const rebuttalResult = await simulateRebuttal(issue, researchArgsResult.data);
@@ -287,9 +292,18 @@ async function runLegalReasoningChain(caseText, caseTypeLabel = 'criminal case')
 
   let totalTokens = 0;
 
-  // Step 1
-  const { issues, tokens: issueTokens } = await spotIssues(caseText, caseTypeLabel);
+  // Step 0 (parallel with Step 1) — live web research for the ACTUAL
+  // current text of relevant statutes/precedent, from trusted Pakistani
+  // sources. This is what makes the chain use real, current law instead
+  // of only what the model remembers from training + the small local
+  // library — the two run in parallel since neither depends on the other.
+  const [{ issues, tokens: issueTokens }, liveGroundingResult] = await Promise.all([
+    spotIssues(caseText, caseTypeLabel),
+    gatherLiveLegalGrounding(caseText, caseTypeLabel),
+  ]);
   totalTokens += issueTokens;
+  totalTokens += liveGroundingResult.tokens;
+  const liveGrounding = liveGroundingResult.grounding;
 
   // Steps 2-4, per issue, in parallel across issues
   // Issues run in parallel again — now that research+arguments are merged
@@ -300,7 +314,7 @@ async function runLegalReasoningChain(caseText, caseTypeLabel = 'criminal case')
   // was safer against bursts but pushed total wall-clock time past several
   // minutes for a 4-issue case, tripping Railway's gateway timeout — this
   // balances both concerns.
-  const issueChains = await Promise.all(issues.map((issue) => runIssueChain(issue, caseText)));
+  const issueChains = await Promise.all(issues.map((issue) => runIssueChain(issue, caseText, liveGrounding)));
   totalTokens += issueChains.reduce((sum, ic) => sum + ic.tokens, 0);
 
   // Step 5
@@ -336,6 +350,8 @@ async function runLegalReasoningChain(caseText, caseTypeLabel = 'criminal case')
     synthesis,
     legal_references_verified,
     verificationSummary,
+    liveGrounding, // raw live-fetched legal text — passed to draft generation, not usually shown directly
+    liveGroundingSources: liveGroundingResult.sources, // [{title, url}] — for UI "sources checked live"
     tokens: totalTokens,
   };
 }

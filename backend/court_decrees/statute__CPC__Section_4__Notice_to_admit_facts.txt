@@ -1,0 +1,28 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-15
+
+CPC Section 4: Notice to admit facts
+
+_
+Any party may, by notice in writing, at any time
+not later than nine days before the day fixed for the hearing, call on any other
+party to admit, for the purposes of the suit only, any specific fact or facts
+mentioned in such notice. And in case of refusal or neglect to admit the same
+within six days after service of such notice, or within such further time as may
+be allowed by the Court, the costs of proving such fact or facts shall be paid
+by the party so neglecting or refusing, whatever the result of the suit may be,
+unless the Court otherwise directs: Provided that any admission made in
+pursuance of such notice is to be deemed to be made only for the purposes of
+the particular suit, and not as an admission to be used against the party on any
+other occasion or in favour of any person other than the party giving the notice:
+Provided also that the Court may at any time allow any party to amend or
+withdraw any admission so made on such terms as may be just.
+1
+[4A. Power of Court to record admission of documents and facts.
+_
+Notwithstanding that no notice to admit documents or facts has been given under
+Rules 2 and 4 respectively, the Court may, at any stage of the proceedings before
+it, of its own motion, call upon any party to admit any document or fact and shall in
+such a case, record whether the party admits or refuses or neglects to admit
+such document or fact".]

@@ -1,0 +1,530 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-15
+
+CPC Section 158: Reference to Code of Civil Procedure and other repealed enactments
+
+SCHEDULES
+THE FIRST SCHEDULE.- RULES OF PROCEDURE.
+APPENDIX A.- PLEADINGS.
+APPENDIX B.- PROCESS.
+APPENDIX C.- DISCOVERY, INSPECTION AND ADMISSION.
+APPENDIX D.- DECREES.
+APPENDIX E.- EXECUTION.
+APPENDIX F.- SUPPLEMENTAL PROCEEDINGS.
+APPENDIX G.- APPEAL, REFERENCE AND REVIEW.
+APPENDIX H.- MISCELLANEOUS.
+THE SECOND SCHEDULE
+Repealed
+THE THIRD SCHEDULE
+EXECUTION OF DECREES BY COLLECTORS
+THE FOURTH SCHEDULE
+Omitted
+THE FIFTH SCHEDULE
+Repealed
+TEXT
+1
+THE CODE OF CIVIL PROCEDURE, 1908
+(V of 1908)
+[21 March 1908]
+An
+Act
+to consolidate and amend the laws relating to the Procedure of the Courts of
+Civil Judicature.
+WHEREAS it is expedient to consolidate and amend the laws relating to
+the procedure of the Courts of Civil Judicature; It is hereby enacted as follows:–
+PRELIMINARY
+1. Short title, commencement and extent.– (1) This Act may be cited
+as the Code of Civil Procedure, 1908.
+(2) It shall come into force on the first day of January, 1909.
+2
+[(3) It extends to the whole of Pakistan.]
+2. Definitions.– In this Act, unless there is anything repugnant in the subject or
+context,–
+1
+This Act was published in the Gazette of India, dated: 21 March 1908, pp. 9-168. For Statement of Objects and Reasons, see
+the  Gazette  of  India,  1907,  Part  V,  p.  179;  for  Report  of the Select  Committee,  see ibid.,  1908,  Part  V,  p.  35;  and,  for
+Proceedings in Council, see ibid., 1907, Part VI. p. 135 and ibid., 1908, pp. 8, 12 and 212.
+All references in the Act to His Majesty in Council shall be construed as references to the Federal Court, see the Federal Court
+(Enlargement of Jurisdiction) Act, 1949 (1of 1950), s. 6.
+This Act was extended and was deemed so extended on the 14 October, 1955, to the whole of Pakistan by the Central Laws
+(Statute Reform) Ordinance, 1960 (XXI of 1960), s. 3 read with the Second Schedule.
+This Act was amended in the Punjab by the Punjab Relief of Indebtedness Act, 1934 (VII of 1934), Part VIII.
+It was extended by notification under Ss. 5and 5A of the Scheduled Districts Act, 1874 (XIV of 1874), to the following scheduled
+Districts: -
+(1) The Province of Sindh: Bombay Government Gazette, Extraordinary, 1909, Part I and Gazette of India, 1909, Part I, p. 32.
+(2) Scheduled District in the Punjab: Gazette of India, 1909, Part I, p. 33.
+(3) The Districts of Peshawar, Hazara, Kohat, Bannu and Dera Ismail Khan composing the N.W.F.P (now KPK), ibid., Part II, p.
+80.
+It was declared to be enforce in Balochistan by the British Balcohistan Laws Regulation, 1913 (II of 1913), s. 3 read with the
+First Schedule.
+It was also extended to the Leased Areas of Balochistan, see the Leased Areas (Laws) Order, 1950 (G.G.O. 3 of 1950); and,
+applied in the Federated Areas of Balochistan, see Gazette of India 1937, Part I, p. 1499.
+It was applied to Phulera in the Excluded Area of Upper Tanawal to the extend the Act is applicable in the N.W.F.P. (now KPK),
+see N.W.F.P (Upper Tanawal) (Excluded Area) Laws Regulation, 1950.
+It  was  also  extended  to  the  Excluded Area  of  Upper  Tanawal,  other  than  Phulera,  by  the  N.W.F.P.  (Upper  Tanwal)  Excluded
+Area) Laws Regulation, 1950 and declared to be in force in that area with affect from the 1 June 1951, see N.W.F.P Gazette,
+Extraordinary, dated: 1 June 1951.
+The Act,  with  certain  modification,  was  applied  to  the  Provincially Administered Tribal Areas  of  Chitral,  Dir,  Kalam,  Swat  and
+Malakand Protected Area by N.W.F.P Regulation No. 1of 1974.
+2
+Substituted by  the  Central  Laws  (Statute  Reform)  Ordinance,  1960  (XXI  of  1960);  assented  to  by  the  President  on  7  June
+1960;  and,  was  published  in  the  Gazette  of  Pakistan  (Extraordinary),  dated:  9  June  1960,  pp.  725-845,  s.  3  read  with  the
+Second  Schedule:  it  came  into  force  on  14  October  1955.  It  was  earlier  amended by
+the  Adaptation  of  Central  Acts  and
+Ordinances Order, 1949 (G.G.O. No. 4 of 1949), published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949,
+pp. 223-283, Article 3 read with the Schedule.
+(1) "Code" includes rules:
+(2) "decree" means the formal expression of an adjudication which, so
+far as regards the Court expressing it, conclusively determines the
+rights of the parties with regard to all or any of the matters in
+controversy in the suit and may be either preliminary or final. It
+shall be deemed to include the rejection of a plaint
+1
+[,the
+determination of any question within section 144 and an order under
+rule 60, 98, 99, 101, or 103 of Order XXI], but shall not include–
+(a) any adjudication from which an appeal lies as an appeal from
+an order, or
+(b) any order of dismissal for default.
+Explanation.–
+A decree is preliminary when further proceedings have to be
+taken before the suit can be completely disposed of. It is final when such
+adjudication completely disposes of the suit. It may be partly preliminary and
+partly final:
+(3) "decree-holder" means any person in whose favour a decree has
+been passed or an order capable of execution has been made:
+(4) "district" means the local limits of the jurisdiction of a principal
+Civil Court of original jurisdiction (hereinafter called a "District
+Court"), and includes the local limits of the ordinary original civil
+jurisdiction of a High Court:
+(5) "foreign Court" means a Court situate beyond the limits of
+2
+[Pakistan]
+which has no authority in
+3
+[Pakistan] and is not established or
+continued by
+4
+[the
+5
+[Federal Government]
+6
+[* * * *] ]:
+(6) "foreign judgment" means the judgment of a foreign Court:
+(7) "Government Pleader" includes any officer appointed by the
+7
+[Provincial Government] to perform all or any of the functions
+expressly imposed by this Code on the Government Pleader and
+also any pleader acting under the directions of the Government
+Pleader:
+(8) "Judge" means the presiding officer of a Civil Court:
+1
+Substituted for the words and figures “and the determination of any question within section 47 or section 144” by the Law
+Reforms Ordinance, 1972 (XII of 1972), s. 2 read with the Schedule.
+2
+Substituted for the words “the Provinces and the Capital of the Federation" by the Central Laws (Statute Reform) Ordinance,
+1960 (XXI of 1960), assented to by the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated:
+9  June  1960,  pp.  725-845,  s.  3  read  with  the  Second  Schedule:  it  came  into  force  on  14  October  1955.  They  were  earlier
+substituted for the words “British India” by the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949),
+published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+3
+Ibid.
+4
+Substituted for the words “Governor General in Council” by the Government of India (Adaptation of Indian Laws) Order, 1937,
+published in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with the First Schedule.
+5
+Substituted for the words “Central Government” by the Federal Adaptation of Laws Order 1975 (IV of 1975), published in the
+Gazette of Pakistan (Extraordinary), dated: 1 August 1975, pp. 435-467, Article 2 read with the Table of General Adaptations.
+6
+The  words  “or the  Crown  Representative”  were  omitted  by the  Adaptation  of  Central  Acts  and  Ordinances  Order,  1949
+(G.G.O. No. 4 of 1949), published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read
+with the Schedule.
+7
+Substituted for the words “Local Government” by the Government of India (Adaptation of Indian Laws) Order, 1937, published
+in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with the First Schedule.
+(9) "judgment" means the statement given by the Judge of the grounds of
+a decree or order:
+(10) "judgment-debtor" means any person against whom a decree has
+been passed or an order capable of execution has been made:
+(11) "legal representative" means a person who in law represents the
+estate of a deceased person, and includes any person who
+intermeddles with the estate of the deceased and where a party
+sues or is sued in a representative character the person on whom
+the estate devolves on the death of the party so suing or sued:
+(12) "mesne profits" of property means those profits which the person in
+wrongful possession of such property actually received or might
+with ordinary diligence have received therefrom, together with
+interest on such profits, but shall not include profits due to
+improvements made by the person in wrongful possession:
+(13) "moveable property" includes growing crops:
+(14) "order" means the formal expression of any decision of a Civil Court
+which is not a decree:
+(15) "pleader" means any person entitled to appear and plead for another
+in Court, and includes an advocate, a vakil and an attorney of a High
+Court:
+(16) "prescribed" means prescribed by rules:
+(17) "public officer" means a person falling under any of the following
+descriptions, namely:–
+(a) every Judge;
+1
+[(b) Every person in the service of Pakistan;]
+(c) every commissioned or gazetted officer in the military,
+2
+[naval
+or air] forces of
+3
+[Pakistan while in the service of the State];
+(d) every officer of a Court of Justice whose duty it is, as such
+officer, to investigate or report on any matter of law or fact, or
+to make, authenticate or keep any document, or to take
+charge or dispose of any property, or to execute any judicial
+process, or to administer any oath, or to interpret, or to
+preserve order, in the Court, and every person especially
+authorized by a Court of Justice to perform any of such duties;
+1
+Substituted by  the  Federal  Laws  (Revision  and  Declaration)  Ordinance,  1981  (XXVII  of  1981),  published  in  the  Gazette  of
+Pakistan  (Extraordinary)  dated:  8  July  1981,  pp.345-475,  s.  3  read  with  the  Second  Schedule. The  words  in  crotchets  [Civil
+Service of Pakistan] were amended by by the Central Laws (Statute Reform) Ordinance, 1960 (XXI  of 1960), assented to by
+the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated: 9 June 1960, pp. 725-845, s. 3 read
+with  the  Second  Schedule:  it  came  into  force  on  14  October  1955. They  were  earlier  amended by
+the  Adaptation  of  Central
+Acts  and  Ordinances  Order,  1949  (G.G.O. No.  4  of  1949),  published  in  the  Gazette  of  Pakistan  (Extraordinary),  dated:  28
+March 1949, pp. 223-283, Article 3 read with the Schedule.
+2
+Substituted for the words “or naval”  by the Amending Act, 1934 (XXXV of 1934), s. 2 read with the Schedule.
+3
+The words “His Majesty while serving under the Crown” were amended by the Amending Act, 1934 (XXXV of 1934), s. 2 read
+with  the  Schedule.  They  were   A.O.,  1937,  have  been  Substituted  by A.O.,  1961, Art,  2and  Sch.  (with  effect  from  the  23rd
+March, 1956.)
+(e) every person who holds any office by virtue of which he is
+empowered to place or keep any person in confinement;
+(f) every officer of
+1
+[the Government] whose duty it is, as such
+officer, to prevent offences, to give information of offences, to
+bring offenders to justice, or to protect the public health,
+safety or convenience;
+(g) every officer whose duty it is, as such officer, to take, receive,
+keep or expend any property on behalf of
+2
+[the Government],
+or to make any survey, assessment or contract on behalf of
+3
+[the Government], or to execute any revenue-process, or to
+investigate, or to report on, any matter affecting the pecuniary
+interests of
+4
+[the Government], or to make, authenticate or
+keep any document relating to the pecuniary interests of
+5
+[the Government] or to prevent the infraction of any law for
+the protection of the pecuniary interests of
+6
+[the
+Government]; and
+(h) every officer in the service or pay of
+7
+[the Government], or
+remunerated by fees or commission for the performance of
+any public duty:
+(18) "rules" means rules and forms contained in the First Schedule or
+made under section 122 or section 125:
+(19) "share in a corporation" shall be deemed to include stock,
+debenture stock, debentures or bonds: and
+(20) "signed," save in the case of a judgment or decree, includes stamped.
+3. Subordination of Courts.– For the purposes of this Code, the District Court is
+subordinate to the High Court, and every Civil Court of a grade inferior to that of
+a District Court and every
+8
+[Court  of  Small  Claims  and  Minor  Offences] is
+subordinate to the High Court and District Court.
+4. Savings.–
+(1) In the absence of any specific provision to the contrary,
+nothing in this Code shall be deemed to limit or otherwise affect any special or local
+law now in force or any special jurisdiction or power conferred, or any special form
+of procedure prescribed, by or under any other law for the time being in force.
+(2) In particular and without prejudice to the generality of the proposition
+contained in sub-section (1), nothing in this Code shall be deemed to limit or
+1
+Substituted  for  the  words  "the  Crown"   by  the  Central  Laws  Adaption  Order,  1961  (P.O.  No.  1  of  1961),  published  in  the
+Gazette of Pakistan (Extraordinary), dated 24 January 1961, pp. 102-174, Article 2 read with the Schedule: it came into force
+on  23  March  1956. They were earlier substituted for the words “the Government” by the  Government  of  India  (Adaptation  of
+Indian Laws) Order, 1937, published in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with
+the First Schedule.
+2
+Ibid.
+3
+Ibid.
+4
+Ibid.
+5
+Ibid.
+6
+Ibid.
+7
+Ibid.
+8
+Substituted for the words “Court of Small Causes” by the Code of Civil Procedure (Punjab Amendment) Act 2018 (XIV of
+2018), published in the Punjab Gazette (Extraordinary), dated: 20 March 2018, pp. 6695-6698, s. 2.
+otherwise affect any remedy which a land-holder or landlord may have under any
+law for the time being in force for the recovery of rent of agricultural land from the
+produce of such land.
+5. Application of the Code to the Revenue Courts.–
+(1) Where any
+Revenue Courts are governed by the provisions of this Code in those
+matters of procedure upon which any special enactment applicable to them is
+silent, the
+1
+[Provincial Government] ,
+2
+[* * * * * * * * * *] may, by notification in the
+3
+[official Gazette], declare that any portions of those provisions which are not
+expressly made applicable by this Code shall not apply to those Courts, or
+shall only apply to them with such modifications as the
+4
+[Provincial Government]
+5
+[* * * *]may prescribe.
+(2) "Revenue Court" in sub-section (1) means a Court having
+jurisdiction under any local law to entertain suits or other proceedings relating to
+the rent, revenue or profits of land used for agricultural purposes, but does not
+include a Civil Court having original jurisdiction under this Code to try such suits
+or proceedings as being suits or proceeding of a civil nature.
+6. Pecuniary Jurisdiction.– Save in so far as is otherwise expressly
+provided, nothing herein contained shall operate to give any Court jurisdiction
+over suits the amount or value of the subject-matter of which exceeds the
+pecuniary limits (if any) of its ordinary jurisdiction.
+6
+[7. Provincial Small Cause Courts.– * * * * * * *  ]
+7
+[8. Presidency Small Cause Courts.– * * * * * * *  ]
+PART I
+SUITS IN GENERAL
+JURISDICTION OF THE COURTS AND RES JUDICATA
+9. Courts to try all civil suits unless barred.– The Courts shall (subject
+to the provisions herein contained) have jurisdiction to try all suits of a civil nature
+excepting suits of which their cognizance is either expressly or impliedly barred
+8
+[or
+for which a general or a special law is in force].
+1
+Substituted for the words “Local Government” by the Government of India (Adaptation of Indian Laws) Order, 1937, published
+in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with the First Schedule.
+2
+The words “with the previous sanction of the Governor General in Council” were omitted by the Devolution Act, 1920 (XXXVIII
+of 1920), s. 2 read with the First Schedule.
+3
+Substituted  for  the  words  “local  official  Gazette” by  the  Government  of  India  (Adaptation  of  Indian  Laws)  Order,  1937,
+published in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with the First Schedule.
+4
+Substituted for the words “Local Government” by the Government of India (Adaptation of Indian Laws) Order, 1937, published
+in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with the First Schedule.
+5
+The words “with the sanction aforesaid” were omitted by the Devolution Act, 1920 (XXXVIII of 1920), s. 2 read with the First
+Schedule.
+6
+Omitted  by  the  Code  of  Civil  Procedure  (Punjab  Amendment)  Act  2018  (XIV  of  2018),  published  in  the  Punjab  Gazette
+(Extraordinary), dated: 20 March 2018, pp. 6695-6698, s. 3.
+7
+Omitted by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949), published in the Gazette of
+Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+8
+Inserted  by  the  Code  of  Civil  Procedure  (Punjab  Amendment)  Act  2018  (XIV  of  2018),  published  in  the  Punjab  Gazette
+(Extraordinary), dated: 20 March 2018, pp. 6695-6698, s. 4.
+Explanation.–
+A suit in which the right to property or to an office is
+contested is a suit of a civil nature, notwithstanding that such right may depend
+entirely on the decision of questions as to religious rites or ceremonies.
+10. Stay of suit.– No Court shall proceed with the trial of any suit in which the
+matter in issue is also directly and substantially in issue in a previously instituted
+suit between the same parties, or between parties under whom they or any of
+them claim litigating under the same title where such suit is pending in the same or
+any other Court in
+1
+[Pakistan] having jurisdiction to grant the relief claimed, or in
+any Court beyond the limits of
+2
+[Pakistan] established or continued by
+3
+[the
+4
+[Federal Government]
+5
+[* * *] ] and having like jurisdiction, or before
+6
+[the
+Supreme Court].
+Explanation.–
+The pendency of a suit in a foreign Court does not
+preclude the Courts in
+7
+[Pakistan] from trying a suit founded on the same cause
+of action.
+11. Res judicata.– No Court shall try suit or issue in which the matter directly
+and substantially in issue has been directly and substantially in issue in a former
+suit between the same parties, or between parties under whom they or any of
+them claim, litigating under the same title, in a Court competent to try such
+subsequent suit or the suit in which such issue has been subsequently raised,
+and has been heard and finally decided by such Court.
+Explanation I.–
+The expression "former suit" shall denote a suit which has
+been decided prior to the suit in question whether or not it was instituted prior
+thereto.
+Explanation II.–
+For the purposes of this section, the competence of a
+Court shall be determined irrespective of any provisions as to a right of appeal
+from the decision of such Court.
+1
+Substituted for the words “the Provinces and the Capital of the Federation” by the Central Laws (Statute Reform) Ordinance,
+1960 (XXI of 1960), assented to by the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated:
+9  June  1960,  pp.  725-845,  s.  3  read  with  the  Second  Schedule:  it  came  into  force  on  14  October  1955.  They  were  earlier
+substituted for the words “British India” by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949),
+published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+2
+Substituted for the words “the Provinces and the Capital of the Federation” by the Central Laws (Statute Reform) Ordinance,
+1960 (XXI of 1960), assented to by the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated:
+9  June  1960,  pp.  725-845,  s.  3  read  with  the  Second  Schedule:  it  came  into  force  on  14  October 1955.  They  were  earlier
+substituted for the words “British India” by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949),
+published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+3
+Substituted for the words “the Governor General in Council” by  the  Government  of  India  (Adaptation  of Indian  Laws)  Order,
+1937, published in the Gazette of India (Extraordinary), dated: 1 April 1937, pp. 75-344, Article 3 read with the First Schedule.
+4
+Substituted for the words “Central Government” by the Federal Adaptation of Laws Order 1975 (IV of 1975), published in the
+Gazette of Pakistan (Extraordinary), dated: 1 August 1975, pp. 435-467, Article 2 read with the Table of General Adaptations.
+5
+The words “or the Crown Representative” were omitted by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O.
+No. 4 of 1949), published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the
+Schedule.
+6
+Substituted for the words “His Majesty in Council” by the Central Laws Adaption Order, 1961 (P.O. No. 1 of 1961), published
+in the Gazette of Pakistan (Extraordinary), dated 24 January 1961, pp.102-174, Article 2 read with the Schedule: it came into
+force on 23 March 1956.
+7
+Substituted for the words “the Provinces and the Capital of the Federation” by the Central Laws (Statute Reform) Ordinance,
+1960 (XXI of 1960), assented to by the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated:
+9  June  1960,  pp.  725-845,  s.  3  read  with  the  Second  Schedule:  it  came  into  force  on  14  October  1955.  They  were  earlier
+substituted for the words “British India” by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949),
+published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+Explanation III.– The matter above referred to must in the former suit
+have been alleged by one party and either denied or admitted, expressly or
+impliedly, by the other.
+Explanation IV.–
+Any matter which might and ought to have been made
+ground of defence or attack in such former suit shall be deemed to have been a
+matter directly and substantially in issue in such suit.
+Explanation V.–
+Any relief claimed in the plaint, which is not expressly
+granted by the decree, shall, for the purposes of this section, be deemed to have
+been refused.
+Explanation VI.–
+Where persons litigate bona fide in respect of a public
+right or of a private right claimed in common for themselves and others, all
+persons interested in such right shall, for the purposes of this section, be
+deemed to claim under the persons so litigating.
+12. Bar to further suit.–
+1
+[(1)] Where a plaintiff is precluded by rules from
+instituting a further suit in respect of any particular cause of action, he shall not be
+entitled to institute a suit in respect of such cause of action in any Court to which
+this Code applies.
+2
+[(2) Where a person challenges the validity of a judgment, decree or
+order on the plea of fraud, mis-representation or want of jurisdiction, he shall
+seek his remedy by making an application to the Court which passed the final
+judgment, decree or order and not by a separate suit.]
+3
+[(3) For purposes of the disposal of an application under subsection (2), the
+Court  may,  in  the  interest  of  expeditious  disposal,  apply  such  fair  procedure as  the
+circumstances  of  the  case  warrant,  and  shall,  unless,  for  reasons  to  be  recorded  it
+directs otherwise, order any fact to be proved or disproved by affidavit.]
+13. When foreign judgment not conclusive.– A foreign judgment shall be
+conclusive as to any matter thereby directly adjudicated upon between the
+same parties or between parties under whom they or any of them claim litigating
+under the same title except
+__
+(a) where it has not been pronounced by a Court of competent
+jurisdiction;
+(b) where it has not been given on the merits of the case;
+(c) where it appears on the face of the proceedings to be founded on
+an incorrect view of international law or a refusal to recognise the
+law of
+4
+[Pakistan] in cases in which such law is applicable;
+1
+S.12 was re-numbered as sub-section (1) of that section by the Code of Civil Procedure (Amendment) Ordinance, 1980 (X of
+1980), s. 2.
+2
+Added by the Code of Civil Procedure (Amendment) Ordinance, 1980 (X of 1980), s. 2.
+3
+Inserted by the Code of Civil Procedure (Punjab Amendment) Act 2018 (XIV of 2018), published in the Punjab Gazette
+(Extraordinary), dated: 20 March 2018, pp. 6695-6698, s. 5.
+4
+Substituted for the words “the Provinces and the Capital of the Federation” by the Central Laws (Statute Reform) Ordinance,
+1960 (XXI of 1960), assented to by the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated:
+9  June  1960,  pp.  725-845,  s.  3  read  with  the  Second  Schedule:  it  came  into  force  on  14  October  1955.  They  were  earlier
+substituted for the words “British India” by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949),
+published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+(d) where the proceedings in which the judgment was obtained are
+opposed to natural justice;
+(e) where it has been obtained by fraud;
+(f) where it sustains a claim founded on a breach of any law in force in
+1
+[Pakistan].
+14. Presumption as to foreign judgment.– The Court shall presume, upon
+the production of any document purporting to be a certified copy of a foreign
+Judgment, that such Judgment was pronounced by a Court of competent
+Jurisdiction, unless the contrary appears on the record; but such presumption may
+be displaced by proving want of jurisdiction.
+PLACE OF SUING
+15. Court in which suits to be instituted.– Every suit shall be instituted in
+the Court of the lowest grade competent to try it.
+16. Suits to be instituted where subject-matter situate.– Subject to
+the pecuniary or other limitations prescribed by any law, suits–
+(a) for the recovery of immoveable property with or without rent or profits,
+(b) for the partition of immoveable property,
+(c) for foreclosure, sale or redemption in the case of a mortgage of or
+charge upon immoveable property,
+(d) for the determination of any other right to or interest in immoveable
+property,
+(e) for compensation for wrong to immoveable property,
+(f) for the recovery of moveable property actually under distraint or
+attachment,
+shall be instituted in the Court within the local limits of whose jurisdiction the
+property is situate,
+2
+[or, in the case of suits referred to in clause (c), at the
+place where the cause of action has wholly or partly arisen]:
+Provided that a suit to obtain relief respecting, or compensation for wrong to,
+immoveable property held by or on behalf of the defendant may, where the relief
+sought can be entirely obtained through his personal obedience, be instituted
+either in the Court within the local limits of whose jurisdiction the property is
+situate
+3
+[,or, in the case of suit referred to in clause (c), at the place where the
+cause of action has wholly or partly arisen], or in the Court within the local
+limits of whose jurisdiction the defendant actually and voluntarily resides, or
+carries on business, or personally works for gain.
+1
+Substituted for the words “the Provinces and the Capital of the Federation” by the Central Laws (Statute Reform) Ordinance,
+1960 (XXI of 1960), assented to by the President on 7 June 1960 and published in Gazette of Pakistan (Extraordinary), dated:
+9  June  1960,  pp.  725-845,  s.  3  read  with  the  Second  Schedule:  it  came  into  force  on  14  October  1955.  They  were  earlier
+substituted for the words “British India” by
+the Adaptation of Central Acts and Ordinances Order, 1949 (G.G.O. No. 4 of 1949),
+published in the Gazette of Pakistan (Extraordinary), dated: 28 March 1949, pp. 223-283, Article 3 read with the Schedule.
+2
+Inserted by the Code of Civil Procedure (Amendment) Ordinance, 1962 (44 of 1962), s. 6.
+3
+Inserted by the Code of Civil Procedure (Amendment) Ordinance, 1962 (44 of 1962), s. 6.
+Explanation.–
+In this section "property" means property situate in
+1
+[Pakistan].

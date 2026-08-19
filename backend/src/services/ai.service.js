@@ -1,6 +1,5 @@
 /**
  * AI Service - Google Gemini Integration (FREE TIER)
- * VERSION MARKER: claude-fix-2026-08-13-v2 (search-for-this-string-to-confirm-file-is-loaded)
  * All AI-powered legal features, routed through Gemini's REST API via
  * native fetch (v1beta endpoint, which supports systemInstruction).
  *
@@ -16,9 +15,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const logger = require('../utils/logger');
 const { retrieveRelevantLawWithCitations } = require('./legalRetrievalService');
-const { retrieveRelevantLawWithCitations: retrieveRelevantLaw } = require('./legalRetrievalService');
-//const { verifyCitations, summarizeVerification } = require('./citationVerifier');
-
+const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const API_VERSION = 'v1beta';
@@ -93,8 +90,8 @@ Your expertise covers:
 - Legal drafting in Pakistani courts
 
 MANDATORY RESEARCH DISCIPLINE (this is what separates a real advocate from a generic AI):
-1. If a "RELEVANT MATERIAL RETRIEVED FROM OUR OWN VERIFIED LAW LIBRARY" block appears below in this system instruction, that is our own pre-verified local database — CHECK IT FIRST and base your answer on it whenever it covers the question. Only fall back to the Google Search tool for anything NOT covered by that local library block (e.g. recent amendments, case law not in the library, or provisions the library doesn't have). Do not silently prefer live web search over the local library block when the local library already answers the question.
-2. Always cite the exact source when you state a rule: e.g. "Section 154, CrPC 1898" or "Article 10-A, Constitution of Pakistan 1973" — never state a legal rule without naming which law and which provision it comes from. When you use the local library block, say so explicitly (e.g. "per our verified law library").
+1. You have a Google Search tool. USE IT for any question involving a specific section, article, statute, amendment, or case law — do not answer from memory alone when a quick search can confirm or update the exact text/number/citation.
+2. Always cite the exact source when you state a rule: e.g. "Section 154, CrPC 1898" or "Article 10-A, Constitution of Pakistan 1973" — never state a legal rule without naming which law and which provision it comes from.
 3. If you reference a case (precedent), only cite a case name/citation if you are actually confident it is real and correctly described (ideally confirmed via search). NEVER invent or guess a case name, citation, or judgment outcome — a fabricated case citation is a serious professional failure for a lawyer. If you are not certain a specific precedent exists, say so plainly instead of making one up.
 4. If a law may have been amended or repealed, or if you are not fully certain your information is current, say so explicitly and recommend the user verify with a recent search or a practicing advocate — do not present uncertain information as settled fact.
 5. Structure substantive legal answers like a legal opinion where appropriate: (a) the applicable law/provision, (b) how it applies to the facts asked about, (c) practical next steps, (d) limitations/caveats.
@@ -169,7 +166,7 @@ function normalizeContents(contents) {
 async function retrieveLawContext(query) {
   if (!query || !query.trim()) return '';
 
-  const attempt = async () => {
+  try {
     const { constitution, statute, judgment } = await retrieveRelevantLawWithCitations(query.slice(0, 2000));
 
     const sections = [];
@@ -194,24 +191,10 @@ async function retrieveLawContext(query) {
 
     if (sections.length === 0) return '';
 
-    return `\n\nRELEVANT MATERIAL RETRIEVED FROM OUR OWN VERIFIED LAW LIBRARY (these are real excerpts already confirmed to exist). Base your answer on these excerpts and cite them directly (e.g. "per Section 302 PPC, per our verified law library"). Live web search is NOT available for this turn — do not say you searched the web or reference external websites; answer using only this material and your own legal knowledge.\n\n${sections.join('\n\n')}`;
-  };
-
-  try {
-    return await attempt();
+    return `\n\nRELEVANT MATERIAL RETRIEVED FROM OUR OWN VERIFIED LAW LIBRARY (these are real excerpts already confirmed to exist — prefer quoting/citing these over guessing, and cross-check with live search only for anything not covered here):\n\n${sections.join('\n\n')}`;
   } catch (error) {
-    // The Supabase pooler (Tokyo region) has shown intermittent transient
-    // connection failures/timeouts — retry once after a short pause before
-    // giving up and falling back to web search, rather than losing the
-    // local-library answer to a one-off network blip.
-    logger.warn('retrieveLawContext: first attempt failed, retrying once:', error.stack || error.message || JSON.stringify(error) || error);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    try {
-      return await attempt();
-    } catch (retryError) {
-      logger.error('retrieveLawContext: local law library lookup failed after retry (continuing without it):', retryError.stack || retryError.message || JSON.stringify(retryError) || retryError);
-      return '';
-    }
+    logger.error('retrieveLawContext: local law library lookup failed (continuing without it):', error.message || error);
+    return '';
   }
 }
 
@@ -268,16 +251,7 @@ async function generateContent({
 
     const geminiContents = normalizeContents(contents);
 
-    if (!groundingQuery) {
-      logger.warn('generateContent: no groundingQuery was passed in, so local law library was never even queried for this call.');
-    }
     const lawContext = groundingQuery ? await retrieveLawContext(groundingQuery) : '';
-
-    if (lawContext) {
-      logger.info(`generateContent: injected ${lawContext.length} chars of local law context for query "${(groundingQuery || '').slice(0, 80)}"`);
-    } else if (groundingQuery) {
-      logger.warn(`generateContent: NO local law context was retrieved for query "${groundingQuery.slice(0, 80)}" — falling back to web search only.`);
-    }
 
     let system = SYSTEM_PROMPT_BASE;
     if (systemInstruction) {
@@ -292,18 +266,7 @@ async function generateContent({
 
     const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
 
-    // If our own verified local law library already answered this query,
-    // don't even offer the model the Google Search tool — a system-prompt
-    // instruction to "prefer the local library" was not enough in practice;
-    // the model kept reaching for live search anyway. Removing the tool
-    // entirely when lawContext is present is the only reliable way to force
-    // local-library-grounded answers. Search stays available (as before)
-    // whenever the local library had nothing relevant, so unfamiliar/
-    // uncommon queries still get live grounding.
-    const useSearch = !jsonMode && !disableSearch && !lawContext;
-    if (lawContext && !jsonMode && !disableSearch) {
-      logger.info('generateContent: local law context found — Google Search tool disabled for this call so the model must use the local library.');
-    }
+    const useSearch = !jsonMode && !disableSearch;
 
     await waitForRateLimitSlot();
 
@@ -1162,6 +1125,15 @@ async function generateDraft(draftType, details = {}, language = 'english', deep
   const detailsText = typeof details === 'string' ? details : JSON.stringify(details, null, 2);
   const deepBlock = buildDeepAnalysisBlock(deepAnalysis);
 
+  // deepAnalysis (from runLegalReasoningChain) carries the real, live-fetched
+  // statute text gathered before analysis started — feeding it in here means
+  // the draft cites the ACTUAL current wording of the sections involved,
+  // not just whatever the model recalls from training.
+  const liveGrounding = deepAnalysis?.liveGrounding;
+  const liveGroundingBlock = liveGrounding
+    ? `\n\nLIVE-VERIFIED LEGAL TEXT (fetched from official Pakistani government/court sources just before this draft was prepared — use this exact wording/numbering for any section it covers, in place of your own recollection):\n${liveGrounding}`
+    : '';
+
   const languageInstruction = {
     english: 'Write the draft in formal legal English.',
     urdu: 'Write the draft in formal legal Urdu (اردو رسم الخط).',
@@ -1169,7 +1141,7 @@ async function generateDraft(draftType, details = {}, language = 'english', deep
     bilingual: 'Write the draft with English legal headings and Urdu explanatory text where natural.',
   }[language] || 'Write the draft in formal legal English.';
 
-  const systemInstruction = `Draft a complete, court-ready "${draftType}" document for use in a Pakistani court/legal context, based on the details below.${deepBlock ? ' A senior advocate has already worked through the case theory and strategy below — draft as that advocate, grounding the document in that reasoning rather than the raw details alone.' : ''} Follow the standard Pakistani format for this document type (proper heading/title, numbered paragraphs, verification clause where applicable, prayer/relief clause where applicable). Use placeholders like [COURT NAME], [PARTY NAME], [DATE] for any specific detail not supplied. ${languageInstruction}\n\nDETAILS PROVIDED:\n${detailsText}${deepBlock}`;
+  const systemInstruction = `Draft a complete, court-ready "${draftType}" document for use in a Pakistani court/legal context, based on the details below.${deepBlock ? ' A senior advocate has already worked through the case theory and strategy below — draft as that advocate, grounding the document in that reasoning rather than the raw details alone.' : ''} Follow the standard Pakistani format for this document type (proper heading/title, numbered paragraphs, verification clause where applicable, prayer/relief clause where applicable). Use placeholders like [COURT NAME], [PARTY NAME], [DATE] for any specific detail not supplied. ${languageInstruction}\n\nDETAILS PROVIDED:\n${detailsText}${deepBlock}${liveGroundingBlock}`;
 
   const result = await generateContent({
     contents: `Draft the ${draftType} now, in full.`,

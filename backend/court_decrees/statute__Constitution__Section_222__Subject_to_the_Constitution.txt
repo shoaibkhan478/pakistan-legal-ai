@@ -1,67 +1,67 @@
 [AUTO-EXTRACTED — verify against source before treating as authoritative]
-Source: https://na.gov.pk/uploads/documents/63ea176f52421_610.pdf
-Retrieved: 2026-07-23
+Source: https://na.gov.pk/uploads/documents/6926e060076ed_467.pdf
+Retrieved: 2026-08-15
 
 Constitution Section 222: Subject to the Constitution,
 
-5
+6
 [Majlis-e-Shoora (Parliament)]
 may by law provide for—
 (a)    the allocation of seats in the National Assembly as
-required by clauses (3) and (4) of Article 51 ;
+required by clauses (3) and (4) of Article 51;
 (b)    the delimitation of constituencies by the Election
 Commission
-9
+10
 [including delimitation of constituencies
-of local governments;]
+of local governments];
+(c)    the preparation of electoral rolls, the requirements as
+to residence in a constituency, the determination of
+objections pertaining to and the commencement of
+electoral rolls;
 Executive
 authorities to
 assist Com-
 mission, etc.
 Officers and
-4
-[staff.]
+5
+[staff].
 Electoral laws.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-Subs.by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 81,for the
-full stop.
+Subs.by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 81,for the full-stop.
 2
-New Paragraphs (d) and (e) added ibid.
+New paragraphs (d) and (e) added ibid.
 3
-Ins. by the Constitution (Twentieth Amdt.) Act, 2012 (5 of 2012), s. 7.
+Subs. by the Constitution (Twentieth Amdt.) Act, 2012 (5 of 2012), s. 7, for the full-stop.
 4
-Subs. by the Constitution (Twenty Second Amdt.) Act, 2016 (25 of 2016), s.10.
+Proviso ins. ibid.
 5
-See footnote 6 on page 5, supra.
+Subs. by the Constitution (Twenty-Second Amdt.) Act, 2016 (25 of 2016), s.10, for “servants”.
 6
-Subs.by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 82,for
-“Commissioner”.
+See footnote 9 on page 5, supra.
 7
-Subs. by the Constitution (Twenty Second Amdt.) Act, 2016 (25 of 2016), s.10.
+Subs. by the Act No. 10 of 2010, s. 82, for “Commissioner”.
 8
-Omittedby the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 82.
+Subs by the Act No. 25 of 2016, s. 10, for “Election Commission”.
 9
-Addedby the Constitution (Twenty Second Amdt.) Act, 2016 (25 of 2016), s.11.
-CONSTITUTION OF PAKISTAN                      123
-(c)    the preparation of electoral rolls, the requirements as
-to residence in a constituency, the determination of
-objections pertaining to and the commencement of
-electoral rolls;
+The words “Commissioner or an” omitted by the Act No. 10 of 2010, s. 82.
+10
+Added by the Act No. 25 of 2016, s. 11.
+CONSTITUTION OF PAKISTAN                      135
 (d)    the conduct of elections and election petitions the
 decision of doubts and disputes arising in connection
 with elections;
 (e)    matters relating to corrupt practices and other offences
 in connection with elections; and
-(f)    all other matters necessary for the due Constitution of
+(f)    all other matters necessary for the due constitution of
 the two Houses
 1
 [,]
 2
-[*]the Provincial Assemblies
+* the Provincial Assemblies
 3
 [and
-local governments],
+local governments];
 but no such law shall have the effect of taking away or abridging
 any of the powers of the Commissioner or
 4
@@ -76,10 +76,10 @@ than one seat.
 (2) Nothing in clause (1) shall prevent a person from being
 a candidate for two or more seats at the same time, whether in the
 same body or in different bodies, but if he is elected to more than
-one seat he shall, within a period of thirty days after the declara-
-tion of the result for the last such seat, resign all but one of his
-seats, and if he does not so resign, all the seats to which he has
-been elected shall become vacant at the expiration of the said
+one seat he shall, within a period of thirty days after the
+declaration of the result for the last such seat, resign all but one
+of his seats, and if he does not so resign, all the seats to which he
+has been elected shall become vacant at the expiration of the said
 period of thirty days except the seat to which he has been elected
 last or, if he has been elected to more than one seat on the same
 day, the seat for election to which his nomination was filed last.
@@ -89,23 +89,23 @@ a Provincial Assembly.
 in either House or the Provincial Assembly to which he has been
 elected until he has resigned all but one of his seats.
 Bar against
-double me-
-mbership.
+double
+membership.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-Ins.by the Constitution (Twenty Second Amdt.) Act, 2016 (25 of 2016), s.11.
+Ins. by the Constitution (Twenty-Second Amdt.) Act, 2016 (25 of 2016), s. 11.
 2
-Omitted,ibid.s.11.
+The word “and” omittedibid.
 3
-Added,ibid.s.11.
+Added ibid.
 4
-Subs.ibid.s.11.
-124                       CONSTITUTION OF PAKISTAN
+Subs. ibid.,for the word “an”.
+136                      CONSTITUTION OF PAKISTAN
 (4) Subject to clause (2) if a member of either House  or of
 a Provincial Assembly becomes a candidate for a second seat
-which, in accordance with clause (1), he may not hold concur-
-rently with his first seat, then his first seat shall become vacant as
-soon as he is elected to the second seat.
+which,   in   accordance   with   clause   (1),   he   may   not   hold
+concurrently with his first seat, then his first seat shall become
+vacant as soon as he is elected to the second seat.
 224.
 1
 [(1) A general election to the National Assembly or a
@@ -127,14 +127,14 @@ National Assembly, and a care-taker Chief Minister shall be
 appointed by the Governor in consultation with the Chief
 Minister and the Leader of the Opposition in  the outgoing
 Provincial Assembly:
-3
+4
 [Provided further that if the Prime Minister or a Chief
 Minister and their respective Leader of the Opposition do not
 agree on any person to be appointed as a care-taker Prime
 Minister or the care-taker Chief Minister, as the case may be, the
 provisions of Article 224A shall be followed:]
 Provided
-3
+5
 [also] that the Members of the Federal and
 Provincial care-taker Cabinets shall be appointed on the advice of
 the care-taker Prime Minister or the care-taker Chief Minister, as
@@ -143,7 +143,7 @@ the case may be.
 care-taker Prime Minister and the care-taker Chief Minister and
 their immediate family members shall not be eligible to contest
 the immediately following elections to such Assemblies.
-Explanation.—In this clause, “immediate family members”
+Explanation.—In this clause “immediate family members”
 means spouse and children.]
 Time of
 Election and
@@ -155,8 +155,12 @@ Subs. by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of 2010), s. 83, for
 2
 New clauses (1A), (1B) and Explanation ins. ibid.
 3
-Subs. and Ins. by the Constitution (Twentieth Amdt.) Act, 2012 (5 of 2012), s. 8.
-CONSTITUTION OF PAKISTAN                      125
+Subs. by the Constitution (Twentieth Amdt.) Act, 2012 (5 of 2012), s. 8, for “selected”.
+4
+New proviso ins. ibid.
+5
+Subs. ibid.,for “further”.
+CONSTITUTION OF PAKISTAN                      137
 (2)    When   the   National   Assembly   or   a   Provincial
 Assembly is dissolved, a general election to the Assembly shall
 be held within a period of ninety days after the dissolution, and
@@ -167,15 +171,17 @@ become vacant on the expiration of the term of the members of
 the Senate shall be held not earlier than thirty days immediately
 preceding the day on which the vacancies are due to occur.
 (4)    When, except by dissolution of the National Assembly
-or a Provincial Assembly, a general seat in any such Assembly
+or a Provincial Assembly, a
+1
+* seat in any such Assembly
 has become vacant not later than one hundred and twenty days
 before the term of that Assembly is due to expire, an election to
 fill the seat shall be held within sixty days from the occurrence of
 the vacancy.
-(5)    When a seat in the Senate has become vacant, an elec-
-tion to fill the seat shall be held within thirty days from the occur-
-rence of the vacancy.
-1
+(5)    When a seat in the Senate has become vacant, an
+election to fill the seat shall be held within thirty days from the
+occurrence of the vacancy.
+2
 [(6) When a seat reserved for women or non-Muslims in
 the National Assembly or a Provincial Assembly falls vacant, on
 account of death, resignation or disqualification of a member, it
@@ -183,53 +189,61 @@ shall be filled by the next person in order of precedence from the
 party list of the candidates to be submitted to the Election
 Commission by the political party whose member has vacated
 such seat
-2
+3
 [:]]
-2
+4
 [Provided that if at any time the party list is exhausted, the
 concerned political party may submit a name for any vacancy
 which may occur thereafter.]
-3
+5
 *     *     *     *     *     *     *
-2
+6
 [224A.(1) In case the Prime Minister and the Leader of the
 Opposition in the outgoing National Assembly do not agree on
 any person to be appointed as the care-taker Prime Minister,
 within three days of the dissolution of the National Assembly,
 they shall forward two nominees each to a Committee to be
-immediately constituted by the Speaker of the National
-Assembly, comprising eight members of the outgoing National
 Resolution by
 Committee or
 Election
 Commission.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 1
-New clause (6) ins. and shall be deemed always to have been so ins. with effect from
-the 21st day of August, 2002 by the Constitution (Eighteenth Amdt.) Act, 2010 (10 of
-2010), s. 83.
+The word “general” omitted by the Constitution (Eighteenth Amdt.) Act, 2010
+(10 of 2010), s. 2.
 2
-Subs. and Ins. by the Constitution (Twentieth Amdt.) Act, 2012 (5 of 2012), s. 8, 9.
+New clause (6) ins. and shall be deemed always to have been so ins. with effect from
+the 21st day of August 2002ibid., s. 83.
 3
+Subs. by the Constitution (Twentieth Amdt.) Act, 2012 (5 of 2012), s. 8,  for the full-
+stop.
+4
+Proviso added ibid.
+5
 Clause (7) stands omitted as a consequence (Eighteenth Amdt.) Act, 2010 (10 of
 2010), see section 2.
+6
+New Article 224A ins. by the Act No. 5 of 2012, s. 9.
+138                      CONSTITUTION OF PAKISTAN
+immediately   constituted   by   the   Speaker   of   the   National
+Assembly, comprising eight members of the outgoing National
 Assembly, or the Senate, or both, having equal representation
 from the Treasury and the Opposition, to be nominated by the
 Prime Minister and the Leader of the Opposition respectively.
 (2)    In case a Chief Minister and the Leader of the
 Opposition in the outgoing Provincial Assembly do not agree on
-any person to be appointed as the care-taker Chief Minister, with-
-in three days of the dissolution of that Assembly, they shall for-
-ward two nominees each to a Committee to be immediately con-
-stituted by the Speaker of the Provincial Assembly, comprising
-six members of the outgoing Provincial Assembly having equal
-representation from the Treasury and the Opposition, to be nom-
-inated by the Chief Minister and the Leader of the Opposition
-respectively.
+any person to be appointed as the care-taker Chief Minister,
+within three days of the dissolution of that Assembly, they shall
+forward two nominees each to a Committee to be immediately
+constituted   by   the   Speaker   of   the   Provincial   Assembly,
+comprising six members of the outgoing Provincial Assembly
+having   equal   representation   from   the   Treasury   and   the
+Opposition, to be nominated by the Chief Minister and the
+Leader of the Opposition respectively.
 (3)    The Committee constituted under clause (1) or (2)
-shall finalize the name of the care-taker Prime Minister or care-
-taker Chief Minister, as the case may be, within three days of the
-referral of the matter to it:
+shall finalize the name of the care-taker Prime Minister or
+care-taker Chief Minister, as the case may be, within three days
+of the referral of the matter to it:
 Provided that in case of inability of the Committee to decide
 the matter in the aforesaid period, the names of the nominees
 shall be referred to the Election Commission of Pakistan for final

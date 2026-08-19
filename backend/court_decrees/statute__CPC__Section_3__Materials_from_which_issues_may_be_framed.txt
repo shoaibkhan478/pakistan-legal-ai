@@ -1,0 +1,15 @@
+[AUTO-EXTRACTED — verify against source before treating as authoritative]
+Source: https://punjabcode.punjab.gov.pk/uploads/articles/THE_CODE_OF_CIVIL_PROCEDURE,_1908.pdf
+Retrieved: 2026-08-15
+
+CPC Section 3: Materials from which issues may be framed
+
+_
+The Court may frame
+the issues from all or any of the following materials:-
+(a) allegations made on oath by the parties, or by any persons
+present on their behalf, or made by the pleaders of such
+parties;
+(b) allegations made in the pleadings or in answers to
+interrogatories delivered in the suit;
+(c) the contents of documents produced by either party.
