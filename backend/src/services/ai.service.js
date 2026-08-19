@@ -17,7 +17,13 @@ const logger = require('../utils/logger');
 const { retrieveRelevantLawWithCitations } = require('./legalRetrievalService');
 const { verifyCitations, summarizeVerification } = require('./citationVerifier');
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+const CANDIDATE_MODELS = Array.from(new Set([
+  'gemini-3.6-flash',
+  'gemini-flash-lite-latest',
+  'gemini-flash-latest',
+  process.env.GEMINI_MODEL,
+].filter(Boolean)));
 const API_VERSION = 'v1beta';
 
 const apiKey = process.env.GEMINI_API_KEY;
@@ -264,55 +270,57 @@ async function generateContent({
       system += '\n\nIMPORTANT: Respond with ONLY valid, raw JSON. No markdown code fences, no commentary, no explanation before or after the JSON.';
     }
 
-    const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL}:generateContent?key=${apiKey}`;
-
     const useSearch = !jsonMode && !disableSearch;
+    let lastError = null;
+    let data = null;
+    let successfulModel = DEFAULT_MODEL;
 
-    await waitForRateLimitSlot();
+    for (const modelToTry of CANDIDATE_MODELS) {
+      const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${modelToTry}:generateContent?key=${apiKey}`;
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        contents: geminiContents,
-        systemInstruction: { parts: [{ text: system }] },
-        // Grounds answers in live Google Search results instead of relying
-        // solely on the model's training data — important for legal
-        // accuracy (current sections, amendments, real case citations).
-        // Skipped in jsonMode (doesn't combine well with forced JSON output)
-        // and skipped when disableSearch is set (final document drafting).
-        ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
-        // This is a legal-analysis app: the source text (FIRs, notices,
-        // judgments) routinely describes real violence, weapons, threats,
-        // and injuries — that's the FACTS being analyzed, not content the
-        // app is generating to promote harm. Gemini's default safety
-        // thresholds can otherwise silently block generation on exactly
-        // this kind of case (e.g. an FIR describing firing a pistol/assault),
-        // which surfaces to the user as an empty/failed synthesis step with
-        // no visible explanation. Relax the categories that legitimately
-        // come up in criminal-law text; leave sexual content at the
-        // stricter default since it's never legitimately needed here.
-        safetySettings: [
-          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
-          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-        ],
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
-        },
-      }),
-    });
+      await waitForRateLimitSlot();
 
-    const data = await res.json();
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            contents: geminiContents,
+            systemInstruction: { parts: [{ text: system }] },
+            ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
+            safetySettings: [
+              { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+              { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+              { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+              { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+            ],
+            generationConfig: {
+              maxOutputTokens: maxTokens,
+              ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
+            },
+          }),
+        });
 
-    if (!res.ok) {
-      const message = data?.error?.message || `Gemini API returned HTTP ${res.status}`;
-      const err = new Error(message);
-      err.status = res.status;
-      err.details = data;
-      throw err;
+        const resData = await res.json();
+        if (res.ok && resData?.candidates?.[0]) {
+          data = resData;
+          successfulModel = modelToTry;
+          break;
+        } else {
+          const errMsg = resData?.error?.message || `HTTP ${res.status}`;
+          logger.warn(`ai.service: model ${modelToTry} returned error (${errMsg}), trying next fallback model...`);
+          lastError = new Error(errMsg);
+          lastError.status = res.status;
+          lastError.details = resData;
+        }
+      } catch (fetchErr) {
+        logger.warn(`ai.service: model ${modelToTry} fetch failed (${fetchErr.message}), trying next fallback...`);
+        lastError = fetchErr;
+      }
+    }
+
+    if (!data) {
+      throw lastError || new Error('All Gemini model fallbacks failed to respond.');
     }
 
     const candidate = data.candidates?.[0];
@@ -537,7 +545,7 @@ async function legalChat(chatMessages, context = '') {
   return {
     content: result.text,
     tokens: result.tokens,
-    model: MODEL,
+    model: DEFAULT_MODEL,
   };
 }
 

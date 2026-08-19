@@ -11,7 +11,7 @@
 // drift out of sync with the manual pipeline (same chunk size, same
 // embedding model, same dedupe rule, same table columns).
 
-const { generateEmbedding } = require('./embeddingService');
+const { generateEmbedding, generateEmbeddingBatch, EMBEDDING_BATCH_LIMIT } = require('./embeddingService');
 const { pool } = require('../config/database');
 const logger = require('../utils/logger');
 
@@ -60,8 +60,8 @@ async function alreadyIngested(sourceId) {
  * @param {object} [extraMetadata] - anything else worth keeping in the metadata JSONB
  *   (e.g. { source_url, scraped_at } for scraped judgments)
  */
-async function insertChunk(meta, chunk, chunkIndex, sourceId, extra = {}, extraMetadata = {}) {
-  const embedding = await generateEmbedding(chunk);
+async function insertChunk(meta, chunk, chunkIndex, sourceId, extra = {}, extraMetadata = {}, precomputedEmbedding = null) {
+  const embedding = precomputedEmbedding || await generateEmbedding(chunk);
   const embeddingLiteral = `[${embedding.join(',')}]`;
 
   await pool.query(
@@ -108,14 +108,44 @@ async function ingestDocument({ sourceId, rawText, meta, extra = {}, extraMetada
   }
 
   let inserted = 0;
-  for (let i = 0; i < chunks.length; i++) {
+
+  // Embed all chunks up-front in large batches (one API request per batch)
+  // instead of one request per chunk — this is what previously blew through
+  // the free-tier embedding quota mid-document and left judgments half-indexed.
+  // If a batch fails even after the embedding service's retries, fall back to
+  // embedding those chunks one-by-one so only genuinely bad chunks are lost.
+  const embeddings = new Array(chunks.length).fill(null);
+  for (let start = 0; start < chunks.length; start += EMBEDDING_BATCH_LIMIT) {
+    const idxs = [];
+    const batchTexts = [];
+    for (let i = start; i < Math.min(start + EMBEDDING_BATCH_LIMIT, chunks.length); i++) {
+      idxs.push(i);
+      batchTexts.push(chunks[i]);
+    }
     try {
-      await insertChunk(meta, chunks[i], i, sourceId, extra, extraMetadata);
+      const vectors = await generateEmbeddingBatch(batchTexts);
+      idxs.forEach((idx, j) => { embeddings[idx] = vectors[j]; });
+    } catch (err) {
+      logger.warn(`knowledgeIngest: batch embedding failed for ${sourceId} chunks ${idxs[0]}-${idxs[idxs.length - 1]} (${err.message || err}), falling back to one-by-one...`);
+      for (const idx of idxs) {
+        try {
+          embeddings[idx] = await generateEmbedding(chunks[idx]);
+        } catch (chunkErr) {
+          logger.error(`knowledgeIngest: failed to embed chunk ${idx} of ${sourceId}: ${chunkErr.message || chunkErr}`);
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < chunks.length; i++) {
+    if (!embeddings[i]) continue; // embedding failed even after retries — skip
+    try {
+      await insertChunk(meta, chunks[i], i, sourceId, extra, extraMetadata, embeddings[i]);
       inserted++;
     } catch (err) {
-      // Don't let one bad chunk (e.g. a transient embedding API error) kill
-      // the whole document — log it and keep going with the rest, then let
-      // the caller decide whether a partial ingest is acceptable.
+      // Don't let one bad chunk (e.g. a transient DB error) kill the whole
+      // document — log it and keep going with the rest, then let the caller
+      // decide whether a partial ingest is acceptable.
       logger.error(`knowledgeIngest: failed to insert chunk ${i} of ${sourceId}: ${err.message || err}`);
     }
   }
