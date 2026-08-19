@@ -10,12 +10,10 @@
 const express = require('express');
 const router = express.Router();
 
+const { authenticate } = require('../middleware/auth.middleware');
+const { aiLimiter } = require('../middleware/rateLimiter');
 const { handleLegalChat } = require('../controllers/legalChatController');
 
-// If you have auth middleware, wire it in here:
-// const { requireAuth } = require('../middleware/auth');
-// router.post('/chat', requireAuth, handleLegalChat);
-
-router.post('/chat', handleLegalChat);
+router.post('/chat', authenticate, aiLimiter, handleLegalChat);
 
 module.exports = router;
