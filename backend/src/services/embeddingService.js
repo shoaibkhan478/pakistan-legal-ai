@@ -92,6 +92,14 @@ async function withRateLimitRetries(fn, label) {
       lastErr = err;
       const retryable = err.status === 429 || err.status === 503 || err.status === 500;
       if (!retryable || attempt === MAX_RETRIES) throw err;
+      // A *daily* quota (PerDay quotaId in the 429 body) won't reset by
+      // retrying today — surface it as non-retryable so the ingestion
+      // pipeline can stop cleanly and resume tomorrow instead of sleeping
+      // for hours inside a pointless retry loop.
+      if (err.status === 429 && /PerDay/i.test(err.body || '')) {
+        err.dailyQuotaExhausted = true;
+        throw err;
+      }
       const waitMs = retryDelayMs(err.body, attempt);
       console.warn(`${label}: rate-limited/unavailable (attempt ${attempt + 1}/${MAX_RETRIES}), waiting ${Math.round(waitMs / 1000)}s before retrying...`);
       await sleep(waitMs);

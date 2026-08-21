@@ -97,50 +97,68 @@ async function insertChunk(meta, chunk, chunkIndex, sourceId, extra = {}, extraM
  * @returns {Promise<{skipped: boolean, chunksInserted: number}>}
  */
 async function ingestDocument({ sourceId, rawText, meta, extra = {}, extraMetadata = {} }) {
-  if (await alreadyIngested(sourceId)) {
-    return { skipped: true, chunksInserted: 0 };
-  }
-
   const chunks = chunkText(rawText);
   if (chunks.length === 0) {
     logger.warn(`knowledgeIngest: no usable text extracted for ${sourceId}, skipping.`);
     return { skipped: true, chunksInserted: 0 };
   }
 
+  // RESUME SUPPORT: if this document is already fully indexed (every chunk
+  // index present), skip it. If it's only PARTIALLY indexed (a previous run
+  // died mid-document — e.g. the daily embedding quota ran out), only the
+  // missing chunks are embedded and inserted, so a re-run costs only what
+  // is actually missing instead of re-embedding the whole document.
+  const existing = await pool.query(
+    `SELECT (metadata->>'chunk_index')::int AS idx
+     FROM legal_knowledge
+     WHERE metadata->>'source_file' = $1`,
+    [sourceId]
+  );
+  const have = new Set(existing.rows.map((r) => r.idx));
+  if (have.size >= chunks.length) {
+    return { skipped: true, chunksInserted: 0 };
+  }
+  const missing = chunks.map((_, i) => i).filter((i) => !have.has(i));
+
   let inserted = 0;
 
-  // Embed all chunks up-front in large batches (one API request per batch)
-  // instead of one request per chunk — this is what previously blew through
-  // the free-tier embedding quota mid-document and left judgments half-indexed.
-  // If a batch fails even after the embedding service's retries, fall back to
-  // embedding those chunks one-by-one so only genuinely bad chunks are lost.
-  const embeddings = new Array(chunks.length).fill(null);
-  for (let start = 0; start < chunks.length; start += EMBEDDING_BATCH_LIMIT) {
-    const idxs = [];
-    const batchTexts = [];
-    for (let i = start; i < Math.min(start + EMBEDDING_BATCH_LIMIT, chunks.length); i++) {
-      idxs.push(i);
-      batchTexts.push(chunks[i]);
-    }
+  // Embed the missing chunks in large batches (one API request per batch)
+  // instead of one request per chunk — one-by-one embedding is what
+  // previously blew through the free-tier quota mid-document.
+  const embeddings = new Map();
+  for (let start = 0; start < missing.length; start += EMBEDDING_BATCH_LIMIT) {
+    const idxs = missing.slice(start, start + EMBEDDING_BATCH_LIMIT);
+    const batchTexts = idxs.map((i) => chunks[i]);
     try {
       const vectors = await generateEmbeddingBatch(batchTexts);
-      idxs.forEach((idx, j) => { embeddings[idx] = vectors[j]; });
+      idxs.forEach((idx, j) => embeddings.set(idx, vectors[j]));
     } catch (err) {
+      if (err.dailyQuotaExhausted) {
+        // Free-tier daily embedding quota is gone for today — stop cleanly.
+        // The resume logic above means tomorrow's run picks up exactly here.
+        logger.warn(`knowledgeIngest: daily embedding quota exhausted at chunk ${idxs[0]} of ${sourceId} (${inserted} inserted this run) — re-run tomorrow to resume.`);
+        return { skipped: false, chunksInserted: inserted, quotaExhausted: true };
+      }
       logger.warn(`knowledgeIngest: batch embedding failed for ${sourceId} chunks ${idxs[0]}-${idxs[idxs.length - 1]} (${err.message || err}), falling back to one-by-one...`);
       for (const idx of idxs) {
         try {
-          embeddings[idx] = await generateEmbedding(chunks[idx]);
+          embeddings.set(idx, await generateEmbedding(chunks[idx]));
         } catch (chunkErr) {
+          if (chunkErr.dailyQuotaExhausted) {
+            logger.warn(`knowledgeIngest: daily embedding quota exhausted at chunk ${idx} of ${sourceId} — re-run tomorrow to resume.`);
+            return { skipped: false, chunksInserted: inserted, quotaExhausted: true };
+          }
           logger.error(`knowledgeIngest: failed to embed chunk ${idx} of ${sourceId}: ${chunkErr.message || chunkErr}`);
         }
       }
     }
   }
 
-  for (let i = 0; i < chunks.length; i++) {
-    if (!embeddings[i]) continue; // embedding failed even after retries — skip
+  for (const i of missing) {
+    const embedding = embeddings.get(i);
+    if (!embedding) continue; // embedding failed even after retries — skip
     try {
-      await insertChunk(meta, chunks[i], i, sourceId, extra, extraMetadata, embeddings[i]);
+      await insertChunk(meta, chunks[i], i, sourceId, extra, extraMetadata, embedding);
       inserted++;
     } catch (err) {
       // Don't let one bad chunk (e.g. a transient DB error) kill the whole
