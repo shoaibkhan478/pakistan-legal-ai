@@ -11,11 +11,8 @@ const express = require('express');
 const router = express.Router();
 
 const { handleLegalChat } = require('../controllers/legalChatController');
+const { authenticate } = require('../middleware/auth.middleware');
 
-// If you have auth middleware, wire it in here:
-// const { requireAuth } = require('../middleware/auth');
-// router.post('/chat', requireAuth, handleLegalChat);
-
-router.post('/chat', handleLegalChat);
+router.post('/chat', authenticate, handleLegalChat);
 
 module.exports = router;

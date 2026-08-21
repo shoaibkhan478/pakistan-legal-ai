@@ -8,8 +8,9 @@ import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
+import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
 import api from '@/lib/api';
-import { Gavel, Loader2, Scale } from 'lucide-react';
+import { Gavel, Loader2, Scale, Brain } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 function JudgmentAnalysisContent() {
@@ -20,6 +21,9 @@ function JudgmentAnalysisContent() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
+  const [isDeepAnalyzing, setIsDeepAnalyzing] = useState(false);
+  const [deepResult, setDeepResult] = useState<DeepAnalysisData | null>(null);
+  const [deepStepMessage, setDeepStepMessage] = useState('');
 
   useEffect(() => {
     if (documentId) {
@@ -39,6 +43,37 @@ function JudgmentAnalysisContent() {
       toast.error(err.response?.data?.message || 'Analysis failed.');
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleDeepAnalyze = async () => {
+    if (!text.trim()) return toast.error('Please provide judgment text.');
+    setIsDeepAnalyzing(true);
+    setDeepResult(null);
+
+    const steps = [
+      'Spotting the legal issues in the judgment...',
+      'Researching applicable law for each issue...',
+      'Building the strongest argument on each side...',
+      'Simulating the opposing counsel\'s response...',
+      'Weighing everything into one final appeal strategy...',
+    ];
+    let stepIndex = 0;
+    setDeepStepMessage(steps[0]);
+    const stepInterval = setInterval(() => {
+      stepIndex = Math.min(stepIndex + 1, steps.length - 1);
+      setDeepStepMessage(steps[stepIndex]);
+    }, 4000);
+
+    try {
+      const { data } = await api.post('/analysis/judgment/deep', { text, documentId });
+      setDeepResult(data.data);
+      toast.success('Deep analysis complete!');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Deep analysis failed.');
+    } finally {
+      clearInterval(stepInterval);
+      setIsDeepAnalyzing(false);
     }
   };
 
@@ -71,6 +106,18 @@ function JudgmentAnalysisContent() {
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze Judgment
               </Button>
+              <Button
+                onClick={handleDeepAnalyze}
+                isLoading={isDeepAnalyzing}
+                variant="outline"
+                className="w-full mt-2"
+              >
+                <Brain className="w-4 h-4" /> Deep Analysis — Senior Advocate Mode
+              </Button>
+              <p className="text-xs text-slate-400 mt-1.5 text-center">
+                Slower (~20-40s) but reasons through each issue separately, arguing both sides before
+                concluding — closer to how an advocate actually works a case.
+              </p>
             </CardContent>
           </Card>
 
@@ -80,6 +127,20 @@ function JudgmentAnalysisContent() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary-700 mb-3" />
                 <p className="text-sm text-slate-500">Analyzing judgment...</p>
               </CardContent></Card>
+            )}
+
+            {isDeepAnalyzing && (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <Brain className="w-8 h-8 animate-pulse text-primary-700 mb-3" />
+                  <p className="text-sm text-slate-500 text-center max-w-xs">{deepStepMessage}</p>
+                  <p className="text-xs text-slate-400 mt-2">This takes longer than a normal analysis — worth the wait.</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {deepResult && !isDeepAnalyzing && (
+              <DeepAnalysisResult data={deepResult} />
             )}
 
             {analysis && !isAnalyzing && (

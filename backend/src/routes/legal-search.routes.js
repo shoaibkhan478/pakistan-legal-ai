@@ -9,8 +9,9 @@
 const express = require('express');
 const router = express.Router();
 const { runLiveLegalSearch } = require('../services/legal-search.service');
+const { authenticate } = require('../middleware/auth.middleware');
 
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const { question } = req.body;
 

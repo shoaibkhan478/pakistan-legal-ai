@@ -8,8 +8,9 @@ import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
+import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
 import api from '@/lib/api';
-import { FileText, Loader2, Scale, FileSignature, Download } from 'lucide-react';
+import { FileText, Loader2, Scale, FileSignature, Download, Brain } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
 
@@ -24,6 +25,9 @@ function NoticeAnalysisContent() {
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [reply, setReply] = useState<string | null>(null);
   const [isGeneratingReply, setIsGeneratingReply] = useState(false);
+  const [isDeepAnalyzing, setIsDeepAnalyzing] = useState(false);
+  const [deepResult, setDeepResult] = useState<DeepAnalysisData | null>(null);
+  const [deepStepMessage, setDeepStepMessage] = useState('');
 
   useEffect(() => {
     if (documentId) {
@@ -45,6 +49,37 @@ function NoticeAnalysisContent() {
       toast.error(err.response?.data?.message || 'Analysis failed.');
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleDeepAnalyze = async () => {
+    if (!noticeText.trim()) return toast.error('Please provide notice text.');
+    setIsDeepAnalyzing(true);
+    setDeepResult(null);
+
+    const steps = [
+      'Spotting the legal issues in the notice...',
+      'Researching applicable law for each issue...',
+      'Building the strongest argument on each side...',
+      'Simulating the opposing counsel\'s response...',
+      'Weighing everything into one final strategy...',
+    ];
+    let stepIndex = 0;
+    setDeepStepMessage(steps[0]);
+    const stepInterval = setInterval(() => {
+      stepIndex = Math.min(stepIndex + 1, steps.length - 1);
+      setDeepStepMessage(steps[stepIndex]);
+    }, 4000);
+
+    try {
+      const { data } = await api.post('/analysis/notice/deep', { text: noticeText, documentId });
+      setDeepResult(data.data);
+      toast.success('Deep analysis complete!');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Deep analysis failed.');
+    } finally {
+      clearInterval(stepInterval);
+      setIsDeepAnalyzing(false);
     }
   };
 
@@ -97,6 +132,18 @@ function NoticeAnalysisContent() {
               <Button onClick={handleAnalyze} isLoading={isAnalyzing} className="w-full mt-4">
                 <Scale className="w-4 h-4" /> Analyze Notice
               </Button>
+              <Button
+                onClick={handleDeepAnalyze}
+                isLoading={isDeepAnalyzing}
+                variant="outline"
+                className="w-full mt-2"
+              >
+                <Brain className="w-4 h-4" /> Deep Analysis — Senior Advocate Mode
+              </Button>
+              <p className="text-xs text-slate-400 mt-1.5 text-center">
+                Slower (~20-40s) but reasons through each issue separately, arguing both sides before
+                concluding — closer to how an advocate actually works a case.
+              </p>
             </CardContent>
           </Card>
 
@@ -106,6 +153,20 @@ function NoticeAnalysisContent() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary-700 mb-3" />
                 <p className="text-sm text-slate-500">Analyzing notice...</p>
               </CardContent></Card>
+            )}
+
+            {isDeepAnalyzing && (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <Brain className="w-8 h-8 animate-pulse text-primary-700 mb-3" />
+                  <p className="text-sm text-slate-500 text-center max-w-xs">{deepStepMessage}</p>
+                  <p className="text-xs text-slate-400 mt-2">This takes longer than a normal analysis — worth the wait.</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {deepResult && !isDeepAnalyzing && (
+              <DeepAnalysisResult data={deepResult} />
             )}
 
             {analysis && !isAnalyzing && (
@@ -170,7 +231,7 @@ function NoticeAnalysisContent() {
               </>
             )}
 
-            {!analysis && !isAnalyzing && (
+            {!analysis && !isAnalyzing && !deepResult && !isDeepAnalyzing && (
               <Card><CardContent className="flex flex-col items-center justify-center py-16 text-center">
                 <FileText className="w-10 h-10 text-slate-300 dark:text-navy-700 mb-3" />
                 <p className="text-sm text-slate-400">Analysis results will appear here</p>

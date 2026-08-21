@@ -189,6 +189,42 @@ router.post('/notice', authenticate, aiLimiter, async (req, res, next) => {
   }
 });
 
+// POST /api/v1/analysis/notice/deep
+// Senior Advocate deep-reasoning mode for legal notices — same multi-step
+// chain used by /fir/deep (issue-spotting -> per-issue research -> dual
+// arguments -> rebuttal simulation -> strategy synthesis), applied to the
+// notice text instead of an FIR.
+router.post('/notice/deep', authenticate, aiLimiter, async (req, res, next) => {
+  try {
+    const { documentId, text, caseId } = req.body;
+    let noticeText = text;
+
+    if (documentId) {
+      const { rows } = await query(
+        'SELECT ocr_text FROM documents WHERE id = $1 AND user_id = $2',
+        [documentId, req.user.id]
+      );
+      if (!rows[0]) return res.status(404).json({ success: false, message: 'Document not found.' });
+      noticeText = rows[0].ocr_text || text;
+    }
+
+    if (!noticeText?.trim()) {
+      return res.status(400).json({ success: false, message: 'Notice text is required.' });
+    }
+
+    const result = await runLegalReasoningChain(noticeText, 'legal notice reply strategy');
+
+    await query(
+      'INSERT INTO api_usage (user_id, feature, tokens_input, tokens_output, model_used) VALUES ($1, $2, $3, $4, $5)',
+      [req.user.id, 'notice_deep_analysis', 0, result.tokens || 0, 'gemini-reasoning-chain']
+    );
+
+    res.json({ success: true, data: { ...result, documentId: documentId || null, caseId: caseId || null } });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // POST /api/v1/analysis/notice/:analysisId/reply
 router.post('/notice/:analysisId/reply', authenticate, aiLimiter, async (req, res, next) => {
   try {
@@ -250,6 +286,41 @@ router.post('/judgment', authenticate, aiLimiter, async (req, res, next) => {
     );
 
     res.json({ success: true, data: { analysis: saved, raw: analysis, liveSearchStatus } });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/v1/analysis/judgment/deep
+// Senior Advocate deep-reasoning mode for judgments — same multi-step
+// chain used by /fir/deep, applied to the judgment text so the user gets
+// issue-by-issue analysis and an appeal strategy synthesis.
+router.post('/judgment/deep', authenticate, aiLimiter, async (req, res, next) => {
+  try {
+    const { documentId, text, caseId } = req.body;
+    let judgmentText = text;
+
+    if (documentId) {
+      const { rows } = await query(
+        'SELECT ocr_text FROM documents WHERE id = $1 AND user_id = $2',
+        [documentId, req.user.id]
+      );
+      if (!rows[0]) return res.status(404).json({ success: false, message: 'Document not found.' });
+      judgmentText = rows[0].ocr_text || text;
+    }
+
+    if (!judgmentText?.trim()) {
+      return res.status(400).json({ success: false, message: 'Judgment text is required.' });
+    }
+
+    const result = await runLegalReasoningChain(judgmentText, 'judgment appeal strategy');
+
+    await query(
+      'INSERT INTO api_usage (user_id, feature, tokens_input, tokens_output, model_used) VALUES ($1, $2, $3, $4, $5)',
+      [req.user.id, 'judgment_deep_analysis', 0, result.tokens || 0, 'gemini-reasoning-chain']
+    );
+
+    res.json({ success: true, data: { ...result, documentId: documentId || null, caseId: caseId || null } });
   } catch (error) {
     next(error);
   }
