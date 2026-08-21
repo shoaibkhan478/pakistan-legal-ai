@@ -373,8 +373,24 @@ async function generateContent({
       .map((p) => p.text || '')
       .join('\n');
 
-    if (!text && candidate.finishReason === 'MAX_TOKENS') {
-      throw new Error('Gemini response was cut off before producing any content (output token limit reached).');
+    // The model can come back with a "successful" response that is
+    // actually empty or whitespace-only (e.g. only non-text parts like
+    // thought/reasoning segments, or content genuinely cut short) —
+    // the previous check here only caught the exact case of an empty
+    // string AND finishReason === 'MAX_TOKENS', so e.g. a few stray
+    // newlines with finishReason 'STOP' slipped through as "success" and
+    // silently produced a draft containing nothing but the disclaimer.
+    // Treat any effectively-blank result as a failure so the caller sees
+    // a clear, retryable error instead of a blank document.
+    if (!text.trim()) {
+      const reason = candidate.finishReason || 'unknown';
+      const err = new Error(
+        reason === 'MAX_TOKENS'
+          ? 'Gemini response was cut off before producing any content (output token limit reached).'
+          : `Gemini returned an empty response (finishReason: ${reason}). Please try again.`
+      );
+      err.status = 503; // treat as transient/retryable, not a hard 500
+      throw err;
     }
 
     if (!jsonMode) {
