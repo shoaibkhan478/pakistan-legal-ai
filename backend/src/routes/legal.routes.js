@@ -10,9 +10,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { handleLegalChat } = require('../controllers/legalChatController');
 const { authenticate } = require('../middleware/auth.middleware');
+const { aiLimiter } = require('../middleware/rateLimiter');
+const { handleLegalChat } = require('../controllers/legalChatController');
 
-router.post('/chat', authenticate, handleLegalChat);
+router.post('/chat', authenticate, aiLimiter, handleLegalChat);
 
 module.exports = router;
