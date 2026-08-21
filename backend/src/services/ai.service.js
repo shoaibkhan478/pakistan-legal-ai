@@ -275,48 +275,75 @@ async function generateContent({
     let data = null;
     let successfulModel = DEFAULT_MODEL;
 
+    // Transient "the model is overloaded right now" errors (HTTP 503,
+    // status UNAVAILABLE, or Google's own "currently experiencing high
+    // demand" wording) are usually gone within a few seconds — worth a
+    // couple of quick retries on the SAME model before giving up on it
+    // and moving to the next fallback model. Without this, a brief spike
+    // on Google's side surfaces immediately as a failure to the user even
+    // though the very next request 2-3 seconds later would likely work.
+    const OVERLOAD_RETRY_DELAYS_MS = [1500, 3500];
+
+    const isTransientOverload = (status, message) =>
+      status === 503 || /overloaded|unavailable|high demand/i.test(message || '');
+
     for (const modelToTry of CANDIDATE_MODELS) {
       const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${modelToTry}:generateContent?key=${apiKey}`;
 
-      await waitForRateLimitSlot();
+      // attempt 0 = first try, then up to OVERLOAD_RETRY_DELAYS_MS.length retries
+      for (let attempt = 0; attempt <= OVERLOAD_RETRY_DELAYS_MS.length; attempt++) {
+        await waitForRateLimitSlot();
 
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({
-            contents: geminiContents,
-            systemInstruction: { parts: [{ text: system }] },
-            ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
-            safetySettings: [
-              { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-              { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-              { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
-              { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-            ],
-            generationConfig: {
-              maxOutputTokens: maxTokens,
-              ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
-            },
-          }),
-        });
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              contents: geminiContents,
+              systemInstruction: { parts: [{ text: system }] },
+              ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
+              safetySettings: [
+                { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+                { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+                { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+                { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+              ],
+              generationConfig: {
+                maxOutputTokens: maxTokens,
+                ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
+              },
+            }),
+          });
 
-        const resData = await res.json();
-        if (res.ok && resData?.candidates?.[0]) {
-          data = resData;
-          successfulModel = modelToTry;
-          break;
-        } else {
+          const resData = await res.json();
+          if (res.ok && resData?.candidates?.[0]) {
+            data = resData;
+            successfulModel = modelToTry;
+            break;
+          }
+
           const errMsg = resData?.error?.message || `HTTP ${res.status}`;
-          logger.warn(`ai.service: model ${modelToTry} returned error (${errMsg}), trying next fallback model...`);
           lastError = new Error(errMsg);
           lastError.status = res.status;
           lastError.details = resData;
+
+          if (isTransientOverload(res.status, errMsg) && attempt < OVERLOAD_RETRY_DELAYS_MS.length) {
+            const delay = OVERLOAD_RETRY_DELAYS_MS[attempt];
+            logger.warn(`ai.service: model ${modelToTry} overloaded (${errMsg}), retrying in ${delay}ms (attempt ${attempt + 1}/${OVERLOAD_RETRY_DELAYS_MS.length})...`);
+            await sleep(delay);
+            continue; // retry same model
+          }
+
+          logger.warn(`ai.service: model ${modelToTry} returned error (${errMsg}), trying next fallback model...`);
+          break; // move to next model
+        } catch (fetchErr) {
+          logger.warn(`ai.service: model ${modelToTry} fetch failed (${fetchErr.message}), trying next fallback...`);
+          lastError = fetchErr;
+          break; // network-level failure — move to next model rather than retry blindly
         }
-      } catch (fetchErr) {
-        logger.warn(`ai.service: model ${modelToTry} fetch failed (${fetchErr.message}), trying next fallback...`);
-        lastError = fetchErr;
       }
+
+      if (data) break;
     }
 
     if (!data) {

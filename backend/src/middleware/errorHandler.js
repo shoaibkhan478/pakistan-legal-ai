@@ -64,6 +64,20 @@ function errorHandler(err, req, res, next) {
     });
   }
 
+  // Transient "model overloaded" errors from Google (HTTP 503, status
+  // UNAVAILABLE, or their "currently experiencing high demand" wording).
+  // ai.service.js already retries these a couple of times internally
+  // before giving up — reaching here means it's still overloaded after
+  // those retries, so tell the user plainly instead of showing Google's
+  // raw provider text.
+  if (err.status === 503 || /overloaded|unavailable|high demand/i.test(err.message || '')) {
+    return res.status(503).json({
+      success: false,
+      message: 'The AI service is currently overloaded with requests. Please try again in a moment.',
+      retryable: true,
+    });
+  }
+
   const statusCode = err.statusCode || err.status || 500;
   res.status(statusCode).json({
     success: false,
