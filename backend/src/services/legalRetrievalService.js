@@ -76,14 +76,19 @@ function mergeResults(vectorRows, keywordRows) {
  * @returns {Promise<{constitution: [], statute: [], judgment: []}>}
  */
 async function retrieveRelevantLaw(query) {
-  const queryEmbedding = await generateEmbedding(query);
+  let queryEmbedding = null;
+  try {
+    queryEmbedding = await generateEmbedding(query);
+  } catch (err) {
+    // Vector embedding fail-soft: fallback to PostgreSQL full-text search
+  }
 
   const [constV, constK, statV, statK, judgV, judgK] = await Promise.all([
-    vectorSearch(queryEmbedding, 'constitution', RESULTS_PER_SOURCE_TYPE),
+    queryEmbedding ? vectorSearch(queryEmbedding, 'constitution', RESULTS_PER_SOURCE_TYPE) : Promise.resolve([]),
     keywordSearch(query, 'constitution', RESULTS_PER_SOURCE_TYPE),
-    vectorSearch(queryEmbedding, 'statute', RESULTS_PER_SOURCE_TYPE),
+    queryEmbedding ? vectorSearch(queryEmbedding, 'statute', RESULTS_PER_SOURCE_TYPE) : Promise.resolve([]),
     keywordSearch(query, 'statute', RESULTS_PER_SOURCE_TYPE),
-    vectorSearch(queryEmbedding, 'judgment', RESULTS_PER_SOURCE_TYPE),
+    queryEmbedding ? vectorSearch(queryEmbedding, 'judgment', RESULTS_PER_SOURCE_TYPE) : Promise.resolve([]),
     keywordSearch(query, 'judgment', RESULTS_PER_SOURCE_TYPE),
   ]);
 

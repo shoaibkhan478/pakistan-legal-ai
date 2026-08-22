@@ -29,6 +29,8 @@
  * process.env.DATABASE_URL, same as the rest of your app).
  */
 
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const { Pool } = require('pg');
 
 // ---------------------------------------------------------------------------
