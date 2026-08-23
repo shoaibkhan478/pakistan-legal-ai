@@ -1,4 +1,4 @@
-﻿const path = require('path');
+const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { Pool } = require('pg');
@@ -44,7 +44,7 @@ async function connectDB() {
   try {
     const client = await pool.connect();
     const usingUrl = Boolean(process.env.DATABASE_URL);
-    logger.info(Postgres connected successfully (source: ));
+    logger.info(`Postgres connected successfully (source: ${usingUrl ? 'DATABASE_URL' : 'individual DB vars'})`);
     client.release();
     return pool;
   } catch (err) {
@@ -81,7 +81,7 @@ async function getClient() {
 
   const timeout = setTimeout(() => {
     logger.error('DB client checkout timeout - possible leak');
-    logger.error(Last query: );
+    logger.error(`Last query: ${client.lastQuery}`);
   }, 5000);
 
   client.query = (...args) => {
