@@ -1,8 +1,7 @@
 // backend/src/config/database.js
-// Fix: DATABASE_URL ko priority di gayi hai. Agar wo set hai (Railway/Heroku/etc
-// jaisi platforms yahi provide karti hain), to individual PGHOST/PGUSER/PGPASSWORD
-// wagera env vars ko ignore kar dete hain — taake dono ka mismatch connection
-// errors na de.
+// Fix 1: DATABASE_URL ko priority di gayi hai (Railway/Heroku jaisi platforms yahi provide karti hain).
+// Fix 2: connectDB() function export kiya gaya hai kyunke server.js isay call karta hai
+//        (pehla patch sirf 'pool' export kar raha tha, isliye "connectDB is not a function" crash hua).
 
 const { Pool } = require('pg');
 
@@ -12,7 +11,6 @@ function buildPoolConfig() {
   if (connectionString) {
     return {
       connectionString,
-      // Railway/Heroku Postgres SSL chahta hai; production mein enable, local dev mein optional.
       ssl:
         process.env.NODE_ENV === 'production'
           ? { rejectUnauthorized: false }
@@ -47,11 +45,26 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
-pool.on('connect', () => {
-  const usingUrl = Boolean(process.env.DATABASE_URL);
-  console.log(
-    `[db] Postgres pool connected (source: ${usingUrl ? 'DATABASE_URL' : 'individual PG* vars'})`
-  );
-});
+// server.js isay startup par call karta hai to verify DB connection before listening.
+async function connectDB() {
+  try {
+    const client = await pool.connect();
+    const usingUrl = Boolean(process.env.DATABASE_URL);
+    console.log(
+      `[db] Postgres connected successfully (source: ${usingUrl ? 'DATABASE_URL' : 'individual PG* vars'})`
+    );
+    client.release();
+    return pool;
+  } catch (err) {
+    console.error('[db] Failed to connect to Postgres:', err.message);
+    throw err;
+  }
+}
 
+// Multiple export shapes taake jo bhi import style server.js use kare, chal jaye:
+//   const pool = require('./database');
+//   const { connectDB } = require('./database');
+//   const db = require('./database'); db.connectDB();
 module.exports = pool;
+module.exports.pool = pool;
+module.exports.connectDB = connectDB;
