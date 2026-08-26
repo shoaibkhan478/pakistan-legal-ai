@@ -16,12 +16,28 @@ const { query } = require('../config/database');
 const logger = require('../utils/logger');
 
 // Multer setup
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     const dir = path.join(process.cwd(), 'uploads', req.user.id);
+//     fs.mkdirSync(dir, { recursive: true });
+//     cb(null, dir);
+//   },
+// Multer setup
+// On Vercel (and most serverless hosts) the deployment filesystem is
+// read-only — only os.tmpdir() ("/tmp") is writable, and it's wiped between
+// invocations. UPLOAD_DIR lets this default to a local ./uploads folder in
+// dev/Docker, while falling back to /tmp/uploads automatically in
+// production so the endpoint doesn't crash with an EROFS error on Vercel.
+const os = require('os');
+const uploadRoot = process.env.UPLOAD_DIR || (process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : path.join(process.cwd(), 'uploads'));
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads', req.user.id);
+    const dir = path.join(uploadRoot, req.user.id);
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
+
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, `${uuidv4()}${ext}`);
