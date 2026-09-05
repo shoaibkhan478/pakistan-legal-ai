@@ -14,6 +14,7 @@ const {
   analyzeJudgment, analyzePlaint
 } = require('../services/ai.service');
 const { runLegalReasoningChain } = require('../services/legalReasoningChain');
+const { translateFIRToUrdu } = require('../services/translationService');
 
 // ============================================================
 // FIR ANALYSIS
@@ -142,6 +143,76 @@ router.get('/fir', authenticate, async (req, res, next) => {
       [req.user.id]
     );
     res.json({ success: true, data: rows });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/v1/analysis/fir/translate
+// Literal, word-for-word English -> Urdu translation of an FIR (or any FIR-
+// adjacent text) — NOT a paraphrase or summary. See translationService.js
+// for why this is a separate, strict prompt path rather than a generic
+// "translate this" call. Accepts either { documentId } (reads the OCR'd
+// text already stored for that document) or raw { text }, same pattern as
+// the other FIR routes above.
+router.post('/fir/translate', authenticate, aiLimiter, async (req, res, next) => {
+  try {
+    const { documentId, text, analysisId } = req.body;
+    let firText = text;
+
+    if (documentId) {
+      const { rows } = await query(
+        'SELECT ocr_text FROM documents WHERE id = $1 AND user_id = $2',
+        [documentId, req.user.id]
+      );
+      if (!rows[0]) return res.status(404).json({ success: false, message: 'Document not found.' });
+      firText = rows[0].ocr_text || text;
+    } else if (analysisId) {
+      // Convenience path: translate the ORIGINAL FIR text behind an
+      // already-saved analysis, rather than requiring the caller to
+      // re-supply it. raw_analysis doesn't store the source text itself,
+      // so this only works when that analysis was created from a
+      // documentId (its ocr_text) — falls through to the 400 below
+      // otherwise, same as if no text had been supplied at all.
+      const { rows } = await query(
+        'SELECT document_id FROM fir_analyses WHERE id = $1 AND user_id = $2',
+        [analysisId, req.user.id]
+      );
+      if (!rows[0]) return res.status(404).json({ success: false, message: 'FIR analysis not found.' });
+      if (rows[0].document_id) {
+        const { rows: docRows } = await query(
+          'SELECT ocr_text FROM documents WHERE id = $1 AND user_id = $2',
+          [rows[0].document_id, req.user.id]
+        );
+        firText = docRows[0]?.ocr_text || text;
+      }
+    }
+
+    if (!firText?.trim()) {
+      return res.status(400).json({ success: false, message: 'FIR text is required (pass text, documentId, or an analysisId whose source has stored text).' });
+    }
+
+    const { translation, tokens, chunkCount, possibleTruncation, sourceWordCount, translatedWordCount } =
+      await translateFIRToUrdu(firText);
+
+    await query(
+      'INSERT INTO api_usage (user_id, feature, tokens_input, tokens_output, model_used) VALUES ($1, $2, $3, $4, $5)',
+      [req.user.id, 'fir_translation', tokens?.input_tokens || 0, tokens?.output_tokens || 0, 'gemini-literal-translation']
+    );
+
+    res.json({
+      success: true,
+      data: {
+        translation,
+        sourceWordCount,
+        translatedWordCount,
+        chunkCount,
+        // Surfaced so the frontend can show a "please review — this
+        // translation may have dropped content" notice rather than
+        // silently presenting a truncated/summarized result as complete.
+        possibleTruncation,
+      },
+    });
   } catch (error) {
     next(error);
   }

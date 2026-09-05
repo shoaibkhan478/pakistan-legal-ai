@@ -9,6 +9,7 @@ const { aiLimiter } = require('../middleware/rateLimiter');
 const { query } = require('../config/database');
 const { generateDraft, classifyDraftType } = require('../services/ai.service');
 const { runLegalReasoningChain } = require('../services/legalReasoningChain');
+const { generateCourtroomScript } = require('../services/courtroomScriptService');
 
 router.post('/generate', authenticate, aiLimiter, async (req, res, next) => {
   try {
@@ -89,6 +90,67 @@ router.post('/generate', authenticate, aiLimiter, async (req, res, next) => {
     );
 
     res.json({ success: true, data: draft });
+  } catch (e) { next(e); }
+});
+
+// POST /api/v1/drafts/courtroom
+// "What a senior advocate actually does in court" — generates a full
+// courtroom package (case theory -> opening statement -> examination-in-
+// chief -> cross-examination -> closing arguments), each step grounded in
+// the one before it. See courtroomScriptService.js for the reasoning
+// behind the chain and why examination/cross-examination are prepared
+// QUESTIONS, never fabricated witness answers.
+router.post('/courtroom', authenticate, aiLimiter, async (req, res, next) => {
+  try {
+    const {
+      caseFacts, caseType = 'civil', role = 'the party', forum = '',
+      ownWitnesses = [], opposingWitnesses = [], language = 'english',
+      caseId, title,
+    } = req.body;
+
+    if (!caseFacts?.trim()) {
+      return res.status(400).json({ success: false, message: 'caseFacts is required — describe the matter for the advocate to prepare.' });
+    }
+
+    const result = await generateCourtroomScript({
+      caseFacts, caseType, role, forum,
+      ownWitnesses: Array.isArray(ownWitnesses) ? ownWitnesses : [],
+      opposingWitnesses: Array.isArray(opposingWitnesses) ? opposingWitnesses : [],
+      language,
+    });
+
+    const { rows: [draft] } = await query(
+      `INSERT INTO drafts (user_id, case_id, title, draft_type, content, language, ai_model_used, tokens_used)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [req.user.id, caseId || null, title || `Courtroom Script — ${caseType} (${role})`,
+       'courtroom_script', result.combinedMarkdown, language, 'gemini-courtroom-chain',
+       result.tokens?.output_tokens || 0]
+    );
+
+    res.json({
+      success: true,
+      data: {
+        ...draft,
+        // Individual sections returned separately too, so the frontend can
+        // render them as tabs (Opening / Examination / Cross / Closing)
+        // instead of only the combined document.
+        sections: {
+          threshold: result.threshold,
+          theory: result.theory,
+          citationVerification: result.citationVerification,
+          citationSummary: result.citationSummary,
+          precedentStrength: result.precedentStrength,
+          opposingExchange: result.opposingExchange,
+          openingStatement: result.openingStatement,
+          examinationInChief: result.examinationInChief,
+          crossExamination: result.crossExamination,
+          reExamination: result.reExamination,
+          anticipatedObjections: result.anticipatedObjections,
+          benchQueries: result.benchQueries,
+          closingArguments: result.closingArguments,
+        },
+      },
+    });
   } catch (e) { next(e); }
 });
 
