@@ -23,13 +23,45 @@
 // (e.g. a green "✓ verified against local library" vs. an amber
 // "⚠ could not verify — check independently" badge) instead of a single
 // blunt confidence score for the whole answer.
+//
+// UPGRADE (dotted-acronym fix + match-quality tiers):
+//   1. BUG FIX — the previous normalize() stripped all punctuation before
+//      tokenizing, so a citation written as "Cr.P.C" or "S. 497, Cr.P.C."
+//      (both real, common ways Pakistani filings write these) shredded
+//      into single-letter tokens ("cr", "p", "c") instead of the acronym
+//      "crpc". A single-letter token never matches the acronyms regex
+//      (which requires 2-6 letters), so the acronym signal was silently
+//      lost and the citation could fail verification purely because of
+//      how it was punctuated — nothing to do with whether it's real.
+//      Fixed by collapsing dotted-letter runs (A.B.C. / A.B.C) into one
+//      joined token BEFORE generic punctuation stripping.
+//   2. MATCH-QUALITY TIERS — retrieveRelevantLaw()'s rows now carry
+//      matchType ('vector' | 'keyword' | 'both' | 'citation_graph') and a
+//      relevanceScore (see legalRetrievalService.js). A citation matched
+//      against a row confirmed by BOTH vector and keyword search, or by
+//      the citation graph, is a stronger signal than one that only
+//      happened to share numbers with a single low-confidence vector hit.
+//      verifyCitations() now surfaces that as matchQuality on
+//      'verified_local' results, so a UI can visually distinguish "solidly
+//      confirmed" from "matched, but only weakly."
 
 const STOPWORDS = new Set([
   'the', 'of', 'a', 'an', 'in', 'on', 'for', 'and', 'or', 'to', 'v', 'vs', 'under',
 ]);
 
+// Collapses a dotted-letter acronym run like "Cr.P.C." or "P.L.D" into a
+// single joined token ("crpc", "pld") BEFORE punctuation is stripped
+// generically. Requires at least 2 letter-groups so it doesn't accidentally
+// eat an ordinary abbreviation like "S." on its own.
+function collapseDottedAcronyms(str) {
+  return (str || '').replace(
+    /\b(?:[A-Za-z]\.){1,6}[A-Za-z]?\.?\B|\b(?:[A-Za-z]\.){2,6}/g,
+    (match) => match.replace(/\./g, '')
+  );
+}
+
 function normalize(str) {
-  return (str || '')
+  return collapseDottedAcronyms(str)
     .toLowerCase()
     .replace(/[^\w\s]/g, ' ')
     .replace(/\s+/g, ' ')
@@ -38,7 +70,7 @@ function normalize(str) {
 
 /**
  * Pulls the distinguishing tokens out of a citation string, e.g.
- * "Section 497 CrPC — bail in non-bailable offences" ->
+ * "Section 497 Cr.P.C — bail in non-bailable offences" ->
  *   numbers: ['497'], acronyms: ['crpc']
  * Numbers (section/article numbers, report years) and short statute/report
  * acronyms (crpc, ppc, cpc, pld, scmr, clc...) carry almost all of the
@@ -60,11 +92,21 @@ function haystackFromRow(row) {
   );
 }
 
+// A local match is "strong" if the row it matched was itself confirmed by
+// more than one retrieval signal (both vector + keyword agreeing, or a
+// citation-graph link) rather than a single, possibly-noisy source.
+function matchQualityOf(row) {
+  if (row.matchType === 'citation_graph') return 'strong';
+  if (row.matchType === 'both') return 'strong';
+  if (row.matchType === 'keyword') return 'medium';
+  return 'weak'; // vector-only
+}
+
 /**
- * @param {string[]} legalReferences - e.g. ["Section 497 CrPC — bail in non-bailable offences", "PLD 2019 SC 1 — ..."]
+ * @param {string[]} legalReferences - e.g. ["Section 497 Cr.P.C — bail in non-bailable offences", "PLD 2019 SC 1 — ..."]
  * @param {{constitution?: object[], statute?: object[], judgment?: object[]}} retrievedRows - raw output of legalRetrievalService.retrieveRelevantLaw()
  * @param {string} [liveSearchText] - raw text from fetchLiveCaseLawContext(), if that pass ran
- * @returns {Array<{citation: string, status: 'verified_local'|'verified_live'|'unverified', matchedSource?: string, reason?: string}>}
+ * @returns {Array<{citation: string, status: 'verified_local'|'verified_live'|'unverified', matchedSource?: string, matchQuality?: 'strong'|'medium'|'weak', reason?: string}>}
  */
 function verifyCitations(legalReferences, retrievedRows = {}, liveSearchText = '') {
   if (!Array.isArray(legalReferences) || legalReferences.length === 0) return [];
@@ -88,17 +130,25 @@ function verifyCitations(legalReferences, retrievedRows = {}, liveSearchText = '
 
     // "verified_local": every number token in the citation appears in the
     // same local library row, AND (if the citation names an acronym) that
-    // acronym also appears there — avoids e.g. matching "497 CrPC" against
-    // a CPC row that happens to also mention "497".
-    const localMatch = localHaystacks.find(({ text }) => {
+    // acronym also appears there — avoids e.g. matching "497 Cr.P.C" against
+    // a CPC row that happens to also mention "497". Among all rows that
+    // satisfy this, prefer the one with the strongest retrieval signal
+    // rather than just the first one found.
+    const qualityRank = { strong: 0, medium: 1, weak: 2 };
+    const candidates = localHaystacks.filter(({ text }) => {
       const numbersMatch = numbers.every((n) => text.includes(n));
       const acronymOk = acronyms.length === 0 || acronyms.some((a) => text.includes(a));
       return numbersMatch && acronymOk;
     });
+    const localMatch = candidates.sort(
+      (a, b) => qualityRank[matchQualityOf(a.row)] - qualityRank[matchQualityOf(b.row)]
+    )[0];
+
     if (localMatch) {
       return {
         citation,
         status: 'verified_local',
+        matchQuality: matchQualityOf(localMatch.row),
         matchedSource: [localMatch.row.statute_name, localMatch.row.article_or_section, localMatch.row.citation]
           .filter(Boolean)
           .join(' — '),

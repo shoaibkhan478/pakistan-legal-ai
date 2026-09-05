@@ -7,6 +7,33 @@
 // needs an EXACT match, not a "semantically similar" one. Pure vector search
 // can miss exact statutory references. Pure keyword search misses paraphrased
 // queries like "can police arrest without a warrant". We run both and merge.
+//
+// UPGRADE (fusion + relevance floor): the previous merge step deduped by id
+// and kept whichever list saw a row first — it never actually combined the
+// two relevance signals, so a strong keyword hit and a barely-related vector
+// hit were indistinguishable once merged, and nothing stopped a weak match
+// from being fed to the LLM as "grounding" (which quietly hurts citation
+// precision and can nudge the model toward citing something irrelevant).
+//
+// This version:
+//   1. Pulls a slightly wider candidate set from each source (5 instead of 3)
+//      so fusion has more to work with.
+//   2. Fuses vector + keyword rankings with Reciprocal Rank Fusion (RRF) —
+//      the standard technique for combining two differently-scaled ranked
+//      lists without needing to normalize cosine similarity against ts_rank
+//      (they aren't on the same scale, so summing/averaging them directly
+//      would be meaningless).
+//   3. Applies a relevance floor: a row that ONLY showed up via vector
+//      search and whose similarity is below MIN_VECTOR_ONLY_SIMILARITY is
+//      dropped rather than passed through — an unconfirmed, low-similarity
+//      vector hit is exactly the kind of noise that ends up as a shaky
+//      citation. Keyword hits aren't floored the same way: a keyword match
+//      only exists because the term is literally present, which is already
+//      a strong relevance signal for legal text (section numbers, acronyms).
+//   4. Tags each result with matchType ('vector' | 'keyword' | 'both') and a
+//      fused relevanceScore, so downstream consumers (citationVerifier, or a
+//      future "why this source" UI badge) have a real signal to use instead
+//      of just "the API returned this."
 
 const { generateEmbedding } = require('./embeddingService');
 // Reuse the app's single shared pool (config/database.js) instead of opening
@@ -17,7 +44,13 @@ const { generateEmbedding } = require('./embeddingService');
 // sets the discrete vars, which is exactly this project's setup.
 const { pool } = require('../config/database');
 
-const RESULTS_PER_SOURCE_TYPE = 3; // how many chunks to pull per category
+const CANDIDATES_PER_SOURCE_TYPE = 5; // widened candidate pool fed into fusion
+const RESULTS_PER_SOURCE_TYPE = 3;    // how many fused results to return per category
+const RRF_K = 60;                     // standard RRF constant (Cormack et al.) —
+                                       // large enough that rank 1 vs rank 2 isn't
+                                       // wildly overweighted, small enough that
+                                       // rank order still dominates the score
+const MIN_VECTOR_ONLY_SIMILARITY = 0.55; // floor for vector-only (unconfirmed) hits
 
 /**
  * Vector similarity search (semantic).
@@ -58,14 +91,63 @@ async function keywordSearch(query, sourceType, limit) {
 }
 
 /**
- * Deduplicates results by id, keeping the highest-ranked occurrence.
+ * Reciprocal Rank Fusion + relevance floor.
+ *
+ * Takes the two independently-ranked candidate lists (vector rows already
+ * ordered by similarity desc, keyword rows already ordered by ts_rank desc)
+ * and produces a single list ordered by fused relevance, capped at `limit`.
+ *
+ * RRF score for a row = sum over every list it appears in of 1 / (RRF_K + rank),
+ * where `rank` is its 0-based position in that list. A row appearing near the
+ * top of both lists scores higher than one that's merely top-1 in one list
+ * and absent from the other — which is exactly the "confirmed by two
+ * independent signals" property we want for legal grounding.
  */
-function mergeResults(vectorRows, keywordRows) {
-  const map = new Map();
-  [...vectorRows, ...keywordRows].forEach((row) => {
-    if (!map.has(row.id)) map.set(row.id, row);
+function fuseResults(vectorRows, keywordRows, limit) {
+  const scored = new Map(); // id -> { row, score, matchType, similarity, rank }
+
+  vectorRows.forEach((row, idx) => {
+    scored.set(row.id, {
+      row,
+      score: 1 / (RRF_K + idx),
+      matchType: 'vector',
+      similarity: row.similarity != null ? Number(row.similarity) : null,
+    });
   });
-  return Array.from(map.values());
+
+  keywordRows.forEach((row, idx) => {
+    const existing = scored.get(row.id);
+    const kwScore = 1 / (RRF_K + idx);
+    if (existing) {
+      existing.score += kwScore;
+      existing.matchType = 'both';
+    } else {
+      scored.set(row.id, {
+        row,
+        score: kwScore,
+        matchType: 'keyword',
+        similarity: null,
+      });
+    }
+  });
+
+  const fused = Array.from(scored.values())
+    // Relevance floor: drop unconfirmed, low-similarity vector-only hits —
+    // these are the ones most likely to be tangentially related noise that
+    // shouldn't be presented to the model (or the user) as grounding.
+    .filter((entry) => {
+      if (entry.matchType !== 'vector') return true;
+      return entry.similarity == null || entry.similarity >= MIN_VECTOR_ONLY_SIMILARITY;
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((entry) => ({
+      ...entry.row,
+      matchType: entry.matchType,
+      relevanceScore: Number(entry.score.toFixed(6)),
+    }));
+
+  return fused;
 }
 
 /**
@@ -84,18 +166,18 @@ async function retrieveRelevantLaw(query) {
   }
 
   const [constV, constK, statV, statK, judgV, judgK] = await Promise.all([
-    queryEmbedding ? vectorSearch(queryEmbedding, 'constitution', RESULTS_PER_SOURCE_TYPE) : Promise.resolve([]),
-    keywordSearch(query, 'constitution', RESULTS_PER_SOURCE_TYPE),
-    queryEmbedding ? vectorSearch(queryEmbedding, 'statute', RESULTS_PER_SOURCE_TYPE) : Promise.resolve([]),
-    keywordSearch(query, 'statute', RESULTS_PER_SOURCE_TYPE),
-    queryEmbedding ? vectorSearch(queryEmbedding, 'judgment', RESULTS_PER_SOURCE_TYPE) : Promise.resolve([]),
-    keywordSearch(query, 'judgment', RESULTS_PER_SOURCE_TYPE),
+    queryEmbedding ? vectorSearch(queryEmbedding, 'constitution', CANDIDATES_PER_SOURCE_TYPE) : Promise.resolve([]),
+    keywordSearch(query, 'constitution', CANDIDATES_PER_SOURCE_TYPE),
+    queryEmbedding ? vectorSearch(queryEmbedding, 'statute', CANDIDATES_PER_SOURCE_TYPE) : Promise.resolve([]),
+    keywordSearch(query, 'statute', CANDIDATES_PER_SOURCE_TYPE),
+    queryEmbedding ? vectorSearch(queryEmbedding, 'judgment', CANDIDATES_PER_SOURCE_TYPE) : Promise.resolve([]),
+    keywordSearch(query, 'judgment', CANDIDATES_PER_SOURCE_TYPE),
   ]);
 
   return {
-    constitution: mergeResults(constV, constK),
-    statute: mergeResults(statV, statK),
-    judgment: mergeResults(judgV, judgK),
+    constitution: fuseResults(constV, constK, RESULTS_PER_SOURCE_TYPE),
+    statute: fuseResults(statV, statK, RESULTS_PER_SOURCE_TYPE),
+    judgment: fuseResults(judgV, judgK, RESULTS_PER_SOURCE_TYPE),
   };
 }
 
@@ -129,7 +211,11 @@ async function getRelatedCases(provisionIds, limit = 5) {
      LIMIT $2`,
     [provisionIds, limit]
   );
-  return result.rows;
+  // Mark these distinctly from fuseResults()'s output so downstream code
+  // (and any UI badge) can tell "confirmed citation-graph link" apart from
+  // "turned up via vector/keyword similarity" — a citation-graph match is a
+  // strictly stronger signal than either.
+  return result.rows.map((row) => ({ ...row, matchType: 'citation_graph' }));
 }
 
 /**
@@ -147,9 +233,14 @@ async function retrieveRelevantLawWithCitations(query) {
   const provisionIds = [...base.constitution, ...base.statute].map((r) => r.id);
   const relatedCases = await getRelatedCases(provisionIds, RESULTS_PER_SOURCE_TYPE * 2);
 
-  const mergedJudgments = mergeResults(relatedCases, base.judgment);
+  // Citation-graph matches are a confirmed link, so they always lead;
+  // dedup by id keeping the first (citation-graph) occurrence.
+  const seen = new Map();
+  [...relatedCases, ...base.judgment].forEach((row) => {
+    if (!seen.has(row.id)) seen.set(row.id, row);
+  });
 
-  return { ...base, judgment: mergedJudgments };
+  return { ...base, judgment: Array.from(seen.values()) };
 }
 
 module.exports = { retrieveRelevantLaw, getRelatedCases, retrieveRelevantLawWithCitations };
