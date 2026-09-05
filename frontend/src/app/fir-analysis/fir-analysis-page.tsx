@@ -10,10 +10,47 @@ import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
+import DownloadMenu from '@/components/common/DownloadMenu';
 import api from '@/lib/api';
+
+// Flattens the structured FIR analysis object into one Markdown document —
+// the "Download Full Report" control needs a single text blob (same shape
+// DownloadMenu/pdfExport/docxExport already expect everywhere else), but
+// this page renders the analysis as many separate small cards, not one
+// blob. Built here rather than duplicated per-field so PDF and Word exports
+// stay in sync automatically whenever a new field is added to a card above.
+function firAnalysisToMarkdown(analysis: any): string {
+  const parts: string[] = [];
+  if (analysis.fir_number || analysis.police_station) {
+    parts.push(`FIR ANALYSIS REPORT\n\nFIR No: ${analysis.fir_number || '[not given]'}\nPolice Station: ${analysis.police_station || '[not given]'}`);
+  }
+  if (analysis.accused_names?.length) {
+    parts.push(`ACCUSED\n${analysis.accused_names.map((n: string) => `- ${n}`).join('\n')}`);
+  }
+  if (analysis.sections_applied?.length) {
+    parts.push(`SECTIONS APPLIED\n${analysis.sections_applied.map((s: string) => `- ${s}`).join('\n')}`);
+  }
+  parts.push(`BAIL ASSESSMENT: ${analysis.bail_possibility || '[not assessed]'}\n\n${analysis.bail_reasoning || ''}`);
+  if (analysis.strong_points?.length) {
+    parts.push(`STRONG POINTS\n${analysis.strong_points.map((s: string) => `- ${s}`).join('\n')}`);
+  }
+  if (analysis.weak_points?.length) {
+    parts.push(`WEAK POINTS\n${analysis.weak_points.map((s: string) => `- ${s}`).join('\n')}`);
+  }
+  if (analysis.defence_suggestions?.length) {
+    parts.push(`DEFENCE SUGGESTIONS\n${analysis.defence_suggestions.map((s: string) => `- ${s}`).join('\n')}`);
+  }
+  if (analysis.legal_references?.length) {
+    parts.push(`LEGAL REFERENCES\n${analysis.legal_references.map((s: string) => `- ${s}`).join('\n')}`);
+  }
+  if (analysis.confidence_assessment) {
+    parts.push(`CONFIDENCE: ${analysis.confidence_assessment.overall || '[not given]'}`);
+  }
+  return parts.join('\n\n');
+}
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
-  ShieldAlert, ListChecks, Copy, FileSignature, FileDown, Brain
+  ShieldAlert, ListChecks, Copy, FileSignature, Brain
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -27,7 +64,6 @@ function FIRAnalysisContent() {
   const [analysis, setAnalysis] = useState<any>(null);
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [bailDraft, setBailDraft] = useState<string | null>(null);
-  const [isDownloadingWord, setIsDownloadingWord] = useState(false);
   const [isGeneratingBail, setIsGeneratingBail] = useState<string | null>(null);
   const [includeLiveSearch, setIncludeLiveSearch] = useState(false);
   const [liveSearchStatus, setLiveSearchStatus] = useState<string | null>(null);
@@ -212,6 +248,13 @@ function FIRAnalysisContent() {
 
             {analysis && !isAnalyzing && (
               <>
+                <div className="flex justify-end">
+                  <DownloadMenu
+                    content={firAnalysisToMarkdown(analysis)}
+                    filename={`FIR_Analysis_${analysis.fir_number || analysis.id || 'report'}`}
+                  />
+                </div>
+
                 {liveSearchStatus && liveSearchStatus !== 'disabled' && (
                   <div className={`text-xs px-3 py-2 rounded-lg border flex items-center gap-2 ${
                     liveSearchStatus === 'success'
@@ -447,28 +490,11 @@ function FIRAnalysisContent() {
                 }}>
                   <Copy className="w-4 h-4" /> Copy
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  isLoading={isDownloadingWord}
-                  onClick={async () => {
-                    setIsDownloadingWord(true);
-                    try {
-                      const { downloadDraftAsWord } = await import('@/lib/docxExport');
-                      await downloadDraftAsWord(
-                        bailDraft,
-                        `Bail_Application_${analysis?.fir_number || 'draft'}`
-                      );
-                      toast.success('Word document downloaded');
-                    } catch (err) {
-                      toast.error('Could not generate Word document.');
-                    } finally {
-                      setIsDownloadingWord(false);
-                    }
-                  }}
-                >
-                  <FileDown className="w-4 h-4" /> Download Word
-                </Button>
+                <DownloadMenu
+                  content={bailDraft}
+                  filename={`Bail_Application_${analysis?.fir_number || 'draft'}`}
+                />
+                {/* PDF + Word in one control instead of the old Word-only button. */}
               </div>
             </CardHeader>
             <CardContent>
