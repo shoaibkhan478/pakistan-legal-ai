@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import { Textarea, Input } from '@/components/ui';
 import Disclaimer from '@/components/legal/Disclaimer';
 import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
+import DownloadMenu from '@/components/common/DownloadMenu';
 import api from '@/lib/api';
 import { PenTool, Loader2, Download, FileSignature, Languages, Brain, Sparkles, ListChecks, HelpCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -316,9 +317,15 @@ export default function DraftingPage() {
                         <Brain className="w-3 h-3" /> Senior Advocate Mode
                       </span>
                     </h3>
-                    <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(smartDraft); toast.success('Copied!'); }}>
-                      <Download className="w-4 h-4" /> Copy
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(smartDraft); toast.success('Copied!'); }}>
+                        <Download className="w-4 h-4" /> Copy
+                      </Button>
+                      <DownloadMenu
+                        content={smartDraft}
+                        filename={`${draftTypeLabels[draftType] || 'Draft'}_${Date.now()}`}
+                      />
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className={cn(
@@ -463,9 +470,15 @@ export default function DraftingPage() {
                       </span>
                     )}
                   </h3>
-                  <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(draft); toast.success('Copied!'); }}>
-                    <Download className="w-4 h-4" /> Copy
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(draft); toast.success('Copied!'); }}>
+                      <Download className="w-4 h-4" /> Copy
+                    </Button>
+                    <DownloadMenu
+                      content={draft}
+                      filename={`${draftTypeLabels[draftType] || 'Draft'}_${Date.now()}`}
+                    />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className={cn(
