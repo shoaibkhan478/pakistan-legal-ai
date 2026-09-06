@@ -7,7 +7,28 @@ import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import SeniorAdvocateToggle from '@/components/legal/SeniorAdvocateToggle';
 import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
+import DownloadMenu from '@/components/common/DownloadMenu';
 import api from '@/lib/api';
+
+// Flattens a Senior Advocate Mode deep-analysis result into one Markdown
+// blob so it can go through the same DownloadMenu as everywhere else,
+// instead of only being viewable inline in the chat bubble.
+function deepAnalysisToMarkdown(data: DeepAnalysisData): string {
+  const parts: string[] = [];
+  data.issue_chains?.forEach((ic, i) => {
+    parts.push(`ISSUE ${i + 1}: ${ic.issue}\nArea of Law: ${ic.area_of_law}\n\nKey Points:\n${(ic.key_points || []).map((k) => `- ${k}`).join('\n')}\n\nSupporting Arguments:\n${(ic.supporting_arguments || []).map((k) => `- ${k}`).join('\n')}\n\nOpposing Arguments:\n${(ic.opposing_arguments || []).map((k) => `- ${k}`).join('\n')}\n\nRebuttal:\n${(ic.rebuttal_points || []).map((k) => `- ${k}`).join('\n')}`);
+  });
+  if (data.synthesis) {
+    parts.push(`CASE THEORY\n${data.synthesis.case_theory || ''}`);
+    parts.push(`OVERALL ASSESSMENT\n${data.synthesis.overall_assessment || ''}`);
+    parts.push(`STRATEGY RECOMMENDATION\n${data.synthesis.strategy_recommendation || ''}`);
+    if (data.synthesis.risk_factors?.length) parts.push(`RISK FACTORS\n${data.synthesis.risk_factors.map((r) => `- ${r}`).join('\n')}`);
+  }
+  if (data.legal_references_verified?.length) {
+    parts.push(`LEGAL REFERENCES\n${data.legal_references_verified.map((c) => `- ${c.citation} [${c.status}]`).join('\n')}`);
+  }
+  return parts.join('\n\n');
+}
 import { Send, Bot, User, Loader2, Languages, Plus, History, Search, X, Paperclip, Gavel } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
@@ -342,9 +363,16 @@ export default function ChatPage() {
                 </div>
                 {m.deepAnalysis ? (
                   <div className="max-w-[92%] w-full rounded-2xl rounded-tl-sm border border-amber-200 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/10 p-4">
-                    <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400 mb-3">
-                      <Gavel className="w-3.5 h-3.5" /> Senior Advocate Mode — full case analysis
-                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
+                        <Gavel className="w-3.5 h-3.5" /> Senior Advocate Mode — full case analysis
+                      </p>
+                      <DownloadMenu
+                        compact
+                        content={deepAnalysisToMarkdown(m.deepAnalysis)}
+                        filename={`Case_Analysis_${Date.now()}`}
+                      />
+                    </div>
                     <DeepAnalysisResult data={m.deepAnalysis} />
                   </div>
                 ) : (
@@ -358,6 +386,11 @@ export default function ChatPage() {
                     <div className="prose-legal prose-sm max-w-none">
                       <ReactMarkdown>{m.message}</ReactMarkdown>
                     </div>
+                    {m.role !== 'user' && (
+                      <div className="flex justify-end mt-2">
+                        <DownloadMenu compact content={m.message} filename={`Chat_Answer_${Date.now()}`} />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
