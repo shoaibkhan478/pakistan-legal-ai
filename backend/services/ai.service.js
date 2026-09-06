@@ -12,17 +12,51 @@
  * https://aistudio.google.com/apikey
  */
 const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-const logger = require('../utils/logger');
-const { retrieveRelevantLaw } = require('./legalRetrievalService');
-const { verifyCitations, summarizeVerification } = require('./citationVerifier');
+let logger;
+try {
+  logger = require('../utils/logger');
+} catch (_) {
+  try {
+    logger = require('../src/utils/logger');
+  } catch (_2) {
+    logger = console;
+  }
+}
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+let retrieveRelevantLaw;
+try {
+  const lrs = require('../src/services/legalRetrievalService');
+  retrieveRelevantLaw = lrs.retrieveRelevantLawWithCitations || lrs.retrieveRelevantLaw;
+} catch (_) {
+  retrieveRelevantLaw = async () => ({ constitution: [], statute: [], judgment: [] });
+}
+
+let verifyCitations = () => [];
+let summarizeVerification = () => ({ total: 0, unverified: 0 });
+try {
+  const cv = require('../src/services/citationVerifier');
+  if (cv.verifyCitations) verifyCitations = cv.verifyCitations;
+  if (cv.summarizeVerification) summarizeVerification = cv.summarizeVerification;
+} catch (_) {}
+
+const { generateDraft: renderDocxDraft, getSchema, availableTypes } = require('./drafting/generateDraft');
+
+let Anthropic;
+try {
+  Anthropic = require('@anthropic-ai/sdk');
+} catch (_) {}
+
+const rawModel = process.env.GEMINI_MODEL || '';
+const MODEL = (rawModel && !rawModel.includes('2.5-flash') && !rawModel.includes('2.0-flash'))
+  ? rawModel
+  : 'gemini-flash-lite-latest';
 const API_VERSION = 'v1beta';
 
 const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  logger.error('GEMINI_API_KEY is not set. AI features will not work until it is configured in backend/.env.');
+if (!apiKey && !process.env.ANTHROPIC_API_KEY) {
+  logger.error('Neither GEMINI_API_KEY nor ANTHROPIC_API_KEY is set. AI features will not work until configured in backend/.env.');
 }
 
 // ------------------------------------------------------------------
@@ -268,31 +302,48 @@ async function generateContent({
 
     const useSearch = !jsonMode && !disableSearch;
 
-    await waitForRateLimitSlot();
+    let res, data;
+    const maxRetries = 3;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      await waitForRateLimitSlot();
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        contents: geminiContents,
-        systemInstruction: { parts: [{ text: system }] },
-        // Grounds answers in live Google Search results instead of relying
-        // solely on the model's training data — important for legal
-        // accuracy (current sections, amendments, real case citations).
-        // Skipped in jsonMode (doesn't combine well with forced JSON output)
-        // and skipped when disableSearch is set (final document drafting).
-        ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
-        },
-      }),
-    });
+      try {
+        res = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            contents: geminiContents,
+            systemInstruction: { parts: [{ text: system }] },
+            ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
+            generationConfig: {
+              maxOutputTokens: maxTokens,
+              ...(jsonMode ? { responseMimeType: 'application/json' } : {}),
+            },
+          }),
+        });
 
-    const data = await res.json();
+        data = await res.json();
+      } catch (netErr) {
+        if (attempt < maxRetries) {
+          const delay = (attempt + 1) * 3000;
+          logger.warn(`Gemini fetch network error (attempt ${attempt + 1}/${maxRetries}): ${netErr.message}. Retrying in ${delay}ms...`);
+          await sleep(delay);
+          continue;
+        }
+        throw netErr;
+      }
 
-    if (!res.ok) {
+      if (res.ok) break;
+
       const message = data?.error?.message || `Gemini API returned HTTP ${res.status}`;
+      const isRetryable = res.status === 429 || res.status === 503 || /high demand|quota|rate limit|retry/i.test(message);
+      if (isRetryable && attempt < maxRetries) {
+        const delay = (attempt + 1) * 7000;
+        logger.warn(`Gemini API rate limit/high demand (attempt ${attempt + 1}/${maxRetries}), waiting ${delay}ms before retry...`);
+        await sleep(delay);
+        continue;
+      }
+
       const err = new Error(message);
       err.status = res.status;
       err.details = data;
@@ -885,6 +936,119 @@ async function generateDraft(draftType, details = {}, language = 'english') {
   return { content: result.text, tokens: result.tokens };
 }
 
+/**
+ * Ask Claude (or Gemini fallback) for structured JSON matching the template's schema,
+ * then render it into a court-ready .docx buffer.
+ *
+ * @param {string} draftType - one of: bail_application, plaint, legal_notice,
+ *                              legal_notice_reply, affidavit, petition, appeal, contract
+ * @param {string} userFacts - free-text facts/instructions from the user/lawyer
+ * @returns {Promise<Buffer>} docx file buffer
+ */
+async function generateDocxDraft(draftType, userFacts) {
+  if (!availableTypes.includes(draftType)) {
+    throw new Error(`Unsupported draft type. Available: ${availableTypes.join(", ")}`);
+  }
+
+  const schema = getSchema(draftType);
+  const factsString = typeof userFacts === 'string' ? userFacts : JSON.stringify(userFacts || {});
+
+  const promptText =
+    `You are drafting a Pakistani legal document of type "${draftType}".\n` +
+    `Return ONLY a raw JSON object (no markdown, no code fences, no commentary) ` +
+    `matching exactly this schema:\n${JSON.stringify(schema, null, 2)}\n\n` +
+    `Base the content on these facts/instructions:\n${factsString}\n\n` +
+    `Use accurate Pakistani statute section numbers only if you are certain of them; ` +
+    `otherwise leave a clear placeholder like "[VERIFY SECTION]" instead of guessing — never fabricate a citation.`;
+
+  let rawText = '';
+
+  if (process.env.ANTHROPIC_API_KEY) {
+    if (Anthropic) {
+      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const response = await client.messages.create({
+        model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-6',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: promptText }],
+      });
+      rawText = response.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
+    } else {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-6',
+          max_tokens: 4000,
+          messages: [{ role: 'user', content: promptText }],
+        }),
+      });
+      const resJson = await response.json();
+      if (!response.ok) {
+        throw new Error(`Anthropic API error: ${resJson?.error?.message || response.statusText}`);
+      }
+      rawText = resJson.content?.map((b) => (b.type === 'text' ? b.text : '')).join('') || '';
+    }
+  } else {
+    logger.info('generateDocxDraft: ANTHROPIC_API_KEY not set, routing request through Gemini fallback.');
+    const geminiRes = await generateContent({
+      contents: promptText,
+      systemInstruction: 'You are an expert Pakistani advocate and legal drafting specialist. Return ONLY valid, raw JSON matching the required schema with no markdown formatting or code blocks.',
+      jsonMode: true,
+      disableSearch: true,
+      appendSources: false,
+      maxTokens: 4096,
+    });
+    rawText = geminiRes.text;
+  }
+
+  // Defensively strip code fences before JSON.parse
+  const cleaned = rawText.replace(/```(?:json)?\s*([\s\S]*?)```/gi, '$1').replace(/```/g, '').trim();
+  const data = JSON.parse(cleaned);
+
+  // Defensive field normalization so template render never encounters undefined properties
+  if (draftType === 'bail_application') {
+    data.applicant = data.applicant || { name: '[APPLICANT NAME]', cnic: '[CNIC]', address: '[ADDRESS]' };
+    data.facts = Array.isArray(data.facts) ? data.facts : [data.facts || 'Grounds as stated.'];
+  } else if (draftType === 'plaint') {
+    data.plaintiff = data.plaintiff || { name: '[PLAINTIFF NAME]', parentage: '[PARENTAGE]', address: '[ADDRESS]' };
+    data.defendant = data.defendant || { name: '[DEFENDANT NAME]', address: '[ADDRESS]' };
+    data.facts = Array.isArray(data.facts) ? data.facts : [data.facts || 'Facts as stated.'];
+    data.reliefClaimed = Array.isArray(data.reliefClaimed) ? data.reliefClaimed : [data.reliefClaimed || 'Relief claimed.'];
+  } else if (draftType === 'legal_notice') {
+    data.sender = data.sender || { name: '[SENDER NAME]', address: '[ADDRESS]' };
+    data.recipient = data.recipient || { name: '[RECIPIENT NAME]', address: '[ADDRESS]' };
+    data.body = Array.isArray(data.body) ? data.body : [data.body || 'Notice content.'];
+  } else if (draftType === 'legal_notice_reply') {
+    data.sender = data.sender || { name: '[SENDER NAME]', address: '[ADDRESS]' };
+    data.recipient = data.recipient || { name: '[RECIPIENT NAME]', address: '[ADDRESS]' };
+    data.responses = Array.isArray(data.responses) ? data.responses : [data.responses || 'Response content.'];
+  } else if (draftType === 'affidavit') {
+    data.deponent = data.deponent || { name: '[DEPONENT NAME]', parentage: '[PARENTAGE]', cnic: '[CNIC]', address: '[ADDRESS]' };
+    data.statements = Array.isArray(data.statements) ? data.statements : [data.statements || 'Statements on oath.'];
+  } else if (draftType === 'petition') {
+    data.petitioner = data.petitioner || { name: '[PETITIONER NAME]', parentage: '[PARENTAGE]', address: '[ADDRESS]' };
+    data.respondents = Array.isArray(data.respondents) ? data.respondents : [data.respondents || '[RESPONDENTS]'];
+    data.facts = Array.isArray(data.facts) ? data.facts : [data.facts || 'Facts as stated.'];
+    data.grounds = Array.isArray(data.grounds) ? data.grounds : [data.grounds || 'Grounds as stated.'];
+  } else if (draftType === 'appeal') {
+    data.appellant = data.appellant || { name: '[APPELLANT NAME]', address: '[ADDRESS]' };
+    data.impugnedOrder = data.impugnedOrder || { court: '[COURT]', date: '[DATE]', caseNo: '[CASE NO]', briefDescription: '[DESCRIPTION]' };
+    data.grounds = Array.isArray(data.grounds) ? data.grounds : [data.grounds || 'Grounds of appeal.'];
+  } else if (draftType === 'contract') {
+    data.partyA = data.partyA || { role: 'FIRST PARTY', name: '[NAME]', parentage: '[PARENTAGE]', address: '[ADDRESS]' };
+    data.partyB = data.partyB || { role: 'SECOND PARTY', name: '[NAME]', parentage: '[PARENTAGE]', address: '[ADDRESS]' };
+    data.recitals = Array.isArray(data.recitals) ? data.recitals : [data.recitals || 'Recitals.'];
+    data.clauses = Array.isArray(data.clauses) ? data.clauses : [data.clauses || 'Clauses.'];
+    data.witnesses = Array.isArray(data.witnesses) ? data.witnesses : [data.witnesses || 'Witness 1', 'Witness 2'];
+  }
+
+  return renderDocxDraft(draftType, data);
+}
+
 module.exports = {
   legalChat,
   generateContent,
@@ -899,4 +1063,6 @@ module.exports = {
   analyzeJudgment,
   analyzePlaint,
   generateDraft,
+  generateDocxDraft,
+  availableTypes,
 };

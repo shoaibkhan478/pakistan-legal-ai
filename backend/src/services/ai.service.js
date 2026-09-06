@@ -1217,6 +1217,8 @@ async function generateDraft(draftType, details = {}, language = 'english', deep
   return { content: result.text, tokens: result.tokens };
 }
 
+const { generateDocxDraft, availableTypes } = require('../../services/ai.service');
+
 module.exports = {
   legalChat,
   generateContent,
@@ -1233,4 +1235,6 @@ module.exports = {
   classifyDraftType,
   DRAFT_TYPE_DESCRIPTIONS,
   generateDraft,
+  generateDocxDraft,
+  availableTypes,
 };
