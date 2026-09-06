@@ -9,6 +9,23 @@ import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import api from '@/lib/api';
+import DownloadMenu from '@/components/common/DownloadMenu';
+
+// Flattens the structured case analysis into one Markdown blob for the
+// "Download Full Analysis" control — this page renders many small cards,
+// not one blob.
+function caseAnalysisToMarkdown(analysis: any): string {
+  const parts: string[] = [];
+  parts.push(`CASE ANALYSIS\n\nCase Type: ${analysis.case_type || '[not given]'}\nCourt: ${analysis.court_name || '[not given]'}`);
+  if (analysis.summary) parts.push(`SUMMARY\n${analysis.summary}`);
+  if (analysis.claims?.length) parts.push(`CLAIMS\n${analysis.claims.map((c: string) => `- ${c}`).join('\n')}`);
+  if (analysis.relief_sought?.length) parts.push(`RELIEF SOUGHT\n${analysis.relief_sought.map((r: string) => `- ${r}`).join('\n')}`);
+  if (analysis.evidence_required?.length) parts.push(`EVIDENCE REQUIRED\n${analysis.evidence_required.map((e: string) => `- ${e}`).join('\n')}`);
+  if (analysis.preliminary_objections?.length) parts.push(`PRELIMINARY OBJECTIONS\n${analysis.preliminary_objections.map((o: string, i: number) => `${i + 1}. ${o}`).join('\n')}`);
+  if (analysis.recommended_response) parts.push(`RECOMMENDED RESPONSE\n${analysis.recommended_response}`);
+  if (analysis.legal_references?.length) parts.push(`LEGAL REFERENCES\n${analysis.legal_references.map((r: string) => `- ${r}`).join('\n')}`);
+  return parts.join('\n\n');
+}
 import { FileSearch, Loader2, Scale } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -86,6 +103,13 @@ function CaseAnalysisContent() {
 
             {analysis && !isAnalyzing && (
               <>
+                <div className="flex justify-end">
+                  <DownloadMenu
+                    content={caseAnalysisToMarkdown(analysis)}
+                    filename={`Case_Analysis_${analysis.case_type || 'report'}`}
+                  />
+                </div>
+
                 <Card>
                   <CardHeader><h3 className="font-semibold text-navy-900 dark:text-white">Summary</h3></CardHeader>
                   <CardContent><p className="text-sm text-slate-600 dark:text-slate-400">{analysis.summary}</p></CardContent>
