@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import api from '@/lib/api';
+import DownloadMenu from '@/components/common/DownloadMenu';
 import { BookOpen, Search, Loader2, Clock } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -77,7 +78,10 @@ export default function ResearchPage() {
 
             {result && !isSearching && (
               <Card>
-                <CardHeader><h3 className="font-semibold text-navy-900 dark:text-white">Research Findings</h3></CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <h3 className="font-semibold text-navy-900 dark:text-white">Research Findings</h3>
+                  <DownloadMenu content={result} filename={`Legal_Research_${Date.now()}`} />
+                </CardHeader>
                 <CardContent>
                   <div className="prose-legal prose-sm max-w-none text-slate-700 dark:text-slate-300">
                     <ReactMarkdown>{result}</ReactMarkdown>
