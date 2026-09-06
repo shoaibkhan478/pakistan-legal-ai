@@ -9,7 +9,22 @@ import Disclaimer from '@/components/legal/Disclaimer';
 import InlineDocumentUpload from '@/components/legal/InlineDocumentUpload';
 import LiveSearchToggle from '@/components/legal/LiveSearchToggle';
 import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
+import DownloadMenu from '@/components/common/DownloadMenu';
 import api from '@/lib/api';
+
+// Flattens the structured notice analysis into one Markdown blob for the
+// "Download Full Analysis" control — same reasoning as fir-analysis's
+// equivalent helper: this page renders many small cards, not one blob.
+function noticeAnalysisToMarkdown(analysis: any): string {
+  const parts: string[] = [];
+  parts.push(`LEGAL NOTICE ANALYSIS\n\nUrgency: ${analysis.urgency_level || '[not given]'}\nNotice Type: ${analysis.notice_type || '[not given]'}\nDemand Amount: ${analysis.demand_amount ? `PKR ${analysis.demand_amount}` : '[not given]'}`);
+  if (analysis.summary) parts.push(`SUMMARY\n${analysis.summary}`);
+  if (analysis.demands?.length) parts.push(`DEMANDS\n${analysis.demands.map((d: string) => `- ${d}`).join('\n')}`);
+  if (analysis.legal_issues?.length) parts.push(`LEGAL ISSUES\n${analysis.legal_issues.map((l: string) => `- ${l}`).join('\n')}`);
+  if (analysis.defence_strategy) parts.push(`DEFENCE STRATEGY\n${analysis.defence_strategy}`);
+  if (analysis.legal_references?.length) parts.push(`LEGAL REFERENCES\n${analysis.legal_references.map((r: string) => `- ${r}`).join('\n')}`);
+  return parts.join('\n\n');
+}
 import { FileText, Loader2, Scale, FileSignature, Download, Brain } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -171,6 +186,13 @@ function NoticeAnalysisContent() {
 
             {analysis && !isAnalyzing && (
               <>
+                <div className="flex justify-end">
+                  <DownloadMenu
+                    content={noticeAnalysisToMarkdown(analysis)}
+                    filename={`Notice_Analysis_${analysis.notice_type || 'report'}`}
+                  />
+                </div>
+
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between">
                     <h3 className="font-semibold text-navy-900 dark:text-white">Summary</h3>
@@ -244,9 +266,12 @@ function NoticeAnalysisContent() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2"><FileSignature className="w-4 h-4" /> Generated Reply Notice</h3>
-              <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(reply); toast.success('Copied!'); }}>
-                <Download className="w-4 h-4" /> Copy
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(reply); toast.success('Copied!'); }}>
+                  <Download className="w-4 h-4" /> Copy
+                </Button>
+                <DownloadMenu content={reply} filename={`Reply_Notice_${Date.now()}`} />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="prose-legal prose-sm max-w-none text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-navy-950 rounded-lg p-5">
