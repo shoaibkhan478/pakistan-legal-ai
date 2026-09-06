@@ -23,7 +23,8 @@
     "js-cookie": "^3.0.5",
     "recharts": "^2.12.7",
     "docx": "^9.0.2",
-    "file-saver": "^2.0.5"
+    "file-saver": "^2.0.5",
+    "pdfmake": "^0.2.12"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
