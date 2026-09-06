@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, Badge } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Disclaimer from '@/components/legal/Disclaimer';
 import DeepAnalysisResult, { DeepAnalysisData } from '@/components/legal/DeepAnalysisResult';
+import DownloadMenu from '@/components/common/DownloadMenu';
 import api from '@/lib/api';
 import ReactMarkdown from 'react-markdown';
 import {
@@ -13,6 +14,26 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+
+// Flattens the Senior Advocate Mode deep-analysis result into one Markdown
+// blob for the "Download" control — same reasoning as the identical helper
+// on the chat page: this is rendered as many small cards, not one blob.
+function deepAnalysisToMarkdown(data: DeepAnalysisData): string {
+  const parts: string[] = [];
+  data.issue_chains?.forEach((ic, i) => {
+    parts.push(`ISSUE ${i + 1}: ${ic.issue}\nArea of Law: ${ic.area_of_law}\n\nKey Points:\n${(ic.key_points || []).map((k) => `- ${k}`).join('\n')}\n\nSupporting Arguments:\n${(ic.supporting_arguments || []).map((k) => `- ${k}`).join('\n')}\n\nOpposing Arguments:\n${(ic.opposing_arguments || []).map((k) => `- ${k}`).join('\n')}\n\nRebuttal:\n${(ic.rebuttal_points || []).map((k) => `- ${k}`).join('\n')}`);
+  });
+  if (data.synthesis) {
+    parts.push(`CASE THEORY\n${data.synthesis.case_theory || ''}`);
+    parts.push(`OVERALL ASSESSMENT\n${data.synthesis.overall_assessment || ''}`);
+    parts.push(`STRATEGY RECOMMENDATION\n${data.synthesis.strategy_recommendation || ''}`);
+    if (data.synthesis.risk_factors?.length) parts.push(`RISK FACTORS\n${data.synthesis.risk_factors.map((r) => `- ${r}`).join('\n')}`);
+  }
+  if (data.legal_references_verified?.length) {
+    parts.push(`LEGAL REFERENCES\n${data.legal_references_verified.map((c) => `- ${c.citation} [${c.status}]`).join('\n')}`);
+  }
+  return parts.join('\n\n');
+}
 
 interface LimitationCheck {
   detected: boolean;
@@ -190,6 +211,12 @@ export default function IntakePage() {
               </Card>
             )}
 
+            <div className="flex justify-end">
+              <DownloadMenu
+                content={deepAnalysisToMarkdown(result.deepAnalysis)}
+                filename={`Case_Intake_Analysis_${Date.now()}`}
+              />
+            </div>
             <DeepAnalysisResult data={result.deepAnalysis} />
 
             {result.draft && (
@@ -198,7 +225,10 @@ export default function IntakePage() {
                   <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
                     <FileCheck className="w-4 h-4 text-green-600" /> Drafted: {result.draft.draftType}
                   </h3>
-                  <Badge variant="gold">auto-generated — review before filing</Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="gold">auto-generated — review before filing</Badge>
+                    <DownloadMenu content={result.draft.content} filename={`${result.draft.draftType}_${Date.now()}`} />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="prose-legal prose-sm max-w-none">
