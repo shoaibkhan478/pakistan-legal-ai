@@ -30,7 +30,9 @@
 // stays safe to import from server-rendered pages without pulling
 // browser-only code into the SSR bundle.
 async function loadPdfMake() {
+  // @ts-ignore
   const pdfMakeModule = await import('pdfmake/build/pdfmake');
+  // @ts-ignore
   const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
   const pdfMake = (pdfMakeModule as any).default || pdfMakeModule;
   const pdfFonts = (pdfFontsModule as any).default || pdfFontsModule;

@@ -9,13 +9,14 @@ import { useAuthStore } from '@/lib/authStore';
 import api from '@/lib/api';
 import {
   MessageSquare, FileWarning, FileText, Gavel, PenTool, Briefcase,
-  TrendingUp, Clock, ArrowRight, Sparkles
+  TrendingUp, Clock, ArrowRight, Sparkles, Languages
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts';
 
 const quickActions = [
   { href: '/intake', label: 'Case Intake (AI decides what you need)', icon: Sparkles, color: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400' },
   { href: '/chat', label: 'AI Legal Chat', icon: MessageSquare, color: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400' },
+  { href: '/translation', label: 'Certified Legal Translation', icon: Languages, color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400' },
   { href: '/fir-analysis', label: 'Analyze FIR', icon: FileWarning, color: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' },
   { href: '/notice-analysis', label: 'Notice Analysis', icon: FileText, color: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400' },
   { href: '/judgment-analysis', label: 'Judgment Analysis', icon: Gavel, color: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400' },

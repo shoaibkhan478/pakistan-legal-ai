@@ -116,6 +116,41 @@ export default function DraftingPage() {
     }
   };
 
+  const [isDownloadingDocx, setIsDownloadingDocx] = useState(false);
+
+  const handleDownloadCourtReadyDocx = async (targetType?: string, factsText?: string) => {
+    setIsDownloadingDocx(true);
+    const chosenType = targetType || draftType || 'bail_application';
+    const chosenFacts = factsText || details || problemText || 'Case details for drafting';
+    try {
+      const response = await api.post(
+        '/drafts/generate-docx',
+        {
+          draftType: chosenType,
+          userFacts: chosenFacts,
+        },
+        { responseType: 'blob' }
+      );
+
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${chosenType}_court_ready_${Date.now()}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast.success('Official court-ready Word document downloaded!');
+    } catch (err: any) {
+      toast.error('Could not generate official court-ready document.');
+    } finally {
+      setIsDownloadingDocx(false);
+    }
+  };
+
   const handleSmartGenerate = async () => {
     if (!problemText.trim()) return toast.error('Please describe your problem first.');
     setIsSmartGenerating(true);
@@ -323,8 +358,17 @@ export default function DraftingPage() {
                       </Button>
                       <DownloadMenu
                         content={smartDraft}
-                        filename={`${draftTypeLabels[draftType] || 'Draft'}_${Date.now()}`}
+                        filename={`${draftTypeLabels[classification?.draft_type || draftType] || 'Draft'}_${Date.now()}`}
                       />
+                      <Button
+                        size="sm"
+                        isLoading={isDownloadingDocx}
+                        onClick={() => handleDownloadCourtReadyDocx(classification?.draft_type || draftType, smartDraft || problemText)}
+                        className="gap-1.5 bg-primary-700 hover:bg-primary-800 text-white"
+                        title="Download official Pakistani court-formatted .docx with cause titles, boxed prayers, and verification clauses"
+                      >
+                        <FileSignature className="w-4 h-4" /> Court-Ready .docx
+                      </Button>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -478,6 +522,15 @@ export default function DraftingPage() {
                       content={draft}
                       filename={`${draftTypeLabels[draftType] || 'Draft'}_${Date.now()}`}
                     />
+                    <Button
+                      size="sm"
+                      isLoading={isDownloadingDocx}
+                      onClick={() => handleDownloadCourtReadyDocx(draftType, draft || details)}
+                      className="gap-1.5 bg-primary-700 hover:bg-primary-800 text-white"
+                      title="Download official Pakistani court-formatted .docx with cause titles, boxed prayers, and verification clauses"
+                    >
+                      <FileSignature className="w-4 h-4" /> Court-Ready .docx
+                    </Button>
                   </div>
                 </CardHeader>
                 <CardContent>

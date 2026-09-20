@@ -48,9 +48,11 @@ function firAnalysisToMarkdown(analysis: any): string {
   }
   return parts.join('\n\n');
 }
+
+import Link from 'next/link';
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
-  ShieldAlert, ListChecks, Copy, FileSignature, Brain
+  ShieldAlert, ListChecks, Copy, FileSignature, Brain, Languages
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -214,6 +216,12 @@ function FIRAnalysisContent() {
               >
                 <Brain className="w-4 h-4" /> Deep Analysis — Senior Advocate Mode
               </Button>
+              <Link
+                href="/translation"
+                className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-navy-700 bg-white dark:bg-navy-900 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-navy-800 transition-colors shadow-sm"
+              >
+                <Languages className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Translate FIR for Court Submission
+              </Link>
               <p className="text-xs text-slate-400 mt-1.5 text-center">
                 Slower (~20-40s) but reasons through each issue separately, arguing both sides before
                 concluding — closer to how an advocate actually works a case.

@@ -7,7 +7,7 @@ import { useAuthStore } from '@/lib/authStore';
 import {
   LayoutDashboard, MessageSquare, Upload, FileSearch, FileWarning,
   FileText, Gavel, PenTool, BookOpen, Briefcase, GraduationCap,
-  User, Settings, ShieldCheck, Scale, X
+  User, Settings, ShieldCheck, Scale, X, Languages
 } from 'lucide-react';
 
 const navItems = [
@@ -19,6 +19,7 @@ const navItems = [
   { href: '/notice-analysis', label: 'Legal Notice Analysis', icon: FileText },
   { href: '/judgment-analysis', label: 'Judgment Analysis', icon: Gavel },
   { href: '/drafting', label: 'Drafting Assistant', icon: PenTool },
+  { href: '/translation', label: 'Legal Translation', icon: Languages },
   { href: '/research', label: 'Legal Research', icon: BookOpen },
   { href: '/cases', label: 'Case Management', icon: Briefcase },
   { href: '/student-mode', label: 'Law Student Mode', icon: GraduationCap },
