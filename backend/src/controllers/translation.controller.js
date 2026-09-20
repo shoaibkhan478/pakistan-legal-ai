@@ -8,7 +8,7 @@ const MAX_DOCUMENT_LENGTH = 50000;
  */
 async function handleTranslate(req, res, next) {
   try {
-    const { sourceText, sourceLang = 'ur', targetLang = 'en' } = req.body || {};
+    const { sourceText, sourceLang = 'ur', targetLang = 'en', seniorAdvocateMode = false } = req.body || {};
 
     if (!sourceText || typeof sourceText !== 'string' || !sourceText.trim()) {
       return res.status(400).json({
@@ -46,7 +46,9 @@ async function handleTranslate(req, res, next) {
       });
     }
 
-    const result = await translateLegalDocument(sourceText, sourceLang, targetLang);
+    const result = await translateLegalDocument(sourceText, sourceLang, targetLang, {
+      seniorAdvocateMode: Boolean(seniorAdvocateMode),
+    });
 
     return res.status(200).json({
       success: true,
