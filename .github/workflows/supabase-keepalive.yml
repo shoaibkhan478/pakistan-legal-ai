@@ -1,0 +1,48 @@
+name: Supabase Database Keep-Alive
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every 2 days to prevent Supabase 7-day auto-pause
+    - cron: '0 0 */2 * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  keepalive:
+    name: Ping Database & Reset Inactivity Timer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pg dependency
+        run: npm install pg dotenv
+
+      - name: Execute Keep-Alive Query
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://postgres.dfageuffqcwqaweqwwwf:Alhumdulillah786@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres' }}
+        run: |
+          node -e "
+            const { Client } = require('pg');
+            const client = new Client({
+              connectionString: process.env.DATABASE_URL,
+              ssl: { rejectUnauthorized: false },
+              connectionTimeoutMillis: 15000,
+            });
+            client.connect()
+              .then(() => client.query('SELECT NOW() as keepalive, current_database() as db;'))
+              .then((res) => {
+                console.log('✅ Supabase Keep-Alive Ping Successful!');
+                console.log('🕒 Server Time:', res.rows[0].keepalive);
+                console.log('🗄️ Database:', res.rows[0].db);
+                return client.end();
+              })
+              .catch((err) => {
+                console.error('❌ Ping error:', err.message);
+                process.exit(1);
+              });
+          "

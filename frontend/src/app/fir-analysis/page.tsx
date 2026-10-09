@@ -49,7 +49,7 @@ function firAnalysisToMarkdown(analysis: any): string {
 }
 import {
   FileWarning, Loader2, Scale, AlertTriangle, CheckCircle2,
-  ShieldAlert, ListChecks, Copy, FileSignature, Brain
+  ShieldAlert, ListChecks, Copy, FileSignature, Brain, Printer, Download
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -103,17 +103,54 @@ function FIRAnalysisContent() {
     }
   };
 
+  const [isDownloadingBailDocx, setIsDownloadingBailDocx] = useState(false);
+
   const handleGenerateBail = async (bailType: 'pre_arrest' | 'post_arrest') => {
-    if (!analysisId) return;
     setIsGeneratingBail(bailType);
     try {
-      const { data } = await api.post(`/analysis/fir/${analysisId}/bail`, { bailType });
+      const targetId = analysisId || 'direct';
+      const { data } = await api.post(`/analysis/fir/${targetId}/bail`, {
+        bailType,
+        rawAnalysis: analysis,
+        firText,
+      });
       setBailDraft(data.data.content);
-      toast.success('Bail application drafted!');
+      toast.success(`${bailType === 'pre_arrest' ? 'Pre-Arrest' : 'Post-Arrest'} Bail Application drafted!`);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Generation failed.');
+      toast.error(err.response?.data?.message || 'Bail generation failed.');
     } finally {
       setIsGeneratingBail(null);
+    }
+  };
+
+  const handleDownloadBailDocx = async () => {
+    if (!bailDraft) return;
+    setIsDownloadingBailDocx(true);
+    try {
+      const response = await api.post(
+        '/analysis/fir/bail-docx',
+        {
+          title: `BAIL APPLICATION - FIR ${analysis?.fir_number || ''}`,
+          content: bailDraft,
+        },
+        { responseType: 'blob' }
+      );
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Bail_Application_FIR_${analysis?.fir_number || Date.now()}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast.success('Court-ready Bail Petition Word document (.docx) downloaded!');
+    } catch (err: any) {
+      toast.error('Could not download Word document.');
+    } finally {
+      setIsDownloadingBailDocx(false);
     }
   };
 
@@ -460,17 +497,39 @@ function FIRAnalysisContent() {
 
         {/* Bail draft output */}
         {bailDraft && (
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <h3 className="font-semibold text-navy-900 dark:text-white flex items-center gap-2">
-                <FileSignature className="w-4 h-4" /> Generated Bail Application
-              </h3>
-              <div className="flex gap-2">
+          <Card className="border-amber-500/30 shadow-lg">
+            <CardHeader className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-navy-800 pb-4">
+              <div>
+                <h3 className="font-bold text-navy-900 dark:text-white flex items-center gap-2">
+                  <FileSignature className="w-5 h-5 text-amber-600" /> Court-Ready Bail Application
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Formatted per High Court / Sessions Court rules with 1.5&quot; margin and verification on oath
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadBailDocx}
+                  isLoading={isDownloadingBailDocx}
+                  className="bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 font-semibold"
+                >
+                  <Download className="w-4 h-4 mr-1.5" /> Court-Ready .docx
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.print()}
+                  className="text-slate-700 dark:text-slate-300"
+                >
+                  <Printer className="w-4 h-4 mr-1.5" /> Print / PDF
+                </Button>
                 <Button variant="outline" size="sm" onClick={() => {
                   navigator.clipboard.writeText(bailDraft);
-                  toast.success('Copied to clipboard');
+                  toast.success('Bail application copied to clipboard');
                 }}>
-                  <Copy className="w-4 h-4" /> Copy
+                  <Copy className="w-4 h-4 mr-1.5" /> Copy
                 </Button>
                 <DownloadMenu
                   content={bailDraft}
@@ -478,9 +537,14 @@ function FIRAnalysisContent() {
                 />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="prose-legal prose-sm max-w-none text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-navy-950 rounded-lg p-5 whitespace-pre-wrap">
-                <ReactMarkdown>{bailDraft}</ReactMarkdown>
+            <CardContent className="pt-6">
+              <div className="bg-[#FAF8F5] dark:bg-[#0c1427] border-2 border-slate-200 dark:border-navy-700 rounded-lg p-6 sm:p-10 shadow-inner font-serif text-slate-900 dark:text-slate-100 leading-relaxed text-sm md:text-base">
+                <div className="text-center font-bold text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-6 pb-2 border-b border-slate-200 dark:border-navy-800">
+                  COURT PETITION COPY — READY FOR VERIFICATION & SUBMISSION
+                </div>
+                <div className="whitespace-pre-wrap font-serif">
+                  <ReactMarkdown>{bailDraft}</ReactMarkdown>
+                </div>
               </div>
             </CardContent>
           </Card>

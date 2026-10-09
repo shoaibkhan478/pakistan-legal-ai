@@ -14,6 +14,18 @@ const startServer = async () => {
       logger.info(`Pakistan Legal AI API server is running on port ${PORT}`);
       console.log(`Server is running on port ${PORT}`);
     });
+
+    // Automatic Keep-Alive: Ping database every 6 hours to prevent Supabase 7-day auto-pause
+    const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+    setInterval(async () => {
+      try {
+        const { query } = require('./config/database');
+        await query('SELECT 1');
+        logger.info('Supabase database keep-alive heartbeat ping sent successfully.');
+      } catch (pingErr) {
+        logger.warn('Database keep-alive ping warning:', pingErr.message);
+      }
+    }, SIX_HOURS_MS);
   } catch (error) {
     logger.error('Failed to start server:', error);
     process.exit(1);

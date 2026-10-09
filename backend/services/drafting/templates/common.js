@@ -76,6 +76,20 @@ function numbered(num, text) {
   });
 }
 
+function lettered(letter, text) {
+  return new Paragraph({
+    alignment: JUSTIFY,
+    spacing: { after: 200, line: 360 },
+    indent: { left: 400, hanging: 400 },
+    tabStops: [{ type: TabStopType.LEFT, position: 400 }],
+    children: [
+      new TextRun({ text: `${letter}.\t`, bold: true, size: 24, font: FONT }),
+      new TextRun({ text, size: 24, font: FONT }),
+    ],
+  });
+}
+
+
 // "IN THE COURT OF..." + case number — used by anything FILED IN a court
 // (bail application, plaint, petition, appeal). NOT used by notices/affidavits
 // that stand alone (affidavit has its own oath heading; notice has no court).
@@ -143,6 +157,7 @@ function verificationBlock(text, deponentLabel = "DEPONENT / APPLICANT") {
 
 module.exports = {
   FONT, JUSTIFY, CENTER, RIGHT, pageSetup,
-  title, boxedHeading, sectionLabel, body, numbered,
+  title, boxedHeading, sectionLabel, body, numbered, lettered,
   courtHeadingBlock, causeTitleBlock, signatureBlock, verificationBlock,
 };
+

@@ -8,11 +8,11 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth.middleware');
+const { optionalAuth } = require('../middleware/auth.middleware');
 const { aiLimiter } = require('../middleware/rateLimiter');
 const { runLiveLegalSearch } = require('../services/legal-search.service');
 
-router.post('/', authenticate, aiLimiter, async (req, res) => {
+router.post('/', optionalAuth, aiLimiter, async (req, res) => {
   try {
     const { question } = req.body;
 

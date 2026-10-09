@@ -10,6 +10,7 @@
     "lint": "eslint src/",
     "db:migrate": "node src/utils/migrate.js",
     "db:seed": "node src/utils/seed.js",
+    "db:ping": "node scripts/pingSupabase.js",
     "ingest:docs": "node scripts/ingestLegalDocs.js",
     "scrape:paklii": "node scripts/scrapePaklii.js"
   },

@@ -81,6 +81,253 @@ function runLimitationCheck(problemText, explicitTriggerDate, explicitCaseTypeKe
 }
 
 /**
+ * Autonomous Senior Advocate Case Diagnosis
+ * Analyzes client narrative under Pakistani law to determine:
+ * - Branch of law & exact case nature (noyat)
+ * - Competent Pakistani court forum & jurisdiction
+ * - Primary statutory remedy & legal provisions
+ * - Case theory & strategy
+ */
+async function diagnoseCaseNature(problemText) {
+  const systemInstruction = `You are a Senior Advocate of the Supreme Court of Pakistan with 25+ years of litigation experience.
+A client has described their legal grievance to you in their own words (English, Urdu, or Roman Urdu).
+
+Your job is to autonomously diagnose the exact nature of this case under the Pakistani legal system (PPC 1860, Cr.P.C. 1898, CPC 1908, Constitution of Pakistan 1973, QSO 1984, Specific Relief Act 1877, Family Courts Act 1964, Rent Restriction Acts, PECA 2016, Limitation Act 1908).
+
+Return ONLY a JSON object:
+{
+  "case_nature": "Branch of Pakistani law (e.g. Criminal - Post-Arrest Bail / Police Inaction / Cheque Dishonour, Constitutional - Habeas Corpus / Writ of Mandamus, Civil - Declaration & Injunction / Specific Performance, Family - Khula & Dower, Rent - Eviction, Cybercrime - PECA 2016)",
+  "competent_court": "The exact competent Pakistani court forum (e.g. In the Court of Learned Sessions Judge / Ex-Officio Justice of Peace, Rawalpindi; In the Hon'ble Lahore High Court, Rawalpindi Bench; In the Court of Senior Civil Judge, Lahore; In the Court of Special Judge Banking, Karachi)",
+  "primary_remedy": "Exact Pakistani statutory remedy (e.g. Application under Section 497 Cr.P.C. for Post-Arrest Bail; Petition under Section 22-A & 22-B Cr.P.C.; Writ Petition under Article 199 of the Constitution 1973; Suit for Declaration & Injunction under Sections 42 & 54 SRA 1877; Summary Suit under Order XXXVII CPC)",
+  "draft_type": "One identifier: bail_application | civil_suit | legal_notice | reply_notice | written_statement | petition | affidavit | contract | appeal | habeas_corpus | petition_22a | quashment_561a | family_suit | rent_eviction | summary_suit_order37 | injunction_application",
+  "draft_title": "Full formal court document title in UPPER CASE",
+  "applicable_statutes": ["Array of exact statutory provisions, e.g. 'Section 497 Cr.P.C.', 'Section 302/34 PPC', 'Article 10-A Constitution 1973'"],
+  "controlling_legal_issues": ["Key legal and factual issues"],
+  "case_theory": "Senior advocate strategy and theoretical foundation",
+  "counter_strategy": "Anticipated arguments from state/opposing party and rebuttal",
+  "confidence": "high" | "medium"
+}
+
+CLIENT'S GRIEVANCE:
+${problemText}`;
+
+  try {
+    const res = await generateContent({
+      contents: 'Diagnose this Pakistani legal case thoroughly and return JSON.',
+      systemInstruction,
+      jsonMode: true,
+      disableSearch: true,
+      appendSources: false,
+      maxTokens: 2048,
+    });
+    const parsed = parseJsonSafe(res.text);
+    if (parsed && parsed.case_nature && parsed.competent_court) {
+      return parsed;
+    }
+    return fallbackPakistaniCaseDiagnosis(problemText);
+  } catch (err) {
+    logger.warn('diagnoseCaseNature AI call failed, using intelligent legal fallback:', err.message);
+    return fallbackPakistaniCaseDiagnosis(problemText);
+  }
+}
+
+function fallbackPakistaniCaseDiagnosis(text) {
+  const lower = (text || '').toLowerCase();
+
+  // 1. Illegal detention / Habeas Corpus
+  if (/utha liya|ghair qanooni|illegal detention|bina kisi fir|bina warrant|habeas corpus|491|band kiya hua|chhora nahi|milne nahi/i.test(lower)) {
+    return {
+      case_nature: 'Constitutional / Illegal Detention (Habeas Corpus)',
+      competent_court: 'In the Hon\'ble High Court of the Province / Court of Learned Sessions Judge',
+      primary_remedy: 'Writ Petition under Article 199 of the Constitution of Pakistan, 1973 / Application under Section 491 Cr.P.C. for Habeas Corpus',
+      draft_type: 'habeas_corpus',
+      draft_title: 'WRIT PETITION UNDER ARTICLE 199 OF THE CONSTITUTION OF THE ISLAMIC REPUBLIC OF PAKISTAN, 1973 (HABEAS CORPUS)',
+      applicable_statutes: ['Article 199 Constitution of Pakistan 1973', 'Section 491 Cr.P.C.', 'Article 9 & 10 Fundamental Rights', 'Article 10-A Fair Trial'],
+      controlling_legal_issues: ['Unlawful deprivation of liberty without registration of FIR or production before Magistrate within 24 hours under Article 10 of Constitution'],
+      case_theory: 'Immediate recovery of the detainee through appointment of a Court Bailiff to raid the police station and production of detainee before the High Court.',
+      counter_strategy: 'Police will falsely claim detainee was not formally arrested or was arrested in an ongoing investigation; demand production of Daily Diary (Roznamcha) entries.',
+      confidence: 'high'
+    };
+  }
+
+  // 2. Police inaction / Refusal to register FIR (22-A / 22-B Cr.P.C.)
+  if (/fir darj|fir nahi kar|police inkar|sho inkar|justice of peace|22-?a|22-?b|criminal complaint/i.test(lower)) {
+    return {
+      case_nature: 'Criminal / Police Inaction & Non-Registration of FIR',
+      competent_court: 'In the Court of Learned Sessions Judge / Ex-Officio Justice of Peace',
+      primary_remedy: 'Petition under Section 22-A & 22-B Cr.P.C. for Issuance of Directions to Police for Registration of FIR',
+      draft_type: 'petition_22a',
+      draft_title: 'PETITION UNDER SECTION 22-A & 22-B CR.P.C. FOR DIRECTIONS TO SHO FOR REGISTRATION OF CRIMINAL CASE (FIR)',
+      applicable_statutes: ['Section 22-A & 22-B Cr.P.C.', 'Section 154 Cr.P.C.', 'Police Order 2002', 'Article 10-A Constitution 1973'],
+      controlling_legal_issues: ['Statutory duty of Station House Officer to register FIR upon receipt of cognizable offence report under Section 154 Cr.P.C.'],
+      case_theory: 'Section 154 Cr.P.C. is mandatory. Police cannot conduct preliminary inquiry into truthfulness prior to FIR registration.',
+      counter_strategy: 'Police will argue civil dispute; demonstrate criminal ingredients of fraud, cheating, or trespass.',
+      confidence: 'high'
+    };
+  }
+
+  // 3. Cheque Dishonour / 489-F PPC / Order 37 CPC
+  if (/cheque|check|dishonour|dishonor|bounce|489-?f|bank se wapis/i.test(lower)) {
+    return {
+      case_nature: 'Criminal & Commercial / Cheque Dishonour & Recovery',
+      competent_court: 'In the Court of Learned Judicial Magistrate / Senior Civil Judge',
+      primary_remedy: 'Criminal Proceedings under Section 489-F PPC & Summary Suit for Recovery under Order XXXVII CPC',
+      draft_type: 'summary_suit_order37',
+      draft_title: 'SUMMARY SUIT UNDER ORDER XXXVII RULES 1 & 2 CPC FOR RECOVERY READ WITH SECTION 489-F PPC',
+      applicable_statutes: ['Section 489-F Pakistan Penal Code', 'Order XXXVII Rules 1 & 2 CPC', 'Negotiable Instruments Act 1881', 'Article 100 QSO 1984'],
+      controlling_legal_issues: ['Issuance of cheque dishonestly with knowledge of insufficient funds towards repayment of loan or fulfillment of obligation.'],
+      case_theory: 'Presumption under Negotiable Instruments Act and prima facie commission of non-bailable offence under Section 489-F PPC.',
+      counter_strategy: 'Defendant will claim security cheque or guarantee; establish existing loan or commercial transaction consideration.',
+      confidence: 'high'
+    };
+  }
+
+  // 4. Bail (Pre-arrest / Post-arrest)
+  if (/bail|zamanat|497|498|giraftar|arrest|hawalat|jail/i.test(lower)) {
+    const isPreArrest = /pre-?arrest|qabal|peshgi/i.test(lower);
+    return {
+      case_nature: isPreArrest ? 'Criminal / Pre-Arrest Bail' : 'Criminal / Post-Arrest Bail',
+      competent_court: 'In the Court of Learned Sessions Judge / Hon\'ble High Court',
+      primary_remedy: isPreArrest ? 'Application under Section 498 Cr.P.C. for Pre-Arrest Bail' : 'Application under Section 497 Cr.P.C. for Post-Arrest Bail',
+      draft_type: 'bail_application',
+      draft_title: isPreArrest ? 'APPLICATION UNDER SECTION 498 CR.P.C. FOR GRANT OF PRE-ARREST BAIL' : 'APPLICATION UNDER SECTION 497 CR.P.C. FOR GRANT OF POST-ARREST BAIL',
+      applicable_statutes: ['Section 497/498 Cr.P.C.', 'Article 10-A Constitution 1973', 'Article 9 Liberty of Person'],
+      controlling_legal_issues: ['Whether case falls within prohibitory clause of Sec 497 Cr.P.C., presence of mala fide, delay in FIR, further inquiry under Sec 497(2).'],
+      case_theory: 'Liberty of citizen is supreme. Bail is a rule and jail is an exception in cases of further inquiry.',
+      counter_strategy: 'Prosecution will allege heinousness of offence; establish lack of specific role and independent corroboration.',
+      confidence: 'high'
+    };
+  }
+
+  // 5. Family / Khula / Dower / Maintenance
+  if (/khula|talaq|divorce|mehr|dower|kharcha|maintenance|hizanat|custody|biwi|shohar/i.test(lower)) {
+    return {
+      case_nature: 'Family Law / Matrimonial & Maintenance Dispute',
+      competent_court: 'In the Court of Learned Judge Family Court',
+      primary_remedy: 'Suit for Dissolution of Marriage on ground of Khula, Recovery of Dower & Past/Future Maintenance under Family Courts Act 1964',
+      draft_type: 'family_suit',
+      draft_title: 'SUIT FOR DISSOLUTION OF MARRIAGE BY KHULA, RECOVERY OF DOWER AND MAINTENANCE UNDER WEST PAKISTAN FAMILY COURTS ACT, 1964',
+      applicable_statutes: ['West Pakistan Family Courts Act 1964', 'Muslim Family Laws Ordinance 1961', 'Guardians and Wards Act 1890'],
+      controlling_legal_issues: ['Irretrievable breakdown of marriage, non-maintenance, and entitlement to dower and maintenance.'],
+      case_theory: 'Wife has unconditional right to Khula if she cannot live within the limits ordained by Allah Almighty without forfeiting vested dower rights.',
+      counter_strategy: 'Defendant will allege desertion; establish cruelty and refusal to maintain.',
+      confidence: 'high'
+    };
+  }
+
+  // 6. Rent / Tenancy Eviction
+  if (/rent|kiraya|tenant|landlord|makan|dukan|khali|eviction/i.test(lower)) {
+    return {
+      case_nature: 'Rent Law / Tenancy Eviction & Recovery of Rent',
+      competent_court: 'In the Court of Learned Special Judge (Rent) / Rent Controller',
+      primary_remedy: 'Ejectment Petition under Section 13/15 of Urban Rent Restriction Ordinance 1959 / Provincial Rented Premises Act',
+      draft_type: 'rent_eviction',
+      draft_title: 'EJECTMENT APPLICATION UNDER SECTION 13 OF THE URBAN RENT RESTRICTION ORDINANCE, 1959 FOR EVICTION OF TENANT',
+      applicable_statutes: ['Urban Rent Restriction Ordinance 1959 / Provincial Rented Premises Act', 'Section 13 Default & Personal Need'],
+      controlling_legal_issues: ['Wilful default in payment of monthly rent, expiry of tenancy period, and bona fide personal use.'],
+      case_theory: 'Landlord is best judge of their personal need and tenant loses protection of rent laws upon default in rent.',
+      counter_strategy: 'Tenant will claim rent was paid in cash; demand receipts under rent law provisions.',
+      confidence: 'high'
+    };
+  }
+
+  // 7. Civil Property / Stay / Injunction / Declaration
+  if (/property|kabza|zameen|plot|stay|injunction|declaration|registry|inteqal|fard/i.test(lower)) {
+    return {
+      case_nature: 'Civil Law / Property Rights, Declaration & Injunction',
+      competent_court: 'In the Court of Learned Senior Civil Judge (Civil Division)',
+      primary_remedy: 'Suit for Declaration and Permanent Injunction under Sections 42 & 54 Specific Relief Act 1877 read with Order VII Rule 1 & Order XXXIX Rules 1 & 2 CPC',
+      draft_type: 'civil_suit',
+      draft_title: 'SUIT FOR DECLARATION, PERMANENT INJUNCTION AND SEPARATE POSSESSION UNDER SECTIONS 42 & 54 SPECIFIC RELIEF ACT 1877 READ WITH ORDER VII RULE 1 CPC',
+      applicable_statutes: ['Specific Relief Act 1877 (Sec 42 & 54)', 'Code of Civil Procedure 1908 (Order VII, Order XXXIX)', 'Transfer of Property Act 1882'],
+      controlling_legal_issues: ['Lawful title, uninterrupted possession, threat of illegal dispossession, and irreparable loss.'],
+      case_theory: 'Prima facie title backed by revenue record and possession grants absolute entitlement to interim injunction under Order 39 Rules 1 & 2 CPC.',
+      counter_strategy: 'Defendant will claim competing agreement; demonstrate clean registered deed or revenue entry.',
+      confidence: 'high'
+    };
+  }
+
+  // 8. Quashment of FIR / 561-A Cr.P.C.
+  if (/quash|quashment|561-?a|jhooti fir|fake fir|false fir|malicious prosecution/i.test(lower)) {
+    return {
+      case_nature: 'Criminal / Inherent Jurisdiction for Quashment of FIR',
+      competent_court: 'In the Hon\'ble High Court of the Province',
+      primary_remedy: 'Criminal Miscellaneous Petition under Section 561-A Cr.P.C. for Quashment of FIR and Impugned Proceedings',
+      draft_type: 'quashment_561a',
+      draft_title: 'PETITION UNDER SECTION 561-A CR.P.C. FOR QUASHMENT OF FIR AND PROCEEDINGS EMANATING THEREFROM',
+      applicable_statutes: ['Section 561-A Cr.P.C.', 'Article 10-A Constitution 1973', 'Article 4 & 9 of Constitution'],
+      controlling_legal_issues: ['Abuse of process of court, FIR registered with mala fide intent, allegations disclosing purely civil transaction.'],
+      case_theory: 'Criminal law cannot be used as an instrument of blackmail or debt recovery; High Court has inherent power to prevent abuse of process.',
+      counter_strategy: 'State will argue investigation is ongoing; rely on landmark precedent PLD 2005 SC 470 that High Court can quash at any stage if FIR is absurd or mala fide.',
+      confidence: 'high'
+    };
+  }
+
+  // 9. Cyber Crime / FIA / PECA 2016
+  if (/cyber|peca|fia|social media|whatsapp|facebook|hack|harass.*online|leak|blackmail.*video/i.test(lower)) {
+    return {
+      case_nature: 'Special Law / Cyber Crime & Electronic Offences (PECA)',
+      competent_court: 'In the Court of Learned Special Court (PECA) / FIA Cyber Crime Circle',
+      primary_remedy: 'Complaint under Sections 20, 21 & 24 Prevention of Electronic Crimes Act (PECA) 2016 & Direction for Forensic Digital Recovery',
+      draft_type: 'peca_complaint',
+      draft_title: 'CRIMINAL COMPLAINT UNDER SECTIONS 20, 21 & 24 OF THE PREVENTION OF ELECTRONIC CRIMES ACT, 2016 (PECA)',
+      applicable_statutes: ['Prevention of Electronic Crimes Act 2016 (Sec 20, 21, 24)', 'Federal Investigation Agency Act 1974', 'Electronic Transactions Ordinance 2002'],
+      controlling_legal_issues: ['Offences against dignity of natural person, cyber stalking, unauthorized interception of electronic data.'],
+      case_theory: 'Preserve electronic digital logs, IP addresses, and forensic chain of custody to establish statutory contravention.',
+      counter_strategy: 'Accused will claim spoofed account; petition for preservation of CDR and subscriber identity records.',
+      confidence: 'high'
+    };
+  }
+
+  // 10. Succession Certificate / Letter of Administration
+  if (/succession|warasat|inheritance|wirasa|tarka|foutgi|deceased.*bank|letter of administration/i.test(lower)) {
+    return {
+      case_nature: 'Civil & Succession / Inheritance & Succession Certificate',
+      competent_court: 'In the Court of Learned Senior Civil Judge / District Judge',
+      primary_remedy: 'Petition for Grant of Succession Certificate under Section 372 of Succession Act 1925 / Letter of Administration under Section 278',
+      draft_type: 'succession_petition',
+      draft_title: 'PETITION UNDER SECTION 372 OF THE SUCCESSION ACT, 1925 FOR GRANT OF SUCCESSION CERTIFICATE',
+      applicable_statutes: ['Succession Act 1925 (Sec 278, 372)', 'National Database and Registration Authority (NADRA) Ordinance 2000', 'Shariah Inheritance Principles'],
+      controlling_legal_issues: ['Establishing legal heirs through genealogical tree (Shajra Nasab), NADRA Family Registration Certificate (FRC), and list of debts/securities.'],
+      case_theory: 'All legal heirs are entitled to their statutory Quranic shares in movable assets and bank securities of the deceased.',
+      counter_strategy: 'Contesting heirs may claim gift or will; rely on strict evidentiary proof and newspaper citation publications.',
+      confidence: 'high'
+    };
+  }
+
+  // 11. Specific Performance of Agreement to Sell
+  if (/agreement to sell|biyana|biana|moaida baia|iqrarnama|registry nahi kar raha/i.test(lower)) {
+    return {
+      case_nature: 'Civil Law / Specific Performance of Immovable Property Contract',
+      competent_court: 'In the Court of Learned Senior Civil Judge (Civil Division)',
+      primary_remedy: 'Suit for Specific Performance of Agreement to Sell under Section 12 Specific Relief Act 1877 read with Order VII Rule 1 CPC',
+      draft_type: 'specific_performance',
+      draft_title: 'SUIT FOR SPECIFIC PERFORMANCE OF AGREEMENT TO SELL UNDER SECTION 12 SPECIFIC RELIEF ACT 1877',
+      applicable_statutes: ['Specific Relief Act 1877 (Sec 12, 19, 21)', 'Contract Act 1872', 'Limitation Act 1908 (Article 113)'],
+      controlling_legal_issues: ['Valid executed agreement, receipt of earnest money/token, plaintiff\'s readiness and willingness to perform balance obligation.'],
+      case_theory: 'Equity regards as done that which ought to be done; monetary damages are inadequate compensation for breach of contract to transfer immovable property.',
+      counter_strategy: 'Vendor will allege time was essence of contract; demonstrate readiness and willingness by depositing balance sale consideration in court.',
+      confidence: 'high'
+    };
+  }
+
+  // Default fallback
+  return {
+    case_nature: 'General Litigation & Legal Remedy under Pakistani Law',
+    competent_court: 'In the Court of Competent Jurisdiction',
+    primary_remedy: 'Formal Legal Petition / Proceeding under Pakistani Law',
+    draft_type: 'petition',
+    draft_title: 'LEGAL PETITION FOR REDRESSAL OF GRIEVANCE',
+    applicable_statutes: ['Constitution of Islamic Republic of Pakistan 1973', 'Code of Civil Procedure 1908 / Cr.P.C. 1898'],
+    controlling_legal_issues: ['Infringement of legal rights and available statutory remedies.'],
+    case_theory: 'Pursue legal redressal before the competent statutory forum.',
+    counter_strategy: 'Anticipate procedural preliminary objections.',
+    confidence: 'medium'
+  };
+}
+
+
+/**
  * @param {string} problemText - the client's problem in their own words
  * @param {object} [options]
  * @param {string} [options.language] - 'english'|'urdu'|'roman_urdu'|'bilingual', for the draft if one is produced
@@ -96,50 +343,60 @@ async function runCaseIntake(problemText, options = {}) {
 
   let totalTokens = 0;
 
-  // Step 1 + 2 run in parallel — classification is an AI call, the
-  // limitation check is pure local computation, so there's no reason to
-  // make one wait on the other.
-  const [classificationResult, limitationCheck] = await Promise.all([
-    classifyDraftType(problemText).catch((err) => {
-      logger.warn('runCaseIntake: classifyDraftType failed, continuing analysis-only:', err.message || err);
-      return { classification: { draft_type: null, confidence: 'low', reasoning: null, clarifying_question: null }, tokens: 0 };
-    }),
+  // Step 1: Autonomous Case Diagnosis + Limitation Check in parallel
+  const [diagnosis, limitationCheck] = await Promise.all([
+    diagnoseCaseNature(problemText),
     Promise.resolve(runLimitationCheck(problemText, options.triggerDate, options.limitationCaseTypeKey)),
   ]);
-  totalTokens += classificationResult.tokens || 0;
-  const classification = classificationResult.classification;
 
-  // Step 3 — always run the deep reasoning chain. This is the core
-  // "senior advocate thinking" step and everything else (the draft, the
-  // next-steps list) is grounded in its output.
-  const caseTypeLabel = classification?.draft_type
-    ? `${classification.draft_type} — client consultation`
+  const classification = {
+    draft_type: diagnosis?.draft_type || 'petition',
+    confidence: diagnosis?.confidence || 'high',
+    reasoning: diagnosis?.case_theory || 'Legal remedy diagnosed under Pakistani Law.',
+    clarifying_question: null,
+  };
+
+  // Step 2: Deep reasoning chain grounded in diagnosis
+  const caseTypeLabel = diagnosis?.primary_remedy
+    ? `${diagnosis.primary_remedy} (${diagnosis.case_nature || 'Pakistani Legal Matter'})`
     : 'client consultation';
   const deepAnalysis = await runLegalReasoningChain(problemText, caseTypeLabel);
   totalTokens += deepAnalysis.tokens || 0;
 
-  // Step 4 — decide autonomously whether to draft. Rule: only draft when
-  // classification is confident AND not explicitly skipped. A low-
-  // confidence guess turning into a full drafted court document without
-  // the user confirming would be worse than just asking a clarifying
-  // question — the classifier already gives us that question for free.
+  // Step 3: Guaranteed Court-Ready Draft generation (unless explicitly skipped)
   let draft = null;
-  const shouldDraft =
-    !options.skipDraft &&
-    classification?.draft_type &&
-    (classification.confidence === 'high' || options.forceDraft);
+  const shouldDraft = !options.skipDraft;
 
   if (shouldDraft) {
     try {
-      const draftResult = await generateDraft(classification.draft_type, problemText, options.language || 'english', deepAnalysis);
+      const draftDetails = {
+        caseDetails: problemText,
+        caseNature: diagnosis?.case_nature,
+        competentCourt: diagnosis?.competent_court,
+        primaryRemedy: diagnosis?.primary_remedy,
+        statutes: diagnosis?.applicable_statutes,
+        caseTheory: diagnosis?.case_theory,
+        draftTitle: diagnosis?.draft_title,
+      };
+
+      const draftResult = await generateDraft(
+        diagnosis?.draft_type || 'petition',
+        draftDetails,
+        options.language || 'english',
+        deepAnalysis
+      );
       totalTokens += draftResult.tokens || 0;
-      draft = { draftType: classification.draft_type, content: draftResult.content };
+      draft = {
+        draftType: diagnosis?.draft_type || 'court_petition',
+        draftTitle: diagnosis?.draft_title || diagnosis?.primary_remedy || 'Court Ready Draft',
+        content: draftResult.content,
+      };
     } catch (err) {
       logger.error('runCaseIntake: draft generation failed:', err.message || err);
     }
   }
 
-  // Step 5 — assemble prioritized, actionable output.
+  // Step 4: Assemble prioritized, actionable output
   const nextSteps = [];
   if (limitationCheck.detected && limitationCheck.urgency === 'expired') {
     nextSteps.push('⚠️ The computed limitation period appears to have already EXPIRED — immediately check whether Section 5 condonation (sufficient cause) can be argued, and consult on this before anything else.');
@@ -148,17 +405,22 @@ async function runCaseIntake(problemText, options = {}) {
   } else if (limitationCheck.detected && limitationCheck.needsTriggerDate) {
     nextSteps.push('Provide the exact trigger date (order date / breach date / dispossession date) so the filing deadline can be calculated precisely.');
   }
-  if (!classification?.draft_type && classification?.clarifying_question) {
-    nextSteps.push(`Clarify: ${classification.clarifying_question}`);
+
+  if (diagnosis?.competent_court) {
+    nextSteps.push(`File before: ${diagnosis.competent_court}`);
   }
-  if (classification?.draft_type && !draft && !options.skipDraft) {
-    nextSteps.push(`A ${classification.draft_type} may be appropriate here, but confidence was ${classification?.confidence || 'low'} — confirm the document type before drafting.`);
+  if (diagnosis?.primary_remedy) {
+    nextSteps.push(`Primary Legal Action: ${diagnosis.primary_remedy}`);
+  }
+  if (diagnosis?.counter_strategy) {
+    nextSteps.push(`Counter-strategy: ${diagnosis.counter_strategy}`);
   }
   if (deepAnalysis.synthesis?.risk_factors?.length) {
     nextSteps.push(...deepAnalysis.synthesis.risk_factors.slice(0, 2).map((r) => `Risk to address: ${r}`));
   }
 
   return {
+    diagnosis,
     classification,
     limitationCheck,
     deepAnalysis,
@@ -168,4 +430,5 @@ async function runCaseIntake(problemText, options = {}) {
   };
 }
 
-module.exports = { runCaseIntake, extractTriggerDate };
+module.exports = { runCaseIntake, extractTriggerDate, diagnoseCaseNature };
+

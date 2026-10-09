@@ -11,13 +11,15 @@
 // metadata/next_action so it shows up in the deadline tracker.
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth.middleware');
+const { authenticate, optionalAuth } = require('../middleware/auth.middleware');
 const { aiLimiter } = require('../middleware/rateLimiter');
 const { query } = require('../config/database');
 const logger = require('../utils/logger');
 const { runCaseIntake } = require('../services/caseIntakeOrchestrator');
+const { formatCourtDocx } = require('../services/drafting/generateDraft');
 const MAX_PROBLEM_LENGTH = 150000;
-router.post('/', authenticate, aiLimiter, async (req, res, next) => {
+
+router.post('/', optionalAuth, aiLimiter, async (req, res, next) => {
   try {
     const { problemText, language, triggerDate, limitationCaseTypeKey, forceDraft, skipDraft, caseId } = req.body || {};
     if (!problemText || typeof problemText !== 'string' || !problemText.trim()) {
@@ -33,10 +35,10 @@ router.post('/', authenticate, aiLimiter, async (req, res, next) => {
       forceDraft: Boolean(forceDraft),
       skipDraft: Boolean(skipDraft),
     });
-    // If this intake is tied to an existing case, persist the limitation
-    // deadline (if one was found) onto the case so it surfaces in the
-    // deadline tracker without the user having to re-enter it manually.
-    if (caseId && result.limitationCheck?.detected && result.limitationCheck?.deadline) {
+
+    // If this intake is tied to an existing case and user is authenticated,
+    // persist the limitation deadline onto the case.
+    if (caseId && req.user?.id && result.limitationCheck?.detected && result.limitationCheck?.deadline) {
       try {
         await query(
           `UPDATE cases SET next_action = $1,
@@ -59,4 +61,27 @@ router.post('/', authenticate, aiLimiter, async (req, res, next) => {
     return res.status(500).json({ success: false, error: error.message || 'Case intake failed.' });
   }
 });
-module.exports = router;
+
+// POST /api/v1/intake/generate-docx
+// Exports an intake draft directly into an authentic Pakistani Court-Ready .docx document
+router.post('/generate-docx', optionalAuth, async (req, res, next) => {
+  try {
+    const { title, content } = req.body || {};
+    if (!content || typeof content !== 'string') {
+      return res.status(400).json({ success: false, error: 'content is required to generate a docx.' });
+    }
+
+    const docxTitle = title || 'Court Ready Draft';
+    const buffer = await formatCourtDocx(docxTitle, content);
+
+    const safeFilename = docxTitle.replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 50) || 'Pakistani_Court_Draft';
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.docx"`);
+    return res.send(buffer);
+  } catch (err) {
+    logger.error('intake.routes generate-docx error:', err);
+    return res.status(500).json({ success: false, error: err.message || 'Failed to export .docx draft.' });
+  }
+});
+
+module.exports = router;
