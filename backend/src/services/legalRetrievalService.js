@@ -150,97 +150,111 @@ function fuseResults(vectorRows, keywordRows, limit) {
   return fused;
 }
 
+const { searchPakistanLawCompendium } = require('../data/pakistanLawCompendium');
+
 /**
  * Main entry point: retrieves relevant Constitution articles, statutory
  * sections, and judgments for a given user query.
+ * Resilient against database outages by automatically falling back to
+ * Pakistan Law Compendium & Landmark Judicial Decrees.
  *
  * @param {string} query - user's plain-English / Urdu-transcribed question
  * @returns {Promise<{constitution: [], statute: [], judgment: []}>}
  */
 async function retrieveRelevantLaw(query) {
-  let queryEmbedding = null;
+  const fallback = searchPakistanLawCompendium(query, RESULTS_PER_SOURCE_TYPE);
+
   try {
-    queryEmbedding = await generateEmbedding(query);
+    let queryEmbedding = null;
+    try {
+      queryEmbedding = await generateEmbedding(query);
+    } catch (err) {
+      // Vector embedding fail-soft
+    }
+
+    const [constV, constK, statV, statK, judgV, judgK] = await Promise.all([
+      queryEmbedding ? vectorSearch(queryEmbedding, 'constitution', CANDIDATES_PER_SOURCE_TYPE).catch(() => []) : Promise.resolve([]),
+      keywordSearch(query, 'constitution', CANDIDATES_PER_SOURCE_TYPE).catch(() => []),
+      queryEmbedding ? vectorSearch(queryEmbedding, 'statute', CANDIDATES_PER_SOURCE_TYPE).catch(() => []) : Promise.resolve([]),
+      keywordSearch(query, 'statute', CANDIDATES_PER_SOURCE_TYPE).catch(() => []),
+      queryEmbedding ? vectorSearch(queryEmbedding, 'judgment', CANDIDATES_PER_SOURCE_TYPE).catch(() => []) : Promise.resolve([]),
+      keywordSearch(query, 'judgment', CANDIDATES_PER_SOURCE_TYPE).catch(() => []),
+    ]);
+
+    const constitution = fuseResults(constV || [], constK || [], RESULTS_PER_SOURCE_TYPE);
+    const statute = fuseResults(statV || [], statK || [], RESULTS_PER_SOURCE_TYPE);
+    const judgment = fuseResults(judgV || [], judgK || [], RESULTS_PER_SOURCE_TYPE);
+
+    return {
+      constitution: constitution.length > 0 ? constitution : fallback.constitution,
+      statute: statute.length > 0 ? statute : fallback.statute,
+      judgment: judgment.length > 0 ? judgment : fallback.judgment,
+    };
   } catch (err) {
-    // Vector embedding fail-soft: fallback to PostgreSQL full-text search
+    logger.warn('retrieveRelevantLaw: DB lookup failed, using Pakistan Law Compendium fallback:', err.message);
+    return fallback;
   }
-
-  const [constV, constK, statV, statK, judgV, judgK] = await Promise.all([
-    queryEmbedding ? vectorSearch(queryEmbedding, 'constitution', CANDIDATES_PER_SOURCE_TYPE) : Promise.resolve([]),
-    keywordSearch(query, 'constitution', CANDIDATES_PER_SOURCE_TYPE),
-    queryEmbedding ? vectorSearch(queryEmbedding, 'statute', CANDIDATES_PER_SOURCE_TYPE) : Promise.resolve([]),
-    keywordSearch(query, 'statute', CANDIDATES_PER_SOURCE_TYPE),
-    queryEmbedding ? vectorSearch(queryEmbedding, 'judgment', CANDIDATES_PER_SOURCE_TYPE) : Promise.resolve([]),
-    keywordSearch(query, 'judgment', CANDIDATES_PER_SOURCE_TYPE),
-  ]);
-
-  return {
-    constitution: fuseResults(constV, constK, RESULTS_PER_SOURCE_TYPE),
-    statute: fuseResults(statV, statK, RESULTS_PER_SOURCE_TYPE),
-    judgment: fuseResults(judgV, judgK, RESULTS_PER_SOURCE_TYPE),
-  };
 }
 
 /**
  * TRUE citation-graph lookup — given one or more legal_knowledge row ids
  * (statute/constitution provisions), returns every judgment that has a
- * recorded case_citations link to that provision (built by
- * scripts/extractCaseCitations.js), instead of a fresh semantic/keyword
- * search. This is the difference between "text similar to this Section"
- * (retrieveRelevantLaw above) and "cases that actually cite this Section".
- *
- * Verified links are returned first, then by confidence, so an
- * unreviewed/low-confidence regex match doesn't outrank a confirmed one.
+ * recorded case_citations link to that provision.
  *
  * @param {number[]} provisionIds - legal_knowledge.id values (statute/constitution rows)
  * @param {number} [limit]
- * @returns {Promise<object[]>} judgment rows, each with citation_context/confidence/verified attached
+ * @returns {Promise<object[]>} judgment rows
  */
 async function getRelatedCases(provisionIds, limit = 5) {
   if (!Array.isArray(provisionIds) || provisionIds.length === 0) return [];
 
-  const result = await pool.query(
-    `SELECT lk.id, lk.title, lk.citation, lk.court, lk.judge_name, lk.year, lk.full_text,
-            cc.citation_context, cc.confidence, cc.verified, cc.cited_provision_id
-     FROM case_citations cc
-     JOIN legal_knowledge lk ON lk.id = cc.case_id
-     WHERE cc.cited_provision_id = ANY($1::bigint[])
-     ORDER BY cc.verified DESC,
-              CASE cc.confidence WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
-              lk.year DESC NULLS LAST
-     LIMIT $2`,
-    [provisionIds, limit]
-  );
-  // Mark these distinctly from fuseResults()'s output so downstream code
-  // (and any UI badge) can tell "confirmed citation-graph link" apart from
-  // "turned up via vector/keyword similarity" — a citation-graph match is a
-  // strictly stronger signal than either.
-  return result.rows.map((row) => ({ ...row, matchType: 'citation_graph' }));
+  try {
+    const result = await pool.query(
+      `SELECT lk.id, lk.title, lk.citation, lk.court, lk.judge_name, lk.year, lk.full_text,
+              cc.citation_context, cc.confidence, cc.verified, cc.cited_provision_id
+       FROM case_citations cc
+       JOIN legal_knowledge lk ON lk.id = cc.case_id
+       WHERE cc.cited_provision_id = ANY($1::bigint[])
+       ORDER BY cc.verified DESC,
+                CASE cc.confidence WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
+                lk.year DESC NULLS LAST
+       LIMIT $2`,
+      [provisionIds, limit]
+    );
+    return result.rows.map((row) => ({ ...row, matchType: 'citation_graph' }));
+  } catch (err) {
+    logger.warn('getRelatedCases: query failed (safely continuing):', err.message);
+    return [];
+  }
 }
 
 /**
  * Convenience wrapper for the common case: run the normal hybrid search,
  * then ALSO pull true citation-graph matches for whichever statute/
- * constitution rows came back, and merge them into the judgment list
- * (citation-graph matches first — they're a confirmed link, not just a
- * text-similarity guess). This is the function chat/answer-generation
- * should call instead of retrieveRelevantLaw() directly, once
- * case_citations has been populated.
+ * constitution rows came back, and merge them into the judgment list.
  */
 async function retrieveRelevantLawWithCitations(query) {
   const base = await retrieveRelevantLaw(query);
 
-  const provisionIds = [...base.constitution, ...base.statute].map((r) => r.id);
-  const relatedCases = await getRelatedCases(provisionIds, RESULTS_PER_SOURCE_TYPE * 2);
+  try {
+    const provisionIds = [...base.constitution, ...base.statute]
+      .map((r) => r.id)
+      .filter((id) => id !== undefined && id !== null);
 
-  // Citation-graph matches are a confirmed link, so they always lead;
-  // dedup by id keeping the first (citation-graph) occurrence.
-  const seen = new Map();
-  [...relatedCases, ...base.judgment].forEach((row) => {
-    if (!seen.has(row.id)) seen.set(row.id, row);
-  });
+    if (provisionIds.length > 0) {
+      const relatedCases = await getRelatedCases(provisionIds, RESULTS_PER_SOURCE_TYPE * 2);
+      const seen = new Map();
+      [...relatedCases, ...base.judgment].forEach((row) => {
+        const key = row.id || row.citation || row.title;
+        if (!seen.has(key)) seen.set(key, row);
+      });
+      return { ...base, judgment: Array.from(seen.values()) };
+    }
+  } catch (err) {
+    logger.warn('retrieveRelevantLawWithCitations: error merging related cases:', err.message);
+  }
 
-  return { ...base, judgment: Array.from(seen.values()) };
+  return base;
 }
 
 module.exports = { retrieveRelevantLaw, getRelatedCases, retrieveRelevantLawWithCitations };

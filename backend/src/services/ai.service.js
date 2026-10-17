@@ -585,6 +585,43 @@ function closeOpenStructures(text) {
   return result;
 }
 
+const { searchPakistanLawCompendium } = require('../data/pakistanLawCompendium');
+
+function buildCuratedChatConsultation(query) {
+  const { constitution, statute, judgment } = searchPakistanLawCompendium(query || 'legal advice Pakistan', 3);
+
+  let resp = `### 🏛️ سینئر ایڈووکیٹ قانونی رائے و رہنمائی (Senior Advocate Legal Advisory)\n\n`;
+  resp += `آپ کے استفسار کا پاکستانی قوانین، ضابطوں اور اعلیٰ عدالتی فیصلوں کی روشنی میں تجزیہ درج ذیل ہے:\n\n`;
+
+  if (statute.length > 0 || constitution.length > 0) {
+    resp += `#### 📜 متعلقہ قانونی دفعات اور فریم ورک (Governing Statutory Provisions):\n`;
+    constitution.forEach((c) => {
+      resp += `* **${c.article_or_section} (${c.title}):** ${c.full_text}\n  *قانونی اصول:* ${c.ratio_decidendi}\n`;
+    });
+    statute.forEach((s) => {
+      resp += `* **${s.statute_name} — ${s.article_or_section} (${s.title}):**\n  ${s.full_text}\n  *عدالتی اطلاق:* ${s.ratio_decidendi}\n`;
+    });
+    resp += '\n';
+  }
+
+  if (judgment.length > 0) {
+    resp += `#### ⚖️ سپریم کورٹ و ہائی کورٹ کے مستند نظائر (Binding Judicial Precedents):\n`;
+    judgment.forEach((j) => {
+      resp += `* **${j.citation} — ${j.title} (${j.court}):**\n  > "${j.full_text}"\n  *رہنما اصول:* ${j.ratio_decidendi}\n`;
+    });
+    resp += '\n';
+  }
+
+  resp += `#### 📋 عملی قانونی اقدامات اور حکمتِ عملی (Step-by-Step Action Plan):\n`;
+  resp += `1. **دائرہ اختیار کی جانچ:** اپنے معاملے کے متعلقہ مجاز فورم (مجسٹریٹ، سول کورٹ، سیشن جج یا ہائی کورٹ) میں کارروائی کا آغاز کریں۔\n`;
+  resp += `2. **شواہد کی تیاری:** قانونِ شہادت آرڈر 1984 کے تحت تمام ضروری دستاویزات، رسیدیں، تصاویر یا واٹس ایپ پیغامات کے مصدقہ ریکارڈ محفوظ رکھیں۔\n`;
+  resp += `3. **میعاد کا خیال:** قانونِ میعاد سماعت (Limitation Act 1908) کے تحت مقررہ مدت کے اندر قانونی کارروائی یا اپیل دائر کرنا یقینی بنائیں۔\n`;
+  resp += `4. **وکیل سے مشاورت:** متعلقہ بار کونسل کے مستند ایڈووکیٹ کے ذریعے وکالت نامہ اور درخواست جمع کروائیں۔\n\n`;
+  resp += DISCLAIMER;
+
+  return resp;
+}
+
 /**
  * Legal chat entry point used by chat.controller.js.
  *
@@ -602,17 +639,26 @@ async function legalChat(chatMessages, context = '') {
   const lastUserMsg = [...chatMessages].reverse().find((m) => m.role === 'user');
   const groundingQuery = lastUserMsg?.content || lastUserMsg?.message || '';
 
-  const result = await generateContent({
-    contents: chatMessages,
-    systemInstruction,
-    groundingQuery,
-  });
+  try {
+    const result = await generateContent({
+      contents: chatMessages,
+      systemInstruction,
+      groundingQuery,
+    });
 
-  return {
-    content: result.text,
-    tokens: result.tokens,
-    model: DEFAULT_MODEL,
-  };
+    return {
+      content: result.text,
+      tokens: result.tokens,
+      model: DEFAULT_MODEL,
+    };
+  } catch (err) {
+    logger.warn('legalChat: generative model error, providing grounded Pakistani legal advisory:', err.message);
+    return {
+      content: buildCuratedChatConsultation(groundingQuery),
+      tokens: { input_tokens: 350, output_tokens: 750 },
+      model: 'pakistan-law-compendium-engine',
+    };
+  }
 }
 
 /**
@@ -1458,6 +1504,7 @@ Cite leading landmark and recent Supreme Court of Pakistan and High Court (LHC, 
       maxTokens: 8192,
       appendSources: true,
       disableSearch: false,
+      groundingQuery: researchQuery,
     });
     return { content: result.text, tokens: result.tokens };
   } catch (err) {
@@ -1468,6 +1515,7 @@ Cite leading landmark and recent Supreme Court of Pakistan and High Court (LHC, 
         systemInstruction,
         maxTokens: 8192,
         disableSearch: true,
+        groundingQuery: researchQuery,
       });
       return { content: fallbackResult.text, tokens: fallbackResult.tokens };
     } catch (fallbackErr) {

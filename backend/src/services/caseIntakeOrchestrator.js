@@ -119,6 +119,7 @@ ${problemText}`;
       disableSearch: true,
       appendSources: false,
       maxTokens: 2048,
+      groundingQuery: problemText.slice(0, 1500),
     });
     const parsed = parseJsonSafe(res.text);
     if (parsed && parsed.case_nature && parsed.competent_court) {

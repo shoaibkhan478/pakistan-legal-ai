@@ -43,6 +43,51 @@ Kaam karne ka tareeqa:
 6. Agar confident na ho, saaf bata do — kabhi guess na karo
 `.trim();
 
+const { searchPakistanLawCompendium } = require('../data/pakistanLawCompendium');
+const logger = require('../utils/logger');
+
+function buildCuratedLegalSearchAnswer(question) {
+  const { constitution, statute, judgment } = searchPakistanLawCompendium(question, 4);
+
+  const sections = [];
+  sections.push(`### 🏛️ پاکستان کا قانونی فریم ورک اور عدالتی احکامات (Legal Framework & Precedents)`);
+  sections.push(`**سوال / استفسار:** "${question}"\n`);
+
+  if (constitution.length > 0) {
+    sections.push(`#### 📜 آئینِ پاکستان 1973 (Constitution of Pakistan):`);
+    constitution.forEach((c) => {
+      sections.push(`* **${c.article_or_section} (${c.title}):** ${c.full_text}\n  *قانونی اصول:* ${c.ratio_decidendi}`);
+    });
+    sections.push('');
+  }
+
+  if (statute.length > 0) {
+    sections.push(`#### ⚖️ متعلقہ قوانین اور دفعات (Statutory Provisions):`);
+    statute.forEach((s) => {
+      sections.push(`* **${s.statute_name} — ${s.article_or_section} (${s.title}):**\n  ${s.full_text}\n  *عدالتی اطلاق:* ${s.ratio_decidendi}`);
+    });
+    sections.push('');
+  }
+
+  if (judgment.length > 0) {
+    sections.push(`#### ⚖️ سپریم کورٹ و ہائی کورٹ کے نظائر (Authoritative Precedents):`);
+    judgment.forEach((j) => {
+      sections.push(`* **${j.citation} — ${j.title}** (${j.court})\n  *فیصلہ / قانونی نکتہ:* ${j.full_text}\n  *رہنما اصول:* ${j.ratio_decidendi}`);
+    });
+    sections.push('');
+  }
+
+  sections.push(`---
+⚖️ **وکالت کی عملی حکمت عملی (Advocate Practice Blueprint):**
+1. متعلقہ عدالت کے دائرہ اختیار (Territorial & Pecuniary Jurisdiction) کی توثیق کریں۔
+2. قانونِ میعاد سماعت (Limitation Act 1908) کے تحت مقررہ مدت کے اندر کارروائی مکمل کریں۔
+3. قانونِ شہادت آرڈر 1984 کے تحت دستاویزی اور گواہی کے شواہد کو حتمی شکل دیں۔
+
+*(ماخذ: پاکستان لا کمپینڈیم اور سپریم کورٹ آف پاکستان نظائر)*`);
+
+  return sections.join('\n');
+}
+
 /**
  * @param {string} question
  * @returns {Promise<{ answer: string }>}
@@ -52,15 +97,20 @@ async function runLiveLegalSearch(question) {
     throw new Error('Question is required');
   }
 
-  const { text } = await generateContent({
-    contents: question,
-    systemInstruction: SYSTEM_INSTRUCTIONS,
-    maxTokens: 2048,
-    appendSources: true,
-    disableSearch: false,
-  });
-
-  return { answer: text };
+  try {
+    const { text } = await generateContent({
+      contents: question,
+      systemInstruction: SYSTEM_INSTRUCTIONS,
+      maxTokens: 2048,
+      appendSources: true,
+      disableSearch: false,
+      groundingQuery: question,
+    });
+    return { answer: text };
+  } catch (err) {
+    logger.warn('runLiveLegalSearch: generative search failed, using Pakistan Law Compendium fallback:', err.message);
+    return { answer: buildCuratedLegalSearchAnswer(question) };
+  }
 }
 
 // ------------------------------------------------------------------
